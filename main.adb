@@ -15,7 +15,7 @@ procedure Main is
 
     param : T_Param;
 
-    -- Afficher l'usage.
+    -- Afficher l'usage
     procedure Afficher_Usage is
     begin
         New_Line;

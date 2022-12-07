@@ -8,7 +8,7 @@ package tools is
 
     type T_Adresse_IP is private;
 
-    -- function is_Param_Valid(Parametre : Character) return Boolean;
+    -- function is_Param_Valid(parametre : Character) return Boolean;
 
     -- function is_File_Valid(file : String) return Boolean;
 
@@ -22,14 +22,14 @@ private
 
     type T_Param is record
 
-        taille_cache : Integer; -- parametre -c
-        afficher_stats : Boolean; -- parametre -s et -S
+        taille_cache : Integer; -- Parametre -c
+        afficher_stats : Boolean; -- Parametre -s et -S
 
-        file_table_routage : Unbounded_String; -- parametre -t
-        file_paquets : Unbounded_String; -- parametre -p
-        file_resultats : Unbounded_String; -- parametre -r
+        file_table_routage : Unbounded_String; -- Parametre -t
+        file_paquets : Unbounded_String; -- Parametre -p
+        file_resultats : Unbounded_String; -- Parametre -r
 
-        politique : T_Politique; -- parametre -P
+        politique : T_Politique; -- Parametre -P
 
     end record;
 
