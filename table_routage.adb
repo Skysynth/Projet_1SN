@@ -53,7 +53,7 @@ package body Table_Routage is
 
 	end Enregistrer;
 
---Savoir si une clé est présente dans une SDA.
+--Savoir si une cle est présente dans une SDA.
 	function Cle_Presente (Sda : in T_LCA ; Cle : in T_Cle) return Boolean is
 
 	
@@ -114,7 +114,7 @@ package body Table_Routage is
 	procedure Vider (Sda : in out T_LCA) is
 	begin
 		if not(Est_Vide(Sda)) then
-			Vider(Sda.all.Suivant); -- .all permet d'accèder au contenu de l'adresse que pointe le pointeur  
+			Vider(Sda.all.Suivant); -- .all permet d'acceder au contenu de l'adresse que pointe le pointeur  
 			Free (Sda);
 		else
 			Null;
