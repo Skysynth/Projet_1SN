@@ -5,9 +5,9 @@ with Ada.Unchecked_Deallocation;
 package body cache_tree is
 
 	procedure Free is
-		new Ada.Unchecked_Deallocation (Object => T_Cellule, Name => T_Cache);
+		new Ada.Unchecked_Deallocation (Object => T_Cache_Cellule, Name => T_Cache);
 
-	procedure Initialiser (Sda: out T_Cache) is
+	procedure Initialiser (Sda : out T_Cache) is
 	begin
 		Cache := Null;
 	end Initialiser;
