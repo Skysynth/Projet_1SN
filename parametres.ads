@@ -17,7 +17,7 @@ package PARAMETRES is
 
     end record;
 
-    type T_Adresse_IP is mod 2 **32;
+    type T_Adresse_IP is mod 2 ** 32;
 
 
     -- function is_Param_Valid(Parametre : Character) return Boolean;
