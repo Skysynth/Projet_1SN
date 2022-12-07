@@ -3,7 +3,7 @@ with Ada.Text_IO;           use Ada.Text_IO;
 with Ada.Command_Line;      use Ada.Command_Line;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with routeur_exceptions;    use routeur_exceptions;
-with PARAMETRES;            use PARAMETRES;
+with tools; use tools;
 
 procedure Main is
 
@@ -58,7 +58,7 @@ begin
                             iterateur := iterateur + 1;
 
                         when 's' => param.afficher_stats := True;
-                        
+
                         when 'S' => param.afficher_stats := False;
 
                         when 't' =>

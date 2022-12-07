@@ -1,7 +1,7 @@
 with Ada.Text_IO;            use Ada.Text_IO;
 with routeur_exceptions;         use routeur_exceptions;
 
-package body PARAMETRES is
+package body tools is
 
     function Initialiser return T_Param is
 

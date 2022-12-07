@@ -1,6 +1,6 @@
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
-package PARAMETRES is
+package tools is
 
     type T_Politique is limited private;
 
