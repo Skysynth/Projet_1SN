@@ -14,7 +14,7 @@ private
         Taille : Integer;
         Adresse : T_Adresse_IP;
         Masque : T_Adresse_IP;
-        Interface : T_Interface;
+        Interface : Unbounded_String;
         Gauche : T_Cache;
         Droit : T_Cache;
     end record;

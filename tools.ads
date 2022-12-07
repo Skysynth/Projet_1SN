@@ -15,8 +15,6 @@ package tools is
 
     end record;
 
-    type T_Interface;
-
     type T_Adresse_IP is private;
 
     -- function is_Param_Valid(parametre : Character) return Boolean;
