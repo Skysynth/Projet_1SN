@@ -58,6 +58,7 @@ begin
                             iterateur := iterateur + 1;
 
                         when 's' => param.afficher_stats := True;
+                        
                         when 'S' => param.afficher_stats := False;
 
                         when 't' =>
