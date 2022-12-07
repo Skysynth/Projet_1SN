@@ -66,15 +66,12 @@ private
 
 	type T_Table_Routage is access T_Cellule;
 
-
-
 	type T_Cellule is
 		record
 			Adresse : T_Adresse_IP;
     		Masque : T_Adresse_IP;
 			Sortie : Unbounded_String;
 			Suivant : T_Table_Routage;
-			
 		end record;
 
 end Table_Routage;
