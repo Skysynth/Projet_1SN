@@ -4,7 +4,7 @@ package tools is
 
     type T_Politique is limited private;
 
-    type T_Param is limited private;
+    type T_Param is private;
 
     type T_Adresse_IP is private;
 
