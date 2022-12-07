@@ -78,7 +78,7 @@ D s-stratt.ads		20200819050646 9a2744e9 system.stream_attributes%s
 D s-traent.ads		20200819050646 005bf670 system.traceback_entries%s
 D s-unstyp.ads		20200819050646 5ecf7212 system.unsigned_types%s
 D s-wchcon.ads		20200819050646 1b7d22d2 system.wch_con%s
-D tools.ads		20221207100939 ac1f6ed0 tools%s
+D tools.ads		20221207102610 ac1f6ed0 tools%s
 D tools.adb		20221207101307 b1c20f56 tools%b
 G a e
 G c Z s b [initialiser tools 24 14 none]
