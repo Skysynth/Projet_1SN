@@ -1,4 +1,9 @@
+<<<<<<< Updated upstream
 -- Définition d'une exception commune à toutes les SDA.
+=======
+-- Definition d'une exception commune à toutes les SDA.
+package Routeur_Exceptions is
+>>>>>>> Stashed changes
 
 package Routeur_Exceptions is
 
