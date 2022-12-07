@@ -53,7 +53,7 @@ D a-textio.ads		20200819050643 aef4d56d ada.text_io%s
 D a-unccon.ads		20200819050643 0e9b276f ada.unchecked_conversion%s
 D interfac.ads		20200819050644 5ab55268 interfaces%s
 D i-cstrea.ads		20200819050644 e53d8b8e interfaces.c_streams%s
-D routeur_exceptions.ads  20221207100836 13d7f9c1 routeur_exceptions%s
+D routeur_exceptions.ads  20221207101100 13d7f9c1 routeur_exceptions%s
 D system.ads		20200819050647 085b6ffb system%s
 D s-atocou.ads		20200819050645 b45c2d8d system.atomic_counters%s
 D s-conca2.ads		20200819050645 02a0d7d0 system.concat_2%s
@@ -78,8 +78,8 @@ D s-stratt.ads		20200819050646 9a2744e9 system.stream_attributes%s
 D s-traent.ads		20200819050646 005bf670 system.traceback_entries%s
 D s-unstyp.ads		20200819050646 5ecf7212 system.unsigned_types%s
 D s-wchcon.ads		20200819050646 1b7d22d2 system.wch_con%s
-D tools.ads		20221207100930 ac1f6ed0 tools%s
-D tools.adb		20221207100819 b1c20f56 tools%b
+D tools.ads		20221207100939 ac1f6ed0 tools%s
+D tools.adb		20221207101307 b1c20f56 tools%b
 G a e
 G c Z s b [initialiser tools 24 14 none]
 G c Z s b [afficher_param tools 26 15 none]
@@ -100,7 +100,7 @@ X 12 a-textio.ads
 57K13*Text_IO 727e16 42|1w10 1r27
 508U14*Put_Line 42|24s9 25s9 28s13 30s13 33s9 34s9 35s9 36s9
 X 16 routeur_exceptions.ads
-3K9*Routeur_Exceptions 9e23 42|2w6 2r30
+3K9*Routeur_Exceptions 8e23 42|2w6 2r30
 X 17 system.ads
 67M9*Address
 X 27 s-memory.ads
@@ -110,7 +110,7 @@ X 27 s-memory.ads
 X 33 s-stalib.adb
 93U14 Break_Start 94i<c,__gnat_break_start>22
 X 41 tools.ads
-3K9*tools 34E10 36l5 36e10 42|4b14 42l5 42t10
+3K9*tools 30E10 32l5 32e10 42|4b14 40l5 40t10
 5E10*T_Politique 5e41 14r21 42|33r38
 5n26*FIFO{5E10} 42|16r28
 5n32*LRU{5E10}
@@ -122,7 +122,7 @@ X 41 tools.ads
 12r9*file_paquets{10|87R9} 42|14m15 35r60
 13r9*file_resultats{10|87R9} 42|15m15 36r63
 14e9*politique{5E10} 42|16m15 33r62
-18M10*T_Adresse_IP 34c10
+18M10*T_Adresse_IP 30c10
 24V14*Initialiser{7R10} 42|6b14 19l9 19t20
 26U15*Afficher_Param 26>30 42|21b15 38t8
 26r30 param{7R10} 42|21b30 25r58 27r12 33r56 34r63 35r54 36r57
