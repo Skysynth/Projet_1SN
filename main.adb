@@ -45,12 +45,12 @@ begin
 
             if is_opt then
 
-                if Argument(iterateur)(1) = '-' and Argument(iterateur)'length = 2 then
+                if Argument(iterateur)(1) = '-' and Argument(iterateur)'Length = 2 then
 
                     case Argument(iterateur)(2) is
 
                         when 'c' =>
-                            param.taille_cache := Integer'value(Argument(iterateur+1));
+                            param.taille_cache := Integer'Value(Argument(iterateur + 1));
                             iterateur := iterateur + 1;
 
                         when 'P' =>
