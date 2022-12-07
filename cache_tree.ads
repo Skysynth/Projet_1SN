@@ -12,6 +12,9 @@ package cache_tree is
     procedure Taille_Cache (Cache : in out T_Cache) with
 		Post => (Taille /= 0 and not Est_Vide(Cache)) and (Taille == 0 and Est_Vide(Cache));
 
+    procedure Vider (Cache : in out T_Cache) with
+		Post => Est_Vide (Cache);
+
 private
 
     type T_Cache_Cellule;
