@@ -1,5 +1,5 @@
-with Ada.Text_IO;            use Ada.Text_IO;
-with routeur_exceptions;         use routeur_exceptions;
+with Ada.Text_IO; use Ada.Text_IO;
+with routeur_exceptions; use routeur_exceptions;
 
 package body tools is
 
