@@ -7,9 +7,9 @@ package cache_tree is
     procedure Initialiser(Cache: out T_Cache) with
         post Est_Vide(Cache);
 
-    function Est_Vide (Sda : T_LCA) return Boolean;
+    function Est_Vide (Sda : T_Cache) return Boolean;
 
-    function Taille (Sda : in T_LCA) return Integer with
+    function Taille (Sda : in T_Cache) return Integer with
 		Post => Taille'Result >= 0 and (Taille'Result = 0) = Est_Vide (Sda);
 
 private
