@@ -1,8 +1,9 @@
 with Ada.Text_IO;            use Ada.Text_IO;
 with SDA_Exceptions;         use SDA_Exceptions;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Unchecked_Deallocation;
 
-package body LCA is
+package body Table_Routage is
 
 	procedure Free is
 		new Ada.Unchecked_Deallocation (Object => T_Cellule, Name => T_LCA);
@@ -145,4 +146,4 @@ package body LCA is
 	end Pour_Chaque;
 
 
-end LCA;
+end Table_Routage;
