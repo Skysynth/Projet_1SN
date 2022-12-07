@@ -8,10 +8,6 @@ with tools; use tools;
 procedure Main is
 
     iterateur : Integer;
-    is_opt : Boolean := True;
-
-    opt : Unbounded_String;
-    arg : Unbounded_String;
 
     param : T_Param;
 
@@ -42,8 +38,6 @@ begin
     begin
 
         while iterateur <= Argument_Count loop
-
-            if is_opt then
 
                 if Argument(iterateur)(1) = '-' and Argument(iterateur)'Length = 2 then
 
@@ -82,8 +76,6 @@ begin
                 else
                     raise Option_non_valide_exception;
                 end if;
-
-            end if;
 
         end loop;
 
