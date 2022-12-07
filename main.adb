@@ -26,9 +26,9 @@ procedure Main is
         Put_Line ("   -p FIFO|LRU|LFU : Défini la politique utilisée pour le cache. Valeur par défaut = FIFO");
         Put_Line ("   -s : Afficher les statistiques. Activée par défaut");
         Put_Line ("   -S : Ne pas afficher les statistiques. Désactivée par défaut");
-        Put_Line ("   -t <fichier> : Défini le nom du fichier contenant les routes de la table de routage. Valeur par défaut = table.txt");
-        Put_Line ("   -p <fichier> : Défini le nom du fichier contenant les paquets à router. Valeur par défaut = paquets.txt");
-        Put_Line ("   -r <fichier> : Défini le nom du fichier contenant les résultats. Valeur par défaut = resultats.txt");
+        Put_Line ("   -t <fichier> : Définit le nom du fichier contenant les routes de la table de routage. Valeur par défaut = table.txt");
+        Put_Line ("   -p <fichier> : Définit le nom du fichier contenant les paquets à router. Valeur par défaut = paquets.txt");
+        Put_Line ("   -r <fichier> : Définit le nom du fichier contenant les résultats. Valeur par défaut = resultats.txt");
         New_Line;
     end Afficher_Usage;
 
