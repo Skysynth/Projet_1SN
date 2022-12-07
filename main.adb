@@ -90,8 +90,8 @@ begin
         Afficher_Param(param);
 
     exception
-        when others => Afficher_Usage;
 
+        when others => Afficher_Usage;
     end;
 
 

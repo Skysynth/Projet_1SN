@@ -6,12 +6,12 @@ package tools is
 
     type T_Param is record
 
-        taille_cache : Integer; -- Parametre -c
-        afficher_stats : Boolean; -- Parametre -s et -S
-        file_table_routage : Unbounded_String; -- Parametre -t
-        file_paquets : Unbounded_String; -- Parametre -p
-        file_resultats : Unbounded_String; -- Parametre -r
-        politique : T_Politique; -- Parametre -P
+        taille_cache : Integer; -- Parametre [-c]
+        afficher_stats : Boolean; -- Parametre [-s] et [-S]
+        file_table_routage : Unbounded_String; -- Parametre [-t]
+        file_paquets : Unbounded_String; -- Parametre [-p]
+        file_resultats : Unbounded_String; -- Parametre [-r]
+        politique : T_Politique; -- Parametre [-P]
 
     end record;
 
