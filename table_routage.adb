@@ -21,7 +21,6 @@ package body Table_Routage is
                 
             N := length(ligne);
                 
-                
             while j <= N and then Element(ligne, j) /= '.' loop
                 
                 mot := mot & Element(ligne, j);
