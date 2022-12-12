@@ -15,7 +15,7 @@ package tools is
 
     end record;
 
-    type T_Adresse_IP is private;
+    type T_Adresse_IP is mod 2 ** 32;
 
     -- function is_Param_Valid(parametre : Character) return Boolean;
 
@@ -24,9 +24,5 @@ package tools is
     function Initialiser return T_Param;
 
     procedure Afficher_Param(param : T_Param);
-
-private
-
-    type T_Adresse_IP is mod 2 ** 32;
 
 end tools;
