@@ -30,8 +30,55 @@ procedure Test_Table_Routage is
     end Afficher_Usage;
 
 
-begin
+    function Convert_Unbounded_String_To_T_Adresse_IP(ligne : Unbounded_String) return T_Adresse_IP is
+        Adresse_Converti : T_Adresse_IP := 0;
+        mot : Unbounded_String;
+        N : Integer;
+        j : Integer := 1;
+    begin
+            
+        for i in 0..3 loop 
+            mot := Null_Unbounded_String;
+                
+            N := length(ligne);
+                
+            while j <= N and then Element(ligne, j) /= '.' loop
+                
+                mot := mot & Element(ligne, j);
+                j := j+1;
+                    
+            end loop;
+                
+            -- Enregistrer la destination et le masque une fois converti dans le routeur et enregistrer l'interface dans le routeur
+              
+            Adresse_Converti := Adresse_Converti + T_Adresse_IP'Value(To_String(mot)) * (2 ** (24-8*i));
+            
+            j := j + 1;
+            
+        end loop;
+            
+        return Adresse_Converti;
+            
+    end Convert_Unbounded_String_To_T_Adresse_IP;
 
+
+    procedure Tester_Initialiser() is 
+        Table_Routage : T_Table_Routage;
+        begin 
+        pragma Assert (Est_Vide(Table_Routage));
+        pragma Assert (Taille(Table_Routage) = 0); 
+        Initialiser(param, Table_Routage); 
+        pragma Assert (not(Est_Vide(Table_Routage)));
+
+
+
+
+        end Tester_Initialiser; 
+
+
+
+begin
+    Tester_Initialiser();
 
     param := Initialiser;
     iterateur := 1;
