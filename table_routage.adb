@@ -158,7 +158,7 @@ package body Table_Routage is
         
         table_temp := Table_Routage;
         
-        -- Parcourir tous les potentiels candidats
+        -- Parcourir les adresses ip
         while not Est_Vide(table_temp) loop
             -- Adresse correspond ?
             if adresse_Correspond(Adresse_IP, table_temp.all.Adresse, table_temp.all.Masque) then
@@ -176,12 +176,13 @@ package body Table_Routage is
                 
         end loop;
         
-        
-        
-        
         -- Choisir l'interface correspondant avec le plus grand masque
+        while Table_Routage.All.Masque /= masque_max loop
+            Table_Routage := Table_Routage.All.Suivant;
+        end loop;
         
-        
+    interface_max := Table_Routage.All.Sortie;
+
     end Get_Interface;
     
     
