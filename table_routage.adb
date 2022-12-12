@@ -141,19 +141,18 @@ package body Table_Routage is
 
 	end Enregistrer;
 
---Savoir si une cle est présente dans une SDA.
-	function Cle_Presente (Sda : in T_LCA ; Cle : in T_Cle) return Boolean is
-
-	
-
-    end Taille;
 
 
-    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; adresse : T_Adresse_IP) is
+    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; adresse : T_Adresse_IP ; ) is
 
     begin
-		
-        null;
+		if Est_Vide(Table_Routage) then
+            Table_Routage := new T_Cellule'(Cle, Donnee, Table_Routage);
+        else
+            Enregistrer(Sda.all.Suivant, Cle, Donnee);
+        end if;
+
+	end Enregistrer;
     end Enregistrer;
 
     --Savoir si une clé est présente dans une SDA.
@@ -179,7 +178,7 @@ package body Table_Routage is
     end Supprimer;
 
 
-	procedure Vider (Sda : in out T_LCA) is
+	procedure Vider (Sda : in out T_Table_Routage) is
 	begin
 		if not(Est_Vide(Sda)) then
 			Vider(Sda.all.Suivant); -- .all permet d'acceder au contenu de l'adresse que pointe le pointeur  
@@ -190,13 +189,6 @@ package body Table_Routage is
 		
 	end Vider;
 
-
-    procedure Pour_Chaque (Table_Routage : in T_Table_Routage) is
-	
-    begin
-        null;
-			
-    end Pour_Chaque;
 
 
 end Table_Routage;

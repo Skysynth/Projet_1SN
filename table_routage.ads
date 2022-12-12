@@ -13,7 +13,7 @@ package Table_Routage is
     procedure Afficher(Table_Routage : in T_Table_Routage);
     
     -- Initialiser une table de routage.  La table de routage est vide.
-    procedure Initialiser(param : in T_Param; table_routage: out T_Table_Routage);
+    procedure Initialiser(param : in T_Param; Table_routage: out T_Table_Routage);
 
 
     -- Est-ce qu'une Table_Routage est vide ?
@@ -32,28 +32,21 @@ package Table_Routage is
 
 	-- Supprimer la Donnee associee a une Cle dans une Table_Routage.
 	-- Exception : Cle_Absente_Exception si Cle n'est pas utilisee dans la Table_Routage
-	procedure Supprimer (Table_Routage : in out T_Table_Routage ; Cle : in T_Cle) with
+	procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : in T_Adresse_IP) with
 		Post =>  Taille (Table_Routage) = Taille (Table_Routage)'Old - 1 -- un element de moins
-			and not Cle_Presente (Table_Routage, Cle);         -- la cle a ete supprimee
+			and not Cle_Presente (Table_Routage, adresse);         -- la cle a ete supprimee
 
-
-	-- Savoir si une Cle est presente dans une Table_Routage.
-	function Cle_Presente (Table_Routage : in T_Table_Routage ; Cle : in T_Cle) return Boolean;
 
 
 	-- Obtenir la donnee associee à une Cle dans la Table_Routage.
 	-- Exception : Cle_Absente_Exception si Cle n'est pas utilisee dans l'Table_Routage
-	function La_Donnee (Table_Routage : in T_Table_Routage ; Cle : in T_Cle) return T_Donnee;
+	function La_Donnee (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return T_Donnee;
 
 
 	-- Supprimer tous les elements d'une Table_Routage.
 	procedure Vider (Table_Routage : in out T_Table_Routage) with
 		Post => Est_Vide (Table_Routage);
 
-
-    -- Appliquer un traitement (Traiter) pour chaque couple d'une Table_Routage
-        with procedure Traiter (Donnee: in T_Adresse_IP);
-    procedure Pour_Chaque (Table_Routage : in T_Table_Routage);
 
 
 private
