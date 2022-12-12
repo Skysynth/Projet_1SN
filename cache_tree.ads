@@ -5,12 +5,15 @@ package cache_tree is
     type T_Cache is limited private;
 
     procedure Initialiser(Cache: out T_Cache) with
-        post Est_Vide(Cache);
+        post => Est_Vide(Cache);
 
-    function Est_Vide (Sda : T_LCA) return Boolean;
+    function Est_Vide (Cache : T_Cache) return Boolean;
 
-    function Taille (Sda : in T_LCA) return Integer with
-		Post => Taille'Result >= 0 and (Taille'Result = 0) = Est_Vide (Sda);
+    procedure Taille_Cache (Cache : in out T_Cache) with
+		Post => (Taille /= 0 and not Est_Vide(Cache)) and (Taille == 0 and Est_Vide(Cache));
+
+    procedure Vider (Cache : in out T_Cache) with
+		Post => Est_Vide (Cache);
 
 private
 

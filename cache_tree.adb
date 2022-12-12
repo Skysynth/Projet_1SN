@@ -5,33 +5,42 @@ with Ada.Unchecked_Deallocation;
 package body cache_tree is
 
 	procedure Free is
-		new Ada.Unchecked_Deallocation (Object => T_Cellule, Name => T_Cache);
+		new Ada.Unchecked_Deallocation(Object => T_Cache_Cellule, Name => T_Cache);
 
-	procedure Initialiser (Sda: out T_Cache) is
+	procedure Initialiser(Sda : out T_Cache) is
 	begin
 		Cache := Null;
 	end Initialiser;
 
 
-	function Est_Vide (Sda : Cache) return Boolean is
+	function Est_Vide(Cache : in T_Cache) return Boolean is
 	begin
 		return (Cache = Null);
 	end;
 
 
-	function Taille (Sda : in T_LCA) return Integer is
-		Result: Integer;
+	procedure Taille_Cache(Cache : in T_Cache; Taille: in Integer) return Integer is
 	begin
-		if Est_Vide (Sda) then
-			-- Le pointeur est vide donc sa taille vaut 0
-		 	Result := 0;
+		if Est_Vide(Cache) then
+			Cache := new T_Cache_Cellule(Taille, Adresse, Masque, Interface, Null, Null);
 		else
-			-- Récursivité sur la taille en ajoutant + 1 à chaque itération
-			Result := Taille (Sda.All.Suivant) + 1;
+			Null;
 		end if;
 
-		return Result;
-	end Taille;
+        Taille_Cache(Cache.Gauche, Taille - 1);
+        Taille_Cache(Cache.Droit, Taille - 1);
+	end Taille_Cache;
+
+    procedure Vider(Cache : in out T_Cache) is
+	begin
+        if Est_Vide(Cache) then
+            Null;
+        else
+            Vider(Cache.All.Gauche);
+            Vider(Cache.All.Droit);
+            Free(Cache.All);
+        end if;
+	end Vider;
 
 
 end cache_tree;
