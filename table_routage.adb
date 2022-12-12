@@ -227,7 +227,7 @@ package body Table_Routage is
         else 
             return false;
         end if; 
-    end Cle_Presente;
+    end Adresse_Presente;
 
 
     function La_Donnee (Table_Routage : in T_Table_Routage ; adresse : T_Adresse_IP) return T_Adresse_IP is
