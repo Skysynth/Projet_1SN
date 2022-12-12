@@ -1,5 +1,4 @@
 with Ada.Text_IO;           use Ada.Text_IO;
--- with Ada.Integer_Text_IO;   use Ada.Integer_Text_IO;
 with Ada.Command_Line;      use Ada.Command_Line;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with routeur_exceptions;    use routeur_exceptions;
@@ -53,14 +52,13 @@ begin
       end if;
    end Cache_Plein;
 
-   procedure Supprimer(Cache_lca : T_CACHE_LCA) is
+   procedure Supprimer(Cache_lca : in out T_CACHE_LCA, Politique : String) is
    begin
-      case expression is
-         when =>;
-            when =>;
-            when =>;
-            when others =>;
-              end case;
+      case Politique is
+         when 'FIFO' => Supprimer_FIFO(Cache_lca : in out T_CACHE_LCA);
+         when 'LRU' => Supprimer_LRU(Cache_lca : in out T_CACHE_LCA);
+         when others => Supprimer_LFU(Cache_lca : in out T_CACHE_LCA);
+      end case;
    end Supprimer;
 
    function Taille (Cache_lca : in T_CACHE_LCA) return Integer is
