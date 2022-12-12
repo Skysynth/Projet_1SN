@@ -51,7 +51,9 @@ package CACHE_LCA is
 
 private
 
-	type T_Cellule;
+   type T_Cellule;
+
+   type T_Politique is Character;
 
 	type T_CACHE_LCA is access T_Cellule;
 

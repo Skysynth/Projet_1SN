@@ -19,83 +19,68 @@ begin
 		Cache_lca := null;
    end Initialiser;
 
-   function Est_Vide (Cache_lca : T_CACHE_LCA) return Boolean is
+   function Est_Vide(Cache_lca : T_CACHE_LCA) return Boolean is
 	begin
 		return Cache_lca = null;
    end;
 
-   procedure Enregistrer (Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Iface : String) is
+   procedure Ajouter(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Table_routage : in T_TABLE_ROUTAGE) is
    begin
-      if Cache_lca = null then
-         Cache_lca := new T_Cellule'(Adresse, Masque, Iface, null);
+      if Cache_Plein then
+         Supprimer(Cache_lca);
       else
-         if Cache_lca.all.Adresse = Adresse then
-            Cache_lca.all.Masque := Masque;
-            Cache_lca.all.Iface := Iface;
-         else
-            Enregistrer (Cache_lca.all.Suivant, Adresse, Masque, Iface);
-         end if;
+         null;
       end if;
-   end Enregistrer;
-
-   function Adresse_Presente (Cache_lca : in T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return Boolean is
-      Cache_lca0 : T_LCA;
-   begin
-      Cache_lca0 := Cache_lca;
-      while Cache_lca0 /= null loop
-         if Cache_lca0.all.Adresse = Adresse then
-            return True;
-         else
-            null;
-         end if;
-         Cache_lca0 := Cache_lca0.all.Suivant;
-      end loop;
-      return False;
-   end;
-
-   function Le_Masque (Cache_lca : in T_CACHE_LCA ; Masque : in T_Masque) return T_Masque is
-   begin
-      if Cache_lca = null then
-         raise Adresse_Absente_Exception with "L'adresse n'est pas présente";
-      elsif Cache_lca.all.Masque = Masque then
-         return Cache_lca.all.Masque;
+      if not Adresse_Presente(Cache_lca, Adresse) then
+         Ajouter_Adresse(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Table_routage : in T_TABLE_ROUTAGE);
       else
-         return Le_Masque(Cache_lca.all.Suivant, Masque);
+         null;
       end if;
-   end Le_Masque;
+   end Ajouter;
 
-   procedure Supprimer (Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) is
-      Cache_lca0 : T_CACHE_LCA;
+   procedure Adresse_Presente(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) is
    begin
-      if Cache_lca = null then
-         raise Adresse_Absente_Exception with "L'adresse n'est pas présente2";
-      elsif Cache_lca.all.Adresse = Adresse then
-         Cache_lca0 := Cache_lca;
-         Cache_lca := Cache_lca.all.Suivant;
-         Free(Cache_lca0);
+   end Adresse_Presente;
+
+   procedure Cache_Plein(Cache_lca : in T_CACHE_LCA) is
+      Plein : Boolean;
+   begin
+      Plein := False
+      if Taille(Cache_lca) > Taille_Max_Cache then
+         Plein := True;
       else
-         Supprimer(Cache_lca.all.Suivant, Adresse);
+         null;
       end if;
+   end Cache_Plein;
+
+   procedure Supprimer(Cache_lca : T_CACHE_LCA) is
+   begin
+      case expression is
+         when =>;
+            when =>;
+            when =>;
+            when others =>;
+              end case;
    end Supprimer;
 
-   procedure Vider (Cache_lca : in out T_CACHE_LCA) is
-	begin
-		if Cache_lca /= Null then
-		    Vider(Cache_lca.all.Suivant);
-		    Free(Cache_lca);
-      end if;
-   end Vider;
+   function Taille (Cache_lca : in T_CACHE_LCA) return Integer is
+      n : integer;
+      Cache_lca0 : T_CACHE_LCA;
+   begin
+      n := 0;
+      Cache_lca0 := Cache_lca;
+      while Cache_lca0 /= null loop
+         Cache_lca0 := Cache_lca0.all.Suivant;
+         n := n + 1;
+      end loop;
+      return n;
+	end Taille;
 
-   procedure Pour_Chaque (Cache_lca : in T_CACHE_LCA) is
+   procedure Ajouter_Adresse(Cache_lca : T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Table_routage : in T_TABLE_ROUTAGE) is
    begin
       if Cache_lca = null then
-         null;
+         Cache_lca := new T_Cellule'(Adresse, Table_routage.Masque, Table_routage.Iface, null);
       else
-         Pour_Chaque(Cache_lca.all.Suivant);
-         begin
-            Traiter(Cache_lca.all.Cle, Cache_lca.all.Masque);
-         exception
-            when others => Put_line("Erreur_Traitement");
-         end;
+         Enregistrer(Cache_lca.all.Suivant, Adresse, Table_routage);
       end if;
-	end Pour_Chaque;
+   end Ajouter_Adresse;
