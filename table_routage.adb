@@ -2,6 +2,7 @@ with Ada.Text_IO;            use Ada.Text_IO;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Unchecked_Deallocation;
 with tools; use tools;
+with Routeur_Exceptions;    use Routeur_Exceptions;
 
 -- R1 : Concevoir et initialiser un routeur
 package body Table_Routage is
@@ -164,9 +165,20 @@ package body Table_Routage is
 
 
     procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : T_Adresse_IP) is
+    Table_A_Supp : T_Table_Routage;
+
     begin
-        null;
-    end Supprimer;
+        if Est_Vide(Table_Routage) then
+            raise Adresse_Absente_Exception;
+        elsif Table_Routage.all.Adresse = adresse then
+            Table_A_Supp := Table_Routage;
+            Table_Routage:= Table_Routage.all.Suivant;
+            Free(Table_A_Supp);
+        else
+            Supprimer(Table_Routage.all.Suivant, adresse);
+        end if;
+	end Supprimer;
+
 
 
 	procedure Vider (Table_Routage : in out T_Table_Routage) is
