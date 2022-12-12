@@ -34,7 +34,10 @@ package Table_Routage is
 	-- Exception : Cle_Absente_Exception si Cle n'est pas utilisee dans la Table_Routage
 	procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : in T_Adresse_IP) with
 		Post =>  Taille (Table_Routage) = Taille (Table_Routage)'Old - 1 -- un element de moins
-			and not Adresse_Presente (Table_Routage, adresse);         -- la cle a ete supprimee
+			and not Adresse_Presente(Table_Routage, adresse);         -- la cle a ete supprimee
+
+
+    function Adresse_Presente (Sda : in T_LCA ; adresse : in T_Adresse_IP) return Boolean;
 
 
 

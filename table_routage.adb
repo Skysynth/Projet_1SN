@@ -139,11 +139,11 @@ package body Table_Routage is
             return Taille(Table_Routage.all.Suivant) + 1;
         end if;
 
-	end Enregistrer;
+	end Taille;
 
 
 
-    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : T_Adresse_IP ; Masque : T_Adresse_IP; Sortie : Unbounded_String) is
+    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : in T_Adresse_IP ; Masque : in T_Adresse_IP; Sortie : Unbounded_String) is
 
     begin
 		if Est_Vide(Table_Routage) then
@@ -154,6 +154,21 @@ package body Table_Routage is
 
 	end Enregistrer;
 
+    function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean is
+
+	
+	begin	
+	
+		if not(Est_Vide(Table_Routage)) then 
+			if Table_Routage.all.Adresse = adresse then 
+				return true;
+			else 
+				return Adresse_Presente(Table_Routage.all.Suivant, adresse);
+			end if;
+		else 
+			return false;
+		end if; 
+	end Cle_Presente;
 
 
     function La_Donnee (Table_Routage : in T_Table_Routage ; adresse : T_Adresse_IP) return T_Adresse_IP is
