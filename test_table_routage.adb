@@ -8,7 +8,6 @@ with Table_Routage; use Table_Routage;
 
 procedure Test_Table_Routage is
 
-    iterateur : Integer;
     table : T_Table_Routage;
     param : T_Param;
 
@@ -56,92 +55,38 @@ procedure Test_Table_Routage is
             j := j + 1;
             
         end loop;
-            
         return Adresse_Converti;
             
     end Convert_Unbounded_String_To_T_Adresse_IP;
 
 
-    procedure Tester_Initialiser() is 
+    procedure Tester_Initialiser is 
         Table_Routage : T_Table_Routage;
-        begin 
+    begin 
         pragma Assert (Est_Vide(Table_Routage));
         pragma Assert (Taille(Table_Routage) = 0); 
         Initialiser(param, Table_Routage); 
         pragma Assert (not(Est_Vide(Table_Routage)));
 
+    end Tester_Initialiser; 
 
-
-
-        end Tester_Initialiser; 
-
-
+    
+    procedure Tester_Get_Taille_Binaire is
+        adresse : T_Adresse_IP;
+    begin 
+        adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0"));
+        pragma Assert (Get_taille_binaire(adresse) = 0);
+        pragma Assert (Get_taille_binaire(1) = -5);
+        pragma Assert (Get_taille_binaire(255) = 8);
+        pragma Assert (Get_taille_binaire(255) = 8);
+        
+        
+        Put_Line("Tests 'Get Taille Binaire' réussis !");
+        
+    end Tester_Get_Taille_Binaire;
+    
 
 begin
-    Tester_Initialiser();
-
-    param := Initialiser;
-    iterateur := 1;
-
-    begin
-
-        while iterateur <= Argument_Count loop
-
-            if Argument(iterateur)(1) = '-' and Argument(iterateur)'Length = 2 then
-
-                case Argument(iterateur)(2) is
-
-                    when 'c' =>
-                        param.taille_cache := Integer'Value(Argument(iterateur + 1));
-                        iterateur := iterateur + 1;
-
-                    when 'P' =>
-                        param.politique := T_Politique'Value(Argument(iterateur + 1));
-                        iterateur := iterateur + 1;
-
-                    when 's' => param.afficher_stats := True;
-
-                    when 'S' => param.afficher_stats := False;
-
-                    when 't' =>
-                        param.file_table_routage := To_Unbounded_String(Argument(iterateur + 1));
-                        iterateur := iterateur + 1;
-
-                    when 'p' =>
-                        param.file_paquets := To_Unbounded_String(Argument(iterateur + 1));
-                        iterateur := iterateur + 1;
-
-                    when 'r' =>
-                        param.file_resultats := To_Unbounded_String(Argument(iterateur + 1));
-                        iterateur := iterateur + 1;
-
-                    when others => raise Option_non_valide_exception;
-
-                end case;
-
-                iterateur := iterateur + 1;
-
-            else
-                raise Option_non_valide_exception;
-            end if;
-
-        end loop;
-
-        Afficher_Param(param);
-
-        Put_Line("Initialisation de la table de routage");
-
-        Initialiser(param         =>  param,
-                    table_routage => table);
-
-        Afficher(Table_Routage => table);
-
-        --    exception
-
-        --      when others => Afficher_Usage;
-    end;
-
-
-
-
+    Tester_Get_Taille_Binaire;
+    
 end Test_Table_Routage;

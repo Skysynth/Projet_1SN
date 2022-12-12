@@ -123,27 +123,22 @@ package body Table_Routage is
     end Initialiser;
 
     function Get_taille_binaire(adresse : T_Adresse_IP) return Integer is
-        
-        compteur : Integer := 0;
-        
         exposant : Integer := 31;
-        
         resultat : Integer := 1;
-        
     begin
-        
-        while resultat /= 0 loop
-            
-            resultat := (2 ** exposant) and adresse;
-            
-            compteur := compteur + 1;
+        while (adresse and 2 ** exposant) /= 0 loop
             exposant := exposant - 1;
-            
         end loop;
         
-        return compteur;
+        return 31 - exposant;
         
     end Get_taille_binaire;
+    
+    function Adresse_Correspond(adresse_test : T_Adresse_IP; Adresse_base : T_Adresse_IP; Masque_base : T_Adresse_IP) return Boolean is
+        
+    begin
+        return true;
+    end Adresse_Correspond;
     
     
     -- retourne l'interface associée à cette adresse IP
@@ -152,7 +147,7 @@ package body Table_Routage is
         table_temp : T_Table_Routage;
         
         interface_max : Unbounded_String;
-        masque_max : T_Adresse_IP := 0;
+        taille_masque_max : Integer := 0;
         
     begin
         
@@ -161,10 +156,10 @@ package body Table_Routage is
         -- Parcourir les adresses ip
         while not Est_Vide(table_temp) loop
             -- Adresse correspond ?
-            if adresse_Correspond(Adresse_IP, table_temp.all.Adresse, table_temp.all.Masque) then
+            if Adresse_Correspond(Adresse_IP, table_temp.all.Adresse, table_temp.all.Masque) then
                 -- Masque plus grand que l'ancien ?
-                if get_taille_binaire(table_temp.all.Masque) > masque_max then
-                    masque_max := table_temp.all.Masque;
+                if Get_taille_binaire(table_temp.all.Masque) > taille_masque_max then
+                    taille_masque_max := Get_taille_binaire(table_temp.all.Masque);
                 else
                     null;
                 end if;
@@ -215,7 +210,6 @@ package body Table_Routage is
 
     function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean is
 
-	
     begin	
 	
         if not(Est_Vide(Table_Routage)) then 
@@ -228,15 +222,6 @@ package body Table_Routage is
             return false;
         end if; 
     end Adresse_Presente;
-
-
-    function La_Donnee (Table_Routage : in T_Table_Routage ; adresse : T_Adresse_IP) return T_Adresse_IP is
-	
-    begin
-        return 0;
-	
-    end La_Donnee;
-
 
     procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : T_Adresse_IP) is
         Table_A_Supp : T_Table_Routage;
