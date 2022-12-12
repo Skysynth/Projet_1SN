@@ -40,7 +40,7 @@ package Table_Routage is
 			and not Adresse_Presente(Table_Routage, adresse);         -- la cle a ete supprimee
 
 
-    function Adresse_Presente (Sda : in T_LCA ; adresse : in T_Adresse_IP) return Boolean;
+    function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean;
 
 
 
