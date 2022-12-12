@@ -20,32 +20,35 @@ package Table_Routage is
     function Est_Vide (Table_Routage : in T_Table_Routage) return Boolean;
 
 
-    -- Obtenir le nombre d'�l�ments d'une Table_Routage. 
-    function Taille (Table_Routage : in T_Table_Routage) return Integer with
-        Post => Taille'Result >= 0
-        and (Taille'Result = 0) = Est_Vide (Table_Routage);
+	-- Obtenir le nombre d'elements d'une Table_Routage. 
+	function Taille (Table_Routage : in T_Table_Routage) return Integer with
+		Post => Taille'Result >= 0
+			and (Taille'Result = 0) = Est_Vide (Table_Routage);
 
 
     -- Enregistrer une Donnee associee a une Cle dans une Table_Routage.
     -- Si la cle est deja presente dans la Table_Routage, sa donnee est changee.
     procedure Enregistrer (Table_Routage : in out T_Table_Routage ; adresse : T_Adresse_IP);
 
-    -- Supprimer la Donnee associee a une Cle dans une Table_Routage.
-    -- Exception : Cle_Absente_Exception si Cle n'est pas utilisee dans la Table_Routage
-    procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : T_Adresse_IP);
+	-- Supprimer la Donnee associee a une Cle dans une Table_Routage.
+	-- Exception : Cle_Absente_Exception si Cle n'est pas utilisee dans la Table_Routage
+	procedure Supprimer (Table_Routage : in out T_Table_Routage ; Cle : in T_Cle) with
+		Post =>  Taille (Table_Routage) = Taille (Table_Routage)'Old - 1 -- un element de moins
+			and not Cle_Presente (Table_Routage, Cle);         -- la cle a ete supprimee
 
 
-    -- Savoir si une Cle est presente dans une Table_Routage.
-    function Cle_Presente (Table_Routage : in T_Table_Routage ; adresse : T_Adresse_IP) return Boolean;
+	-- Savoir si une Cle est presente dans une Table_Routage.
+	function Cle_Presente (Table_Routage : in T_Table_Routage ; Cle : in T_Cle) return Boolean;
 
 
-    -- Obtenir la donnee associee a une Cle dans la Table_Routage.
-    function La_Donnee (Table_Routage : in T_Table_Routage ; adresse : T_Adresse_IP) return T_Adresse_IP;
+	-- Obtenir la donnee associee à une Cle dans la Table_Routage.
+	-- Exception : Cle_Absente_Exception si Cle n'est pas utilisee dans l'Table_Routage
+	function La_Donnee (Table_Routage : in T_Table_Routage ; Cle : in T_Cle) return T_Donnee;
 
 
-    -- Supprimer tous les elements d'une Table_Routage.
-    procedure Vider (Table_Routage : in out T_Table_Routage) with
-        Post => Est_Vide (Table_Routage);
+	-- Supprimer tous les elements d'une Table_Routage.
+	procedure Vider (Table_Routage : in out T_Table_Routage) with
+		Post => Est_Vide (Table_Routage);
 
 
     -- Appliquer un traitement (Traiter) pour chaque couple d'une Table_Routage

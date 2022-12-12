@@ -137,6 +137,12 @@ package body Table_Routage is
         else 
             return Taille(Table_Routage.all.Suivant) + 1;
         end if;
+
+	end Enregistrer;
+
+--Savoir si une cle est présente dans une SDA.
+	function Cle_Presente (Sda : in T_LCA ; Cle : in T_Cle) return Boolean is
+
 	
 
     end Taille;
@@ -172,10 +178,16 @@ package body Table_Routage is
     end Supprimer;
 
 
-    procedure Vider (Table_Routage : in out T_Table_Routage) is
-    begin
-        null;
-    end Vider;
+	procedure Vider (Sda : in out T_LCA) is
+	begin
+		if not(Est_Vide(Sda)) then
+			Vider(Sda.all.Suivant); -- .all permet d'acceder au contenu de l'adresse que pointe le pointeur  
+			Free (Sda);
+		else
+			Null;
+		end if;
+		
+	end Vider;
 
 
     procedure Pour_Chaque (Table_Routage : in T_Table_Routage) is
