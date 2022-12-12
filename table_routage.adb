@@ -160,17 +160,16 @@ package body Table_Routage is
         
         -- Parcourir tous les potentiels candidats
         while not Est_Vide(table_temp) loop
-            
             -- Adresse correspond ?
             if adresse_Correspond(Adresse_IP, table_temp.all.Adresse, table_temp.all.Masque) then
-                
                 -- Masque plus grand que l'ancien ?
                 if get_taille_binaire(table_temp.all.Masque) > masque_max then
-                    
+                    masque_max := table_temp.all.Masque;
+                else
+                    null;
                 end if;
-                
-                    
-                
+            else
+                null;
             end if;
             
             table_temp := table_temp.all.Suivant;
