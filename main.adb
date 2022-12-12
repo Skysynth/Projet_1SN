@@ -4,6 +4,7 @@ with Ada.Command_Line; use Ada.Command_Line;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with routeur_exceptions; use routeur_exceptions;
 with tools; use tools;
+with Table_Routage; use Table_Routage;
 
 procedure Main is
 

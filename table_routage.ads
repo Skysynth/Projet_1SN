@@ -15,7 +15,7 @@ package Table_Routage is
     -- Initialiser une table de routage.  La table de routage est vide.
     procedure Initialiser(param : in T_Param; Table_routage: out T_Table_Routage);
     
-    function Get_taille_binaire(adresse : T_Adresse_IP) return Integer
+    function Get_taille_binaire(adresse : T_Adresse_IP) return Integer;
         
     function Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage) return Unbounded_String;
 
@@ -42,18 +42,9 @@ package Table_Routage is
 
     function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean;
 
-
-
-	-- Obtenir la donnee associee à une Cle dans la Table_Routage.
-	-- Exception : Cle_Absente_Exception si Cle n'est pas utilisee dans l'Table_Routage
-	function La_Donnee (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return T_Donnee;
-
-
 	-- Supprimer tous les elements d'une Table_Routage.
 	procedure Vider (Table_Routage : in out T_Table_Routage) with
 		Post => Est_Vide (Table_Routage);
-
-
 
 private
 
