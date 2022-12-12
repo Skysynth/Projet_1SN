@@ -24,7 +24,7 @@ begin
 		return Cache_lca = null;
    end;
 
-   procedure Enregistrer (Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Iface : T_IFACE) is
+   procedure Enregistrer (Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Iface : String) is
    begin
       if Cache_lca = null then
          Cache_lca := new T_Cellule'(Adresse, Masque, Iface, null);
@@ -38,7 +38,7 @@ begin
       end if;
    end Enregistrer;
 
-   function Adresse_Presente (Cache_lca : in T_CACHE_LCA ; Adresse : in T_Adresse) return Boolean is
+   function Adresse_Presente (Cache_lca : in T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return Boolean is
       Cache_lca0 : T_LCA;
    begin
       Cache_lca0 := Cache_lca;
@@ -64,7 +64,7 @@ begin
       end if;
    end Le_Masque;
 
-   procedure Supprimer (Cache_lca : in out T_CACHE_LCA ; Adresse : in T_Adresse) is
+   procedure Supprimer (Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) is
       Cache_lca0 : T_CACHE_LCA;
    begin
       if Cache_lca = null then
