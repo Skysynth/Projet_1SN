@@ -122,6 +122,70 @@ package body Table_Routage is
         
     end Initialiser;
 
+    function Get_taille_binaire(adresse : T_Adresse_IP) return Integer is
+        
+        compteur : Integer := 0;
+        
+        exposant : Integer := 31;
+        
+        resultat := 1;
+        
+    begin
+        
+        while resultat /= 0 loop
+            
+            resultat := (2 ** exposant) and adresse;
+            
+            compteur := compteur + 1;
+            exposant := exposant - 1;
+            
+        end loop;
+        
+        return compteur;
+        
+    end Get_taille_binaire;
+    
+    
+    -- retourne l'interface associée à cette adresse IP
+    function Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage) return Unbounded_String is
+        
+        table_temp : T_Table_Routage;
+        
+        interface_max : Unbounded_String;
+        masque_max : T_Adresse_IP := 0;
+        
+    begin
+        
+        table_temp := Table_Routage;
+        
+        -- Parcourir tous les potentiels candidats
+        while not Est_Vide(table_temp) loop
+            
+            -- Adresse correspond ?
+            if adresse_Correspond(Adresse_IP, table_temp.all.Adresse, table_temp.all.Masque) then
+                
+                -- Masque plus grand que l'ancien ?
+                if get_taille_binaire(table_temp.all.Masque) > masque_max then
+                    
+                end if;
+                
+                    
+                
+            end if;
+            
+            table_temp := table_temp.all.Suivant;
+                
+        end loop;
+        
+        
+        
+        
+        -- Choisir l'interface correspondant avec le plus grand masque
+        
+        
+    end Get_Interface;
+    
+    
 
     function Est_Vide (Table_Routage : in T_Table_Routage) return Boolean is
     begin
@@ -139,36 +203,36 @@ package body Table_Routage is
             return Taille(Table_Routage.all.Suivant) + 1;
         end if;
 
-	end Taille;
+    end Taille;
 
 
 
     procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : in T_Adresse_IP ; Masque : in T_Adresse_IP; Sortie : Unbounded_String) is
 
     begin
-		if Est_Vide(Table_Routage) then
+        if Est_Vide(Table_Routage) then
             Table_Routage := new T_Cellule'(Adresse, Masque,Sortie, Table_Routage);
         else
             Enregistrer(Table_Routage.all.Suivant, Adresse, Masque, Sortie);
         end if;
 
-	end Enregistrer;
+    end Enregistrer;
 
     function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean is
 
 	
-	begin	
+    begin	
 	
-		if not(Est_Vide(Table_Routage)) then 
-			if Table_Routage.all.Adresse = adresse then 
-				return true;
-			else 
-				return Adresse_Presente(Table_Routage.all.Suivant, adresse);
-			end if;
-		else 
-			return false;
-		end if; 
-	end Cle_Presente;
+        if not(Est_Vide(Table_Routage)) then 
+            if Table_Routage.all.Adresse = adresse then 
+                return true;
+            else 
+                return Adresse_Presente(Table_Routage.all.Suivant, adresse);
+            end if;
+        else 
+            return false;
+        end if; 
+    end Cle_Presente;
 
 
     function La_Donnee (Table_Routage : in T_Table_Routage ; adresse : T_Adresse_IP) return T_Adresse_IP is
@@ -180,7 +244,7 @@ package body Table_Routage is
 
 
     procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : T_Adresse_IP) is
-    Table_A_Supp : T_Table_Routage;
+        Table_A_Supp : T_Table_Routage;
 
     begin
         if Est_Vide(Table_Routage) then
@@ -192,20 +256,20 @@ package body Table_Routage is
         else
             Supprimer(Table_Routage.all.Suivant, adresse);
         end if;
-	end Supprimer;
+    end Supprimer;
 
 
 
-	procedure Vider (Table_Routage : in out T_Table_Routage) is
-	begin
-		if not(Est_Vide(Table_Routage)) then
-			Vider(Table_Routage.all.Suivant); -- .all permet d'acceder au contenu de l'adresse que pointe le pointeur  
-			Free (Table_Routage);
-		else
-			Null;
-		end if;
+    procedure Vider (Table_Routage : in out T_Table_Routage) is
+    begin
+        if not(Est_Vide(Table_Routage)) then
+            Vider(Table_Routage.all.Suivant); -- .all permet d'acceder au contenu de l'adresse que pointe le pointeur  
+            Free (Table_Routage);
+        else
+            Null;
+        end if;
 		
-	end Vider;
+    end Vider;
 
 
 end Table_Routage;

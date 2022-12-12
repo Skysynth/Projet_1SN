@@ -14,7 +14,10 @@ package Table_Routage is
     
     -- Initialiser une table de routage.  La table de routage est vide.
     procedure Initialiser(param : in T_Param; Table_routage: out T_Table_Routage);
-
+    
+    function Get_taille_binaire(adresse : T_Adresse_IP) return Integer
+        
+    function Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage) return Unbounded_String;
 
     -- Est-ce qu'une Table_Routage est vide ?
     function Est_Vide (Table_Routage : in T_Table_Routage) return Boolean;
