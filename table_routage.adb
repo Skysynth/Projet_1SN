@@ -21,7 +21,6 @@ package body Table_Routage is
                 
             N := length(ligne);
                 
-                
             while j <= N and then Element(ligne, j) /= '.' loop
                 
                 mot := mot & Element(ligne, j);
@@ -143,17 +142,17 @@ package body Table_Routage is
 
 
 
-    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; adresse : T_Adresse_IP ; ) is
+    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : T_Adresse_IP ; Masque : T_Adresse_IP; Sortie : Unbounded_String) is
 
     begin
 		if Est_Vide(Table_Routage) then
-            Table_Routage := new T_Cellule'(Cle, Donnee, Table_Routage);
+            Table_Routage := new T_Cellule'(Adresse, Masque,Sortie, Table_Routage);
         else
-            Enregistrer(Sda.all.Suivant, Cle, Donnee);
+            Enregistrer(Table_Routage.all.Suivant,Adresse, Masque,Sortie);
         end if;
 
 	end Enregistrer;
-    end Enregistrer;
+
 
     --Savoir si une clé est présente dans une SDA.
     function Cle_Presente (Table_Routage : in T_Table_Routage ; adresse : T_Adresse_IP) return Boolean is
@@ -188,7 +187,6 @@ package body Table_Routage is
 		end if;
 		
 	end Vider;
-
 
 
 end Table_Routage;
