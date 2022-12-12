@@ -176,6 +176,8 @@ package body Table_Routage is
                 
         end loop;
 
+        return interface_max;
+
     end Get_Interface;
     
     
