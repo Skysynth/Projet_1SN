@@ -176,7 +176,7 @@ package body Table_Routage is
                 
         end loop;
         
-        -- Choisir l'interface correspondant avec le plus grand masque
+        -- Choisir l'interface correspondant avec le plus grand masque (il peut en avoir plusieurs ?)
         while Table_Routage.All.Masque /= masque_max loop
             Table_Routage := Table_Routage.All.Suivant;
         end loop;
