@@ -148,7 +148,7 @@ package body Table_Routage is
 		if Est_Vide(Table_Routage) then
             Table_Routage := new T_Cellule'(Adresse, Masque,Sortie, Table_Routage);
         else
-            Enregistrer(Table_Routage.all.Suivant,Adresse, Masque,Sortie);
+            Enregistrer(Table_Routage.all.Suivant, Adresse, Masque, Sortie);
         end if;
 
 	end Enregistrer;
