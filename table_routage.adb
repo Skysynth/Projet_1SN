@@ -128,7 +128,7 @@ package body Table_Routage is
         
         exposant : Integer := 31;
         
-        resultat := 1;
+        resultat : Integer := 1;
         
     begin
         
