@@ -28,7 +28,7 @@ package Table_Routage is
 
     -- Enregistrer une Donnee associee a une Cle dans une Table_Routage.
     -- Si la cle est deja presente dans la Table_Routage, sa donnee est changee.
-    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; adresse : T_Adresse_IP);
+    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String );
 
 	-- Supprimer la Donnee associee a une Cle dans une Table_Routage.
 	-- Exception : Cle_Absente_Exception si Cle n'est pas utilisee dans la Table_Routage
