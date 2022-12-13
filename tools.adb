@@ -88,4 +88,56 @@ package body tools is
 
     end;
 
+    function Get_taille_binaire(adresse : T_Adresse_IP) return Integer is
+        exposant : Integer := 31;
+        resultat : Integer := 1;
+    begin
+        while (adresse and 2 ** exposant) /= 0 loop
+            exposant := exposant - 1;
+        end loop;
+
+        return 31 - exposant;
+
+    end Get_taille_binaire;
+
+    function Unbounded_String_To_Adresse_IP(ligne : Unbounded_String) return T_Adresse_IP is
+        Adresse_Converti : T_Adresse_IP := 0;
+        mot : Unbounded_String;
+        N : Integer;
+        j : Integer := 1;
+    begin
+
+        for i in 0..3 loop
+            mot := Null_Unbounded_String;
+
+            N := length(ligne);
+
+            while j <= N and then Element(ligne, j) /= '.' loop
+
+                mot := mot & Element(ligne, j);
+                j := j+1;
+
+            end loop;
+
+            -- Enregistrer la destination et le masque une fois converti dans le routeur et enregistrer l'interface dans le routeur
+
+            Adresse_Converti := Adresse_Converti + T_Adresse_IP'Value(To_String(mot)) * (2 ** (24-8*i));
+
+            j := j + 1;
+
+        end loop;
+
+        return Adresse_Converti;
+    end;
+
+    function Adresse_IP_To_String(adresse : T_Adresse_IP) return String is
+
+    begin
+        null; -- a remplir
+
+        return "adresse convertie, fonction a remplir";
+    end;
+
+
+
 end tools;

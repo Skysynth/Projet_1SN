@@ -23,4 +23,10 @@ package tools is
 
     procedure Remplir_Param(param : out T_Param);
 
+    function Get_taille_binaire(adresse : T_Adresse_IP) return Integer;
+
+    function Unbounded_String_To_Adresse_IP(ligne : Unbounded_String) return T_Adresse_IP;
+
+    function Adresse_IP_To_String(adresse : T_Adresse_IP) return String;
+
 end tools;
