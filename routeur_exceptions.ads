@@ -6,4 +6,6 @@ package Routeur_Exceptions is
     Argument_non_valide_exception : Exception;	-- Un argument n'est pas valide
     Adresse_Absente_Exception : Exception;
 
+    COMMAND_FIN_CALLED : Exception;
+
 end Routeur_Exceptions;
