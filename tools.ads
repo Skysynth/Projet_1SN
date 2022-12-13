@@ -17,12 +17,10 @@ package tools is
 
     type T_Adresse_IP is mod 2 ** 32;
 
-    -- function is_Param_Valid(parametre : Character) return Boolean;
-
-    -- function is_File_Valid(file : String) return Boolean;
-
-    function Initialiser return T_Param;
+    function Initialiser_Param return T_Param;
 
     procedure Afficher_Param(param : T_Param);
+
+    procedure Remplir_Param(param : out T_Param);
 
 end tools;

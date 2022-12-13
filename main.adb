@@ -8,9 +8,9 @@ with Table_Routage; use Table_Routage;
 
 procedure Main is
 
-    iterateur : Integer;
-
     param : T_Param;
+
+    table_routage : T_Table_Routage;
 
     -- Afficher l'usage
     procedure Afficher_Usage is
@@ -29,62 +29,45 @@ procedure Main is
         New_Line;
     end Afficher_Usage;
 
-
+    File_paquet : File_Type;
+    File_resultat : File_Type;
+    ligne : Unbounded_String;
 begin
 
-
-    param := Initialiser;
-    iterateur := 1;
+    param := Initialiser_Param;
 
     begin
 
-        while iterateur <= Argument_Count loop
-
-                if Argument(iterateur)(1) = '-' and Argument(iterateur)'Length = 2 then
-
-                    case Argument(iterateur)(2) is
-
-                        when 'c' =>
-                            param.taille_cache := Integer'Value(Argument(iterateur + 1));
-                            iterateur := iterateur + 1;
-
-                        when 'P' =>
-                            param.politique := T_Politique'Value(Argument(iterateur + 1));
-                            iterateur := iterateur + 1;
-
-                        when 's' => param.afficher_stats := True;
-
-                        when 'S' => param.afficher_stats := False;
-
-                        when 't' =>
-                            param.file_table_routage := To_Unbounded_String(Argument(iterateur + 1));
-                            iterateur := iterateur + 1;
-
-                        when 'p' =>
-                            param.file_paquets := To_Unbounded_String(Argument(iterateur + 1));
-                            iterateur := iterateur + 1;
-
-                        when 'r' =>
-                            param.file_resultats := To_Unbounded_String(Argument(iterateur + 1));
-                            iterateur := iterateur + 1;
-
-                        when others => raise Option_non_valide_exception;
-
-                    end case;
-
-                    iterateur := iterateur + 1;
-
-                else
-                    raise Option_non_valide_exception;
-                end if;
-
-        end loop;
+        Remplir_param(param);
 
         Afficher_Param(param);
 
+        Initialiser(param         => param,
+                    Table_routage => table_routage);
+
+        Afficher(Table_Routage => table_routage);
+
+        -- PAQUETS :
+        Open (File => File_paquet, Mode => In_File, Name => To_String(param.file_paquets));
+
+        Create (File => File_resultat, Mode => Out_File, Name => To_String(param.file_resultats));
+
+        While not End_Of_File (File_paquet) Loop
+
+            ligne := To_Unbounded_String(Get_Line(File_paquet));
+
+            Put_Line(File_resultat, To_String(ligne) & " " & To_String(Get_Interface(Convert_Unbounded_String_To_T_Adresse_IP(ligne), table_routage)));
+
+        end loop;
+
+        Close (File_paquet);
+        Close (File_resultat);
+
+
     exception
 
-        when others => Afficher_Usage;
+        when Option_non_valide_exception => Afficher_Usage;
+        when Name_Error => Put_Line("Fichier inexistant !"); raise;
     end;
 
 end Main;

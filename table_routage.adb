@@ -134,10 +134,10 @@ package body Table_Routage is
         
     end Get_taille_binaire;
     
-    function Adresse_Correspond(adresse_test : T_Adresse_IP; Adresse_base : T_Adresse_IP; Masque_base : T_Adresse_IP) return Boolean is
-        
-    begin
-        return true;
+    function Adresse_Correspond(adresse1 : T_Adresse_IP; adresse2 : T_Adresse_IP; Masque: T_Adresse_IP) return Boolean is
+    begin    
+        -- Put_Line(T_Adresse_IP'Image(adresse1 AND Masque) & " : " & T_Adresse_IP'Image(adresse2 AND Masque)) ;   
+        return (adresse1 AND Masque) = (adresse2 AND Masque);
     end Adresse_Correspond;
     
     
@@ -147,7 +147,7 @@ package body Table_Routage is
         table_temp : T_Table_Routage;
         
         interface_max : Unbounded_String;
-        taille_masque_max : Integer := 0;
+        taille_masque_max : Integer := -1;
         
     begin
         
@@ -158,8 +158,13 @@ package body Table_Routage is
             -- Adresse correspond ?
             if Adresse_Correspond(Adresse_IP, table_temp.all.Adresse, table_temp.all.Masque) then
                 -- Masque plus grand que l'ancien ?
+                
+                -- Put_line("Adresse " & T_Adresse_IP'Image(Adresse_IP) & " correspond : " & T_Adresse_IP'Image(table_temp.all.Adresse) & " et " & T_Adresse_IP'Image(table_temp.all.Masque)); 
+                
                 if Get_taille_binaire(table_temp.all.Masque) > taille_masque_max then
+                    -- Put_Line("Taille binaire = " & Integer'Image(Get_taille_binaire(table_temp.all.Masque)));
                     taille_masque_max := Get_taille_binaire(table_temp.all.Masque);
+                    interface_max := table_temp.all.Sortie;
                 else
                     null;
                 end if;
@@ -170,13 +175,11 @@ package body Table_Routage is
             table_temp := table_temp.all.Suivant;
                 
         end loop;
-
+        
         return interface_max;
 
     end Get_Interface;
     
-    
-
     function Est_Vide (Table_Routage : in T_Table_Routage) return Boolean is
     begin
 	
@@ -197,7 +200,7 @@ package body Table_Routage is
 
 
 
-    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : in T_Adresse_IP ; Masque : in T_Adresse_IP; Sortie : Unbounded_String) is
+    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : in T_Adresse_IP ; Masque : in T_Adresse_IP; Sortie : in Unbounded_String) is
 
     begin
         if Est_Vide(Table_Routage) then
@@ -223,7 +226,7 @@ package body Table_Routage is
         end if; 
     end Adresse_Presente;
 
-    procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : T_Adresse_IP) is
+    procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : in T_Adresse_IP) is
         Table_A_Supp : T_Table_Routage;
 
     begin
