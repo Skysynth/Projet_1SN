@@ -74,7 +74,8 @@ procedure Test_Table_Routage is
     procedure Tester_Get_Taille_Binaire is
         adresse : T_Adresse_IP;
     begin 
-        adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0"));
+        -- Jerem : Je n'arrive pas a faire fonctionner les pragma assert, code modifiable a souhait 
+        adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0")); 
         pragma Assert (Get_taille_binaire(adresse) = 0);
         pragma Assert (Get_taille_binaire(1) = -5);
         pragma Assert (Get_taille_binaire(255) = 8);

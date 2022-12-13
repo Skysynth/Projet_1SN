@@ -10,7 +10,7 @@ procedure Main is
 
     param : T_Param;
 
-    table_routage : T_Table_Routage;
+    tr : T_Table_Routage;
 
     -- Afficher l'usage
     procedure Afficher_Usage is
@@ -32,6 +32,8 @@ procedure Main is
     File_paquet : File_Type;
     File_resultat : File_Type;
     ligne : Unbounded_String;
+
+    num_ligne : Integer;
 begin
 
     param := Initialiser_Param;
@@ -43,20 +45,28 @@ begin
         Afficher_Param(param);
 
         Initialiser(param         => param,
-                    Table_routage => table_routage);
+                    Table_routage => tr);
 
-        Afficher(Table_Routage => table_routage);
+        Afficher(tr, Standard_Output);
 
         -- PAQUETS :
         Open (File => File_paquet, Mode => In_File, Name => To_String(param.file_paquets));
 
         Create (File => File_resultat, Mode => Out_File, Name => To_String(param.file_resultats));
 
+        num_ligne := 1;
+
         While not End_Of_File (File_paquet) Loop
 
             ligne := To_Unbounded_String(Get_Line(File_paquet));
 
-            Put_Line(File_resultat, To_String(ligne) & " " & To_String(Get_Interface(Convert_Unbounded_String_To_T_Adresse_IP(ligne), table_routage)));
+            if Is_Command_And_Then_Execute(To_String(ligne), tr, File_resultat, num_ligne) then
+               null;
+            else
+                Put_Line(File_resultat, To_String(ligne) & " " & To_String(Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr)));
+            end if;
+
+            num_ligne := num_ligne + 1;
 
         end loop;
 
@@ -67,7 +77,10 @@ begin
     exception
 
         when Option_non_valide_exception => Afficher_Usage;
-        when Name_Error => Put_Line("Fichier inexistant !"); raise;
+        when Name_Error => raise Name_Error with "Un des fichiers passés en paramètres n'existe pas !";
+
+        when COMMAND_FIN_CALLED => Put_Line("Fin du programme.");
+
     end;
 
 end Main;
