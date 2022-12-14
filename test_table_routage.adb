@@ -66,8 +66,10 @@ procedure Test_Table_Routage is
         Table_Routage : T_Table_Routage;
     begin
         pragma Assert (Est_Vide(Table_Routage));
-        pragma Assert (Taille(Table_Routage) = 0); 
+        pragma Assert (Taille(Table_Routage) = 0);
+
         Initialiser(param, Table_Routage);
+
         pragma Assert (not(Est_Vide(Table_Routage)));
 
         Put_Line("Les tests de 'Initialiser' sont réussis !");
@@ -77,8 +79,8 @@ procedure Test_Table_Routage is
     procedure Tester_Get_Taille_Binaire is
         adresse : T_Adresse_IP;
     begin 
-        -- Jerem : Je n'arrive pas a faire fonctionner les pragma assert, code modifiable a souhait
         adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0")); 
+        
         pragma Assert (Get_taille_binaire(adresse) = 0);
         pragma Assert (Get_taille_binaire(1) = -5);
         pragma Assert (Get_taille_binaire(255) = 8);
@@ -100,7 +102,7 @@ begin
         Initialiser(param         => param,
                     Table_routage => tr);
 
-        Afficher(tr, Standard_Output);
+        -- Afficher(tr, Standard_Output);
 
         -- PAQUETS :
         Open (File => File_paquet, Mode => In_File, Name => To_String(param.file_paquets));
@@ -134,7 +136,7 @@ begin
     end;
 
     New_Line;
-    
+
     Tester_Initialiser;
     Tester_Get_Taille_Binaire;
     

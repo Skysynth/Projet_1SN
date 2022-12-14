@@ -67,8 +67,6 @@ package body tools is
         end loop;
     end Remplir_Param;
 
-
-
     procedure Afficher_Param(param : T_Param) is
 
     begin

@@ -47,6 +47,7 @@ begin
         Initialiser(param         => param,
                     Table_routage => tr);
 
+        New_Line;
         Afficher(tr, Standard_Output);
 
         -- PAQUETS :
