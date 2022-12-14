@@ -83,11 +83,51 @@ procedure Test_Table_Routage is
         pragma Assert (Get_taille_binaire(adresse) = 16);
         pragma Assert (Get_taille_binaire(1) = 0);
         pragma Assert (Get_taille_binaire(255) = 0);
-        pragma Assert (Get_taille_binaire(255*(2**24)) = 8);
+        pragma Assert (Get_taille_binaire(255 * (2**24)) = 8);
         
         Put_Line("Les tests de 'Get_Taille_Binaire' sont réussis !");
     end Tester_Get_Taille_Binaire;
     
+    procedure Tester_Enregister is
+        adresse : T_Adresse_IP;
+        masque : T_Adresse_IP;
+        sortie : Unbounded_String;
+        table_routage : T_Table_Routage; 
+    begin
+        Initialiser(param, table_routage);
+
+        adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.0.0"));
+        masque := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0"));
+        sortie := To_Unbounded_String("eth0");
+
+        Enregistrer(table_routage, adresse, masque, sortie);
+
+        pragma Assert (table_routage.Adresse = adresse);
+        pragma Assert (table_routage.Masque = masque);
+        pragma Assert (table_routage.Sortie = sortie);
+
+        adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("112.128.3.56"));
+        masque := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.255.0"));
+        sortie := To_Unbounded_String("eth2");
+
+        Enregistrer(table_routage, adresse, masque, sortie);
+
+        pragma Assert (table_routage.Adresse = adresse);
+        pragma Assert (table_routage.Masque = masque);
+        pragma Assert (table_routage.Sortie = sortie);
+
+        adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("127.187.34.0"));
+        masque := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.255.255"));
+        sortie := To_Unbounded_String("eth1");
+
+        Enregistrer(table_routage, adresse, masque, sortie);
+
+        pragma Assert (table_routage.Adresse = adresse);
+        pragma Assert (table_routage.Masque = masque);
+        pragma Assert (table_routage.Sortie = sortie);
+
+        Put_Line("Les tests de 'Enregistrer' sont réussis !");
+    end Tester_Enregister;
 
 begin
     param := Initialiser_Param;
@@ -137,5 +177,6 @@ begin
 
     Tester_Initialiser;
     Tester_Get_Taille_Binaire;
+    Tester_Enregister;
     
 end Test_Table_Routage;
