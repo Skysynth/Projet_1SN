@@ -75,7 +75,6 @@ procedure Test_Table_Routage is
         Put_Line("Les tests de 'Initialiser' sont réussis !");
     end Tester_Initialiser; 
 
-    
     procedure Tester_Get_Taille_Binaire is
         adresse : T_Adresse_IP;
     begin 

@@ -218,8 +218,6 @@ package body Table_Routage is
         when Constraint_Error => return False;
     end Is_Command_And_Then_Execute;
     
-    
-    
     function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean is
     begin	
         if not(Est_Vide(Table_Routage)) then 
