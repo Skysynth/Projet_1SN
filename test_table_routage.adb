@@ -8,7 +8,12 @@ with Table_Routage; use Table_Routage;
 
 procedure Test_Table_Routage is
 
+    tr : T_Table_Routage;
     param : T_Param;
+    File_paquet : File_Type;
+    File_resultat : File_Type;
+    ligne : Unbounded_String;
+    num_ligne : Integer;
 
     procedure Afficher_Usage is
     begin
@@ -59,7 +64,7 @@ procedure Test_Table_Routage is
 
     procedure Tester_Initialiser is 
         Table_Routage : T_Table_Routage;
-    begin 
+    begin
         pragma Assert (Est_Vide(Table_Routage));
         pragma Assert (Taille(Table_Routage) = 0); 
         Initialiser(param, Table_Routage);
@@ -71,7 +76,7 @@ procedure Test_Table_Routage is
     procedure Tester_Get_Taille_Binaire is
         adresse : T_Adresse_IP;
     begin 
-        -- Jerem : Je n'arrive pas a faire fonctionner les pragma assert, code modifiable a souhait 
+        -- Jerem : Je n'arrive pas a faire fonctionner les pragma assert, code modifiable a souhait
         adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0")); 
         pragma Assert (Get_taille_binaire(adresse) = 0);
         pragma Assert (Get_taille_binaire(1) = -5);
@@ -85,13 +90,51 @@ procedure Test_Table_Routage is
     
 
 begin
+    param := Initialiser_Param;
+
+    begin
+
+        Remplir_param(param);
+
+        Afficher_Param(param);
+
+        Initialiser(param         => param,
+                    Table_routage => tr);
+
+        Afficher(tr, Standard_Output);
+
+        -- PAQUETS :
+        Open (File => File_paquet, Mode => In_File, Name => To_String(param.file_paquets));
+
+        Create (File => File_resultat, Mode => Out_File, Name => To_String(param.file_resultats));
+
+        num_ligne := 1;
+
+        While not End_Of_File (File_paquet) Loop
+
+            ligne := To_Unbounded_String(Get_Line(File_paquet));
+
+            if Is_Command_And_Then_Execute(To_String(ligne), tr, File_resultat, num_ligne) then
+               null;
+            else
+                Put_Line(File_resultat, To_String(ligne) & " " & To_String(Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr)));
+            end if;
+
+            num_ligne := num_ligne + 1;
+
+        end loop;
+
+        Close (File_paquet);
+        Close (File_resultat);
+
+    exception
+        when Option_non_valide_exception => Afficher_Usage;
+        when Name_Error => raise Name_Error with "Un des fichiers passés en paramètres n'existe pas !";
+        when COMMAND_FIN_CALLED => Put_Line("Fin du programme.");
+
+    end;
+
     Tester_Initialiser;
-
     Tester_Get_Taille_Binaire;
-
-exception
-    when Option_non_valide_exception => Afficher_Usage;
-    when Name_Error => raise Name_Error with "Un des fichiers passés en paramètres n'existe pas !";
-    when COMMAND_FIN_CALLED => Put_Line("Fin du programme.");
     
 end Test_Table_Routage;
