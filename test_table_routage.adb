@@ -70,6 +70,7 @@ procedure Test_Table_Routage is
         Initialiser(param, Table_Routage);
         pragma Assert (not(Est_Vide(Table_Routage)));
 
+        Put_Line("Les tests de 'Initialiser' sont réussis !");
     end Tester_Initialiser; 
 
     
@@ -83,9 +84,7 @@ procedure Test_Table_Routage is
         pragma Assert (Get_taille_binaire(255) = 8);
         pragma Assert (Get_taille_binaire(255) = 8);
         
-        
-        Put_Line("Les tests de 'Get Taille Binaire' sont réussis !");
-        
+        Put_Line("Les tests de 'Get_Taille_Binaire' sont réussis !");
     end Tester_Get_Taille_Binaire;
     
 
@@ -134,6 +133,8 @@ begin
 
     end;
 
+    New_Line;
+    
     Tester_Initialiser;
     Tester_Get_Taille_Binaire;
     
