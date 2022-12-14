@@ -88,14 +88,12 @@ package body tools is
 
     function Get_taille_binaire(adresse : T_Adresse_IP) return Integer is
         exposant : Integer := 31;
-        resultat : Integer := 1;
     begin
         while (adresse and 2 ** exposant) /= 0 loop
             exposant := exposant - 1;
         end loop;
 
-        return 31 - exposant;
-
+        return (31 - exposant);
     end Get_taille_binaire;
 
     function Unbounded_String_To_Adresse_IP(ligne : Unbounded_String) return T_Adresse_IP is
@@ -129,11 +127,10 @@ package body tools is
     end;
 
     function Adresse_IP_To_String(adresse : T_Adresse_IP) return String is
-
     begin
         null; -- a remplir
 
-        return "adresse convertie, fonction a remplir";
+        return "Fonction à remplir";
     end;
 
 
