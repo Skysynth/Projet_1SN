@@ -96,6 +96,7 @@ procedure Test_Table_Routage is
     begin
         Initialiser(param, table_routage);
 
+        -- Reprendre la procédure Enregistrer du mini projet 2 pour une LCA ...
         adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.0.0"));
         masque := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0"));
         sortie := To_Unbounded_String("eth0");
