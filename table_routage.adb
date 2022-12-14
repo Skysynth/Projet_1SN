@@ -116,8 +116,6 @@ package body Table_Routage is
         end if;
     end Supprimer;
 
-
-
     procedure Vider (Table_Routage : in out T_Table_Routage) is
     begin
         if not(Est_Vide(Table_Routage)) then

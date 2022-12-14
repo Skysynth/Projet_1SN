@@ -98,8 +98,7 @@ begin
 
         Afficher_Param(param);
 
-        Initialiser(param         => param,
-                    Table_routage => tr);
+        Initialiser(param => param, Table_routage => tr);
 
         -- Afficher(tr, Standard_Output);
 
