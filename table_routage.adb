@@ -1,8 +1,5 @@
-with Ada.Text_IO;            use Ada.Text_IO;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Unchecked_Deallocation;
-with tools; use tools;
-with Routeur_Exceptions;    use Routeur_Exceptions;
+with Routeur_Exceptions; use Routeur_Exceptions;
 
 -- R1 : Concevoir et initialiser un routeur
 package body Table_Routage is
@@ -19,7 +16,6 @@ package body Table_Routage is
         iterateur : Integer;
         ligne : Unbounded_String;
         
-        mot : Unbounded_String;
         N : Integer;
         
         table_routage_temp : T_Table_Routage;
@@ -40,7 +36,6 @@ package body Table_Routage is
             iterateur := 1;
             
             -- Concevoir un tableau de taille 3 qui va stocker des chaines de caracteres
-            
             for j in 1..3 loop
                 
                 Donnee(j) := Null_Unbounded_String;
@@ -137,8 +132,6 @@ package body Table_Routage is
     procedure Afficher(Table_Routage : in T_Table_Routage; file : File_Type) is
         
         table_temp : T_Table_Routage := Table_Routage;
-        
-        adresse_IP, Masque : Unbounded_String;
     
     begin
         

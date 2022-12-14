@@ -75,12 +75,9 @@ begin
 
 
     exception
-
         when Option_non_valide_exception => Afficher_Usage;
         when Name_Error => raise Name_Error with "Un des fichiers passés en paramètres n'existe pas !";
-
         when COMMAND_FIN_CALLED => Put_Line("Fin du programme.");
-
     end;
 
 end Main;

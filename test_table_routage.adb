@@ -8,10 +8,8 @@ with Table_Routage; use Table_Routage;
 
 procedure Test_Table_Routage is
 
-    table : T_Table_Routage;
     param : T_Param;
 
-    -- Afficher l'usage
     procedure Afficher_Usage is
     begin
         New_Line;
@@ -27,7 +25,6 @@ procedure Test_Table_Routage is
         Put_Line ("   -r <fichier> : Définit le nom du fichier contenant les résultats. Valeur par défaut = resultats.txt");
         New_Line;
     end Afficher_Usage;
-
 
     function Convert_Unbounded_String_To_T_Adresse_IP(ligne : Unbounded_String) return T_Adresse_IP is
         Adresse_Converti : T_Adresse_IP := 0;
@@ -65,7 +62,7 @@ procedure Test_Table_Routage is
     begin 
         pragma Assert (Est_Vide(Table_Routage));
         pragma Assert (Taille(Table_Routage) = 0); 
-        Initialiser(param, Table_Routage); 
+        Initialiser(param, Table_Routage);
         pragma Assert (not(Est_Vide(Table_Routage)));
 
     end Tester_Initialiser; 
@@ -82,12 +79,19 @@ procedure Test_Table_Routage is
         pragma Assert (Get_taille_binaire(255) = 8);
         
         
-        Put_Line("Tests 'Get Taille Binaire' réussis !");
+        Put_Line("Les tests de 'Get Taille Binaire' sont réussis !");
         
     end Tester_Get_Taille_Binaire;
     
 
 begin
+    Tester_Initialiser;
+
     Tester_Get_Taille_Binaire;
+
+exception
+    when Option_non_valide_exception => Afficher_Usage;
+    when Name_Error => raise Name_Error with "Un des fichiers passés en paramètres n'existe pas !";
+    when COMMAND_FIN_CALLED => Put_Line("Fin du programme.");
     
 end Test_Table_Routage;
