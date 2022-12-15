@@ -88,7 +88,7 @@ procedure Test_Table_Routage is
         Put_Line("Les tests de 'Get_Taille_Binaire' sont réussis !");
     end Tester_Get_Taille_Binaire;
     
-    procedure Tester_Enregister is
+    procedure Tester_Enregister_Supprimer is
         adresse : T_Adresse_IP;
         masque : T_Adresse_IP;
         sortie : Unbounded_String;
@@ -127,8 +127,15 @@ procedure Test_Table_Routage is
         pragma Assert (table_routage.Masque = masque);
         pragma Assert (table_routage.Sortie = sortie);
 
-        Put_Line("Les tests de 'Enregistrer' sont réussis !");
+        Supprimer();
+
+        Put_Line("Les tests de 'Enregistrer' et 'Supprimer' sont réussis !");
     end Tester_Enregister;
+
+    procedure Tester_Supprimer is
+    begin
+
+    end Tester_Supprimer;
 
 begin
     param := Initialiser_Param;
@@ -178,6 +185,6 @@ begin
 
     Tester_Initialiser;
     Tester_Get_Taille_Binaire;
-    Tester_Enregister;
+    Tester_Enregister_Supprimer;
     
 end Test_Table_Routage;

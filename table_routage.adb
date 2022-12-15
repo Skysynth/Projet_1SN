@@ -91,19 +91,20 @@ package body Table_Routage is
 
     
     procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : in T_Adresse_IP ; Masque : in T_Adresse_IP; Sortie : in Unbounded_String) is
-
     begin
-        if Est_Vide(Table_Routage) then
-            Table_Routage := new T_Cellule'(Adresse, Masque, Sortie, Table_Routage);
-        else
-            Enregistrer(Table_Routage.all.Suivant, Adresse, Masque, Sortie);
-        end if;
-
+        if Est_Vide (Table_Routage) then
+			-- Structure vide
+			Table_Routage := new T_Cellule'(Adresse, Masque, Sortie, Null); -- On crée une nouvelle cellule
+			Table_Routage.All.Adresse := Adresse;
+			Table_Routage.All.Masque := Masque;
+            Table_Routage.All.Sortie := Sortie;
+		else
+			Enregistrer (Table_Routage.All.Suivant, Adresse, Masque, Sortie); -- Récursivité sur le pointeur suivant
+		end if;
     end Enregistrer;
 
     procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : in T_Adresse_IP) is
         Table_A_Supp : T_Table_Routage;
-
     begin
         if Est_Vide(Table_Routage) then
             raise Adresse_Absente_Exception;
