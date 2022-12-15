@@ -147,6 +147,10 @@ procedure Test_Table_Routage is
 
     procedure Tester_Adresse_Presente is
         table_routage : T_Table_Routage;
+        adresse : T_Adresse_IP;
+        adresse2 : T_Adresse_IP;
+        masque : T_Adresse_IP;
+        sortie : Unbounded_String;
     begin
         Initialiser(param, table_routage);
 
