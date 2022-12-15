@@ -1,3 +1,4 @@
+with Ada.Strings; use Ada.Strings;
 with Ada.Text_IO; use Ada.Text_IO;
 -- with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Command_Line; use Ada.Command_Line;
@@ -5,6 +6,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with routeur_exceptions; use routeur_exceptions;
 with tools; use tools;
 with Table_Routage; use Table_Routage;
+with Ada.Exceptions; use Ada.Exceptions;
 
 procedure Main is
 
@@ -60,6 +62,7 @@ begin
         While not End_Of_File (File_paquet) Loop
 
             ligne := To_Unbounded_String(Get_Line(File_paquet));
+            Trim(ligne, Both);
 
             if Is_Command_And_Then_Execute(To_String(ligne), tr, File_resultat, num_ligne) then
                null;
@@ -79,6 +82,8 @@ begin
         when Option_non_valide_exception => Afficher_Usage;
         when Name_Error => raise Name_Error with "Un des fichiers passés en paramètres n'existe pas !";
         when COMMAND_FIN_CALLED => Put_Line("Fin du programme.");
+
+        when E : others => Put_Line (Exception_Message (E));
     end;
 
 end Main;
