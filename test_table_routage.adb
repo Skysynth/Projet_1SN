@@ -127,7 +127,20 @@ procedure Test_Table_Routage is
         pragma Assert (table_routage.Masque = masque);
         pragma Assert (table_routage.Sortie = sortie);
 
-        Supprimer();
+        adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("127.187.34.0"));
+        Supprimer(table_routage, adresse);
+
+        pragma Assert (Taille(table_routage) = 2);
+
+        adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("112.128.3.56"));
+        Supprimer(table_routage, adresse);
+
+        pragma Assert (Taille(table_routage) = 1);
+
+        adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.0.0"));
+        Supprimer(table_routage, adresse);
+
+        pragma Assert (Taille(table_routage) = 0);
 
         Put_Line("Les tests de 'Enregistrer' et 'Supprimer' sont réussis !");
     end Tester_Enregister;
