@@ -214,5 +214,6 @@ begin
     Tester_Initialiser;
     Tester_Get_Taille_Binaire;
     Tester_Enregister_Supprimer;
+    Tester_Adresse_Presente;
     
 end Test_Table_Routage;

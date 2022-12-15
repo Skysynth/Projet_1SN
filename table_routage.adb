@@ -189,8 +189,6 @@ package body Table_Routage is
 
     end Get_Interface;
 
-
-    
     function Is_Command_And_Then_Execute(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean is
         type Commandes is (Table, Cache, Stat, Fin); 
     begin
