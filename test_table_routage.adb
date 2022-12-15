@@ -143,12 +143,27 @@ procedure Test_Table_Routage is
         pragma Assert (Taille(table_routage) = 0);
 
         Put_Line("Les tests de 'Enregistrer' et 'Supprimer' sont réussis !");
-    end Tester_Enregister;
+    end Tester_Enregister_Supprimer;
 
-    procedure Tester_Supprimer is
+    procedure Tester_Adresse_Presente is
+        table_routage : T_Table_Routage;
     begin
+        Initialiser(param, table_routage);
 
-    end Tester_Supprimer;
+        adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.0.0"));
+        adresse2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.14.0"));
+        masque := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0"));
+        sortie := To_Unbounded_String("eth0");
+
+        Enregistrer(table_routage, adresse, masque, sortie);
+
+        pragma Assert (Adresse_Presente(table_routage, adresse) = True);
+        pragma Assert(Adresse_Presente(table_routage, adresse2) = False);
+
+        Vider (table_routage);
+
+        Put_Line("Les tests de 'Adresse_Presente' sont réussis !");
+    end Tester_Adresse_Presente;
 
 begin
     param := Initialiser_Param;
