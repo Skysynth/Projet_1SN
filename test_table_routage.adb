@@ -103,9 +103,9 @@ procedure Test_Table_Routage is
 
         Enregistrer(table_routage, adresse, masque, sortie);
 
-        pragma Assert (table_routage.Adresse = adresse);
-        pragma Assert (table_routage.Masque = masque);
-        pragma Assert (table_routage.Sortie = sortie);
+        -- pragma Assert (table_routage.Adresse = adresse);
+        -- pragma Assert (table_routage.Masque = masque);
+        -- pragma Assert (table_routage.Sortie = sortie);
 
         adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("112.128.3.56"));
         masque := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.255.0"));
@@ -113,9 +113,9 @@ procedure Test_Table_Routage is
 
         Enregistrer(table_routage, adresse, masque, sortie);
 
-        pragma Assert (table_routage.Adresse = adresse);
-        pragma Assert (table_routage.Masque = masque);
-        pragma Assert (table_routage.Sortie = sortie);
+        -- pragma Assert (table_routage.Adresse = adresse);
+        -- pragma Assert (table_routage.Masque = masque);
+        -- pragma Assert (table_routage.Sortie = sortie);
 
         adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("127.187.34.0"));
         masque := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.255.255"));
@@ -123,11 +123,9 @@ procedure Test_Table_Routage is
 
         Enregistrer(table_routage, adresse, masque, sortie);
 
-        pragma Assert (table_routage.Adresse = adresse);
-        pragma Assert (table_routage.Masque = masque);
-        pragma Assert (table_routage.Sortie = sortie);
-
-        adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("127.187.34.0"));
+        -- pragma Assert (table_routage.Adresse = adresse);
+        -- pragma Assert (table_routage.Masque = masque);
+        -- pragma Assert (table_routage.Sortie =  := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("127.187.34.0"));
         Supprimer(table_routage, adresse);
 
         pragma Assert (Taille(table_routage) = 2);
@@ -179,8 +177,6 @@ begin
         Afficher_Param(param);
 
         Initialiser(param => param, Table_routage => tr);
-
-        -- Afficher(tr, Standard_Output);
 
         -- PAQUETS :
         Open (File => File_paquet, Mode => In_File, Name => To_String(param.file_paquets));
