@@ -87,7 +87,7 @@ package body Table_Routage is
             result := result +1; 
             table_temp := table_temp.all.Suivant;
         end loop;
-        Vider(table_temp);
+    
         return result;
 
 

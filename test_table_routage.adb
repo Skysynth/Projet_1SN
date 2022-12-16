@@ -147,7 +147,8 @@ procedure Test_Table_Routage is
         Supprimer(table_routage, adresse);
 
         pragma Assert (Taille(table_routage) = 0);
-
+        Vider(table_temp);
+        vider(Table_Routage );
         Put_Line("Les tests de 'Enregistrer' et 'Supprimer' sont réussis !");
     end Tester_Enregister_Supprimer;
 
@@ -171,6 +172,7 @@ procedure Test_Table_Routage is
         pragma Assert(Adresse_Presente(table_routage, adresse2) = False);
 
         Vider (table_routage);
+        
 
         Put_Line("Les tests de 'Adresse_Presente' sont réussis !");
     end Tester_Adresse_Presente;
