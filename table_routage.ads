@@ -7,7 +7,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 package Table_Routage is
 
-    type T_Table_Routage is limited private;
+    type T_Table_Routage is private;
    
     -- Initialiser une table de routage.  La table de routage est vide.
     procedure Initialiser(param : in T_Param; Table_routage: out T_Table_Routage);
@@ -39,7 +39,10 @@ package Table_Routage is
 
     
     function Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage) return Unbounded_String;
-    
+    function Get_Adresse(Table_Routage: in T_Table_Routage) return T_Adresse_IP;
+    function Get_Masque(Table_Routage: in T_Table_Routage) return T_Adresse_IP;
+    function Get_Sortie(Table_Routage: in T_Table_Routage) return Unbounded_String;
+    function Get_Suivant(Table_Routage: in T_Table_Routage) return T_Table_Routage;
     
     function Is_Command_And_Then_Execute(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean;
     

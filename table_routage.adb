@@ -189,6 +189,27 @@ package body Table_Routage is
 
     end Get_Interface;
     
+    function Get_Adresse ( Table_Routage : T_Table_Routage ) return T_Adresse_IP is 
+    begin 
+        return Table_Routage.all.Adresse;
+    end Get_Adresse; 
+
+    function Get_Masque ( Table_Routage : T_Table_Routage ) return T_Adresse_IP is 
+    begin 
+        return Table_Routage.all.Masque;
+    end Get_Masque; 
+
+    function Get_Sortie(Table_Routage: in T_Table_Routage) return Unbounded_String is 
+    begin 
+        return Table_Routage.all.Sortie;
+    end Get_Sortie; 
+    
+    function Get_Suivant(Table_Routage: in T_Table_Routage) return T_Table_Routage is 
+    begin 
+        return Table_Routage.all.Suivant; 
+    end Get_Suivant;
+
+
     function Is_Command_And_Then_Execute(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean is
         type Commandes is (Table, Cache, Stat, Fin); 
     begin
