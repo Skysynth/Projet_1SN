@@ -1,12 +1,6 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with routeur_exceptions; use routeur_exceptions;
 with Ada.Command_Line; use Ada.Command_Line;
-with Ada.Strings;               use Ada.Strings;	-- pour Both utilisé par Trim
-with Ada.Integer_Text_IO;       use Ada.Integer_Text_IO;
-with Ada.Strings.Unbounded;     use Ada.Strings.Unbounded;
-with Ada.Text_IO.Unbounded_IO;  use Ada.Text_IO.Unbounded_IO;
-with Ada.Exceptions;            use Ada.Exceptions;	-- pour Exception_Message
-
 
 package body tools is
 
