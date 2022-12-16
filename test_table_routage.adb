@@ -96,7 +96,8 @@ procedure Test_Table_Routage is
         table_temp : T_Table_Routage;
     begin
         Initialiser(param, table_routage);
-        
+
+        Vider(table_routage);
 
         -- Reprendre la procédure Enregistrer du mini projet 2 pour une LCA ...
         adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.0.0"));
@@ -104,17 +105,18 @@ procedure Test_Table_Routage is
         sortie := To_Unbounded_String("eth0");
 
         Enregistrer(table_routage, adresse, masque, sortie);
+        table_temp := Table_Routage;
         
-
-        pragma Assert (Get_Adresse(Table_Routage) = adresse);
-        pragma Assert (Get_Masque(Table_Routage) = masque);
-        pragma Assert (Get_Sortie(Table_Routage) = sortie);
+        pragma Assert (Get_Adresse(table_routage) = adresse);
+        pragma Assert (Get_Masque(table_routage) = masque);
+        pragma Assert (Get_Sortie(table_routage) = sortie);
         
         adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("112.128.3.56"));
         masque := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.255.0"));
         sortie := To_Unbounded_String("eth2");
 
         Enregistrer(table_routage, adresse, masque, sortie);
+        
         Table_Routage := Get_Suivant(Table_Routage);
     
         pragma Assert (Get_Adresse(Table_Routage) = adresse);
@@ -130,6 +132,7 @@ procedure Test_Table_Routage is
         pragma Assert (Get_Adresse(Table_Routage) = adresse);
         pragma Assert (Get_Masque(Table_Routage) = masque);
         pragma Assert (Get_Sortie(Table_Routage) = sortie);
+        table_routage := table_temp;
         pragma Assert (Taille(table_routage) = 3);
         Supprimer(table_routage, adresse);
 

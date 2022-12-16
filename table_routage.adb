@@ -78,14 +78,20 @@ package body Table_Routage is
     end;
     
     function Taille (Table_Routage : in T_Table_Routage) return Integer is
-	
+	result : Integer; 
+    table_temp : T_Table_Routage;
     begin
-		
-        if Table_Routage = null then 
-            return 0;
-        else 
-            return Taille(Table_Routage.all.Suivant) + 1;
-        end if;
+		result := 0;
+        table_temp:= Table_Routage;
+        while not(Est_Vide(table_temp)) loop 
+            result := result +1; 
+            table_temp := table_temp.all.Suivant;
+        end loop;
+        Vider(table_temp);
+        return result;
+
+
+        
 
     end Taille;
 
@@ -94,10 +100,8 @@ package body Table_Routage is
     begin
         if Est_Vide (Table_Routage) then
 			-- Structure vide
-			Table_Routage := new T_Cellule'(Adresse, Masque, Sortie, Null); -- On crée une nouvelle cellule
-			Table_Routage.All.Adresse := Adresse;
-			Table_Routage.All.Masque := Masque;
-            Table_Routage.All.Sortie := Sortie;
+			Table_Routage := new T_Cellule'(Adresse, Masque, Sortie, null); -- On crée une nouvelle cellule
+			
 		else
 			Enregistrer (Table_Routage.All.Suivant, Adresse, Masque, Sortie); -- Récursivité sur le pointeur suivant
 		end if;
@@ -203,7 +207,7 @@ package body Table_Routage is
     begin 
         return Table_Routage.all.Sortie;
     end Get_Sortie; 
-    
+
     function Get_Suivant(Table_Routage: in T_Table_Routage) return T_Table_Routage is 
     begin 
         return Table_Routage.all.Suivant; 
