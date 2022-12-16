@@ -116,7 +116,7 @@ procedure Test_Table_Routage is
 
         Enregistrer(table_routage, adresse, masque, sortie);
         Table_Routage := Get_Suivant(Table_Routage);
-
+    
         pragma Assert (Get_Adresse(Table_Routage) = adresse);
         pragma Assert (Get_Masque(Table_Routage) = masque);
         pragma Assert (Get_Sortie(Table_Routage) = sortie);
@@ -214,9 +214,7 @@ begin
         when COMMAND_FIN_CALLED => Put_Line("Fin du programme.");
 
     end;
-
     New_Line;
-
     Tester_Initialiser;
     Tester_Get_Taille_Binaire;
     Tester_Enregister_Supprimer;

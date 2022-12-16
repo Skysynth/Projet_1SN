@@ -39,6 +39,8 @@ package Table_Routage is
 
     
     function Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage) return Unbounded_String;
+    
+    -- fonction qui permettent d acceder aux differentes valeur ou pointe les pointeurs
     function Get_Adresse(Table_Routage: in T_Table_Routage) return T_Adresse_IP;
     function Get_Masque(Table_Routage: in T_Table_Routage) return T_Adresse_IP;
     function Get_Sortie(Table_Routage: in T_Table_Routage) return Unbounded_String;
