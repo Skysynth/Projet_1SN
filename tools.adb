@@ -135,6 +135,7 @@ package body tools is
         for i in reverse 0..3 loop
             Result := Result & Integer'Image(Natural ((adresse / UN_OCTET ** i) mod UN_OCTET)) & ".";
         end loop;
+
         return To_String(Result);
     end;
 
