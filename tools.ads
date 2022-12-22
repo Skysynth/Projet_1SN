@@ -23,12 +23,16 @@ package tools is
 
     procedure Remplir_Param(param : out T_Param);
 
-    function Get_taille_binaire(adresse : T_Adresse_IP) return Integer;
+    function Get_taille_binaire(adresse : in T_Adresse_IP) return Integer;
 
 
     -- Unbounded_String_To_Adresse_IP permet de transformer une adresse IP (de type character, ex : 147.0.0.0) en type T_Adresse_IP
-    function Unbounded_String_To_Adresse_IP(ligne : Unbounded_String) return T_Adresse_IP;
+    function Unbounded_String_To_Adresse_IP(ligne : in Unbounded_String) return T_Adresse_IP;
     --Adresse_IP_To_String est l'operation inverse de  Unbounded_String_To_Adresse_IP
-    function Adresse_IP_To_String(adresse : T_Adresse_IP) return String;
+    function Adresse_IP_To_String(adresse : in T_Adresse_IP) return String;
+
+    function Apply_Masque(adresse : in T_Adresse_IP; masque : in T_Adresse_IP) return T_Adresse_IP;
+
+    function Is_Equal_With_Mask(adresse1 : in T_Adresse_IP; adresse2 : in T_Adresse_IP; masque : in T_Adresse_IP) return Boolean;
 
 end tools;

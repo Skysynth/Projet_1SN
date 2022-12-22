@@ -1,6 +1,7 @@
 with Ada.Text_IO; use Ada.Text_IO;
 with routeur_exceptions; use routeur_exceptions;
 with Ada.Command_Line; use Ada.Command_Line;
+with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
 package body tools is
 
@@ -86,7 +87,7 @@ package body tools is
         Put_Line("   Fichier paquets : " & To_String(param.file_paquets));
         Put_Line("   Fichier résultats : " & To_String(param.file_resultats));
 
-    end;
+    end Afficher_Param;
 
     function Get_taille_binaire(adresse : T_Adresse_IP) return Integer is
         exposant : Integer := 31;
@@ -98,7 +99,7 @@ package body tools is
         return (31 - exposant);
     end Get_taille_binaire;
 
-    function Unbounded_String_To_Adresse_IP(ligne : Unbounded_String) return T_Adresse_IP is
+    function Unbounded_String_To_Adresse_IP(ligne : in Unbounded_String) return T_Adresse_IP is
         Adresse_Converti : T_Adresse_IP := 0;
         mot : Unbounded_String;
         N : Integer;
@@ -126,18 +127,32 @@ package body tools is
         end loop;
 
         return Adresse_Converti;
-    end;
+    end Unbounded_String_To_Adresse_IP;
 
-    function Adresse_IP_To_String(adresse : T_Adresse_IP) return String is
+    function Adresse_IP_To_String(adresse : in T_Adresse_IP) return String is
         UN_OCTET : constant T_Adresse_IP :=  2 ** 8;
         Result : Unbounded_String := Null_Unbounded_String;
     begin
         for i in reverse 0..3 loop
-            Result := Result & Integer'Image(Natural ((adresse / UN_OCTET ** i) mod UN_OCTET)) & ".";
+            Result := Result & Trim(Integer'Image(Natural ((adresse / UN_OCTET ** i) mod UN_OCTET)), Ada.Strings.Left) & ".";
         end loop;
 
-        return To_String(Result);
-    end;
+
+        return To_String(Result)(1..(Length(Result) - 1));
+    end Adresse_IP_To_String;
+
+
+    function Apply_Masque(adresse : T_Adresse_IP; masque : T_Adresse_IP) return T_Adresse_IP is
+    begin
+        return adresse AND masque;
+    end Apply_Masque;
+
+
+    function Is_Equal_With_Mask(adresse1 : in T_Adresse_IP; adresse2 : in T_Adresse_IP; masque : in T_Adresse_IP) return Boolean is
+    begin
+        return (adresse1 AND masque) = (adresse2 AND masque);
+    end Is_Equal_With_Mask;
+
 
 
 
