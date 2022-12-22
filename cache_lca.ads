@@ -1,65 +1,61 @@
 generic
-	type T_ADRESSE_IP is private;
-	type T_IFACE is private;
+    type T_ADRESSE_IP is private;
+    type T_IFACE is private;
 
 package CACHE_LCA is
 
-	type T_CACHE_LCA is limited private;
+    type T_CACHE_LCA is private;
 
-	-- Initialiser une Cache_lca.  La Cache_lca est vide.
-	procedure Initialiser(Cache_lca: out T_CACHE_LCA) with
-		Post => Est_Vide (Cache_lca);
-
-
-	-- Est-ce qu'une Cache_lca est vide ?
-	function Est_Vide (Cache_lca : T_CACHE_LCA) return Boolean;
+    -- Initialiser une Cache_lca.  La Cache_lca est vide.
+    procedure Initialiser_Cache(taille_max : Integer; politique_cache : in T_Politique; Cache_lca: out T_CACHE_LCA) with
+        Post => Est_Vide (Cache_lca);
 
 
-	-- Enregistrer une Masque associée à une Adresse dans une Cache_lca.
-	-- Si la Adresse est déjà présente dans la Cache_lca, sa Masque est changée.
-	procedure Enregistrer (Cache_lca : in out T_CACHE_LCA ; Adresse : in T_Adresse_IP ; Masque : in T_Adresse_IP) with
-		Post => Adresse_Presente (Cache_lca, Adresse) and (Le_Masque (Cache_lca, Adresse) = Masque)   -- Masque insérée
-				and (not (Adresse_Presente (Cache_lca, Adresse)'Old) or Taille (Cache_lca) = Taille (Cache_lca)'Old)
-				and (Adresse_Presente (Cache_lca, Adresse)'Old or Taille (Cache_lca) = Taille (Cache_lca)'Old + 1);
-
-	-- Supprimer la Masque associée à une Adresse dans une Cache_lca.
-	-- Exception : Adresse_Absente_Exception si Adresse n'est pas utilisée dans la Cache_lca
-   procedure Supprimer (Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) with
-		Post =>  Taille (Cache_lca) = Taille (Cache_lca)'Old - 1 -- un élément de moins
-			and not Adresse_Presente (Cache_lca, Adresse);         -- la Adresse a été supprimée
+    -- Est-ce qu'une Cache_lca est vide ?
+    function Est_Vide (Cache_lca : T_CACHE_LCA) return Boolean;
 
 
-	-- Savoir si une Adresse est présente dans une Cache_lca.
-	function Adresse_Presente (Cache_lca : in T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return Boolean;
+    -- Enregistrer une Masque associÃ©e Ã  une Adresse dans une Cache_lca.
+    -- Si la Adresse est dÃ©jÃ  prÃ©sente dans la Cache_lca, sa Masque est changÃ©e.
+    procedure Enregistrer (Cache_lca : in out T_CACHE_LCA ; Adresse : in T_Adresse_IP ; Masque : in T_Adresse_IP) with
+        Post => Adresse_Presente (Cache_lca, Adresse) and (Le_Masque (Cache_lca, Adresse) = Masque)   -- Masque insÃ©rÃ©e
+        and (not (Adresse_Presente (Cache_lca, Adresse)'Old) or Taille (Cache_lca) = Taille (Cache_lca)'Old)
+        and (Adresse_Presente (Cache_lca, Adresse)'Old or Taille (Cache_lca) = Taille (Cache_lca)'Old + 1);
+
+    -- Supprimer la Masque associÃ©e Ã  une Adresse dans une Cache_lca.
+    -- Exception : Adresse_Absente_Exception si Adresse n'est pas utilisÃ©e dans la Cache_lca
+    procedure Supprimer (Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) with
+        Post =>  Taille (Cache_lca) = Taille (Cache_lca)'Old - 1 -- un Ã©lÃ©ment de moins
+        and not Adresse_Presente (Cache_lca, Adresse);         -- la Adresse a Ã©tÃ© supprimÃ©e
 
 
-	-- Obtenir la Masque associée à une Adresse dans la Cache_lca.
-	-- Exception : Adresse_Absente_Exception si Adresse n'est pas utilisée dans l'Cache_lca
-	function Le_Masque (Cache_lca : in T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return T_Adresse_IP;
+    -- Savoir si une Adresse est prÃ©sente dans une Cache_lca.
+    function Adresse_Presente (Cache_lca : in T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return Boolean;
 
 
-	-- Supprimer tous les éléments d'une Cache_lca.
-	procedure Vider (Cache_lca : in out T_CACHE_LCA) with
-		Post => Est_Vide (Cache_lca);
+    -- Obtenir la Masque associÃ©e Ã  une Adresse dans la Cache_lca.
+    -- Exception : Adresse_Absente_Exception si Adresse n'est pas utilisÃ©e dans l'Cache_lca
+    function Le_Masque (Cache_lca : in T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return T_Adresse_IP;
 
 
-	-- Appliquer un traitement (Traiter) pour chaque couple d'une Cache_lca.
-	generic
-		with procedure Traiter (Adresse : in T_ADRESSE_IP; Masque: in T_Adresse_IP);
-	procedure Pour_Chaque (Cache_lca : in T_CACHE_LCA);
-
+    -- Supprimer tous les Ã©lÃ©ments d'une Cache_lca.
+    procedure Vider (Cache_lca : in out T_CACHE_LCA) with
+        Post => Est_Vide (Cache_lca);
 
 private
 
-	type T_Cellule;
+    type T_Cellule;
 
-	type T_CACHE_LCA is access T_Cellule;
+    type T_CACHE_LCA is access T_Cellule;
 
-	type T_Cellule is
-      record
-			Adresse : T_ADRESSE_IP;
-			Masque : T_Adresse_IP;
-			Suivant : T_CACHE_LCA;
-		end record;
+    type T_Cellule is
+        record
+            Nb_used : integer;
+            When_used : Integer;
 
-end LCA;
+            Adresse : T_ADRESSE_IP;
+            Masque : T_Adresse_IP;
+            Suivant : T_CACHE_LCA;
+        end record;
+
+end CACHE_LCA;
