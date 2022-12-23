@@ -5,12 +5,15 @@ with Ada.Text_IO; use Ada.Text_IO;
 -- Definition de structures de donnees associatives sous forme d'une liste
 -- chaine associative
 
+-- R1 : Concevoir et initialiser un routeur
 package Table_Routage is
 
     type T_Table_Routage is private;
-   
-    -- Initialiser une table de routage.  La table de routage est vide.
+    
+    -- R2 : Initialiser une table de routage.  La table de routage est vide.
     procedure Initialiser(param : in T_Param; Table_routage: out T_Table_Routage);
+
+    
     
     -- Est-ce qu'une Table_Routage est vide ?
     function Est_Vide (Table_Routage : in T_Table_Routage) return Boolean;
@@ -55,6 +58,8 @@ package Table_Routage is
     
     
 private
+
+    -- R2 : Concevoir et initialiser un routeur
 
     type T_Cellule;
 

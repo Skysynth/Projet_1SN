@@ -99,6 +99,8 @@ package body tools is
         return (31 - exposant);
     end Get_taille_binaire;
 
+
+--R3: Convertir l’adresse IP de la destination et du masque en T_Adesse_IP
     function Unbounded_String_To_Adresse_IP(ligne : in Unbounded_String) return T_Adresse_IP is
         Adresse_Converti : T_Adresse_IP := 0;
         mot : Unbounded_String;

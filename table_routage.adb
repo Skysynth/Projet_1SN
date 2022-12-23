@@ -6,13 +6,16 @@ package body Table_Routage is
     
     procedure Free is
         new Ada.Unchecked_Deallocation (Object => T_Cellule, Name => T_Table_Routage);
+
+
+
     
     -- R2 : Initialiser un routeur 
     procedure Initialiser(param : in T_Param; Table_Routage: out T_Table_Routage) is
         File : File_Type;
         Donnee : array(1..3) of Unbounded_String;
     
-        -- Concevoir le tableau de taille 3
+        
         iterateur : Integer;
         ligne : Unbounded_String;
         
@@ -35,7 +38,7 @@ package body Table_Routage is
             N := length(ligne);
             iterateur := 1;
             
-            -- Concevoir un tableau de taille 3 qui va stocker des chaines de caracteres
+            -- R3 : Concevoir un tableau de taille 3 qui va stocker des chaînes de caracteres( Destination , masque et interface) 
             for j in 1..3 loop
                 
                 Donnee(j) := Null_Unbounded_String;
@@ -52,11 +55,14 @@ package body Table_Routage is
                    
             end loop;
             
-            -- Convertir l'adresse IP de la destination et du masque
+            --R3: Convertir l’adresse IP de la destination et du masque  
+            --R3 :  Enregistrer la destination et le masque une fois converti dans le routeur et enregistrer l interface dans le routeur.
             table_routage_temp.all.Adresse := Unbounded_String_To_Adresse_IP(Donnee(1));
             table_routage_temp.all.Masque := Unbounded_String_To_Adresse_IP(Donnee(2));
             table_routage_temp.all.Sortie := Donnee(3);
-                        
+
+
+            -- R3 : Concevoir une nouvelle cellule dans le routeur pour stocker les données de la prochaine ligne.           
             if not End_Of_File (File) then
                 table_routage_temp.Suivant := new T_Cellule;
                 table_routage_temp := table_routage_temp.Suivant;
@@ -69,6 +75,12 @@ package body Table_Routage is
         Close (File);   
         
     end Initialiser;
+
+
+
+
+
+
 
         
     function Est_Vide (Table_Routage : in T_Table_Routage) return Boolean is
