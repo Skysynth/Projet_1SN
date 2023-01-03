@@ -126,12 +126,32 @@ package body cache_tree is
 
 	procedure Supprimer(Cache : in out T_Cache; Politique : in T_Politique) is
 		Compteur_Taille : T_Cache;
+
+		procedure Supprimer_FIFO(Cache : in out T_Cache) is
+		begin
+			null; -- à compléter
+		end Supprimer_FIFO;
+
+		procedure Supprimer_LRU(Cache : in out T_Cache) is
+		begin
+			null; -- à compléter
+		end Supprimer_FIFO;
+
+		procedure Supprimer_LFU(Cache : in out T_Cache) is
+		begin
+			null; -- à compléter
+		end Supprimer_FIFO;
+
 	begin
 		-- On initialise le compteur pour la taille
 		Compteur_Taille := Cache;
 
 		-- On regarde quelle est la procédure
-		case Politique 
+		case Politique is
+			when (Politique'Val = FIFO) => Supprimer_FIFO(Cache);
+			when (Politique'Val = LRU) => Supprimer_LRU(Cache);
+			when (Politique'Val = LFU) => Supprimer_LFU(Cache);
+		end case;
 	end Supprimer;
 
 	function Est_Plein(Cache : in T_Cache) return Boolean is
