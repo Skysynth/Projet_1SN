@@ -81,6 +81,7 @@ package body cache_tree is
 		Cache.All.Adresse := Adresse;
 		Cache.All.Masque := Masque;
 		Cache.All.Sortie := Sortie;
+		Cache.All.Active := True;
 	end Enregistrer;
 
 
