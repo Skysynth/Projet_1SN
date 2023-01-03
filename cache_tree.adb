@@ -85,5 +85,9 @@ package body cache_tree is
 	begin
 	end Ajouter_Frequence;
 
+	procedure Supprimer(Cache : in out T_Cache; Politique : ) is
+	begin
+	end Supprimer;
+
 
 end cache_tree;
