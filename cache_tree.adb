@@ -30,7 +30,6 @@ package body cache_tree is
 	end Vider;
 
 	procedure Enregistrer(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String) is
-		bit : Integer; -- soit 0 ou 1 (voir pour mettre un modulo 1)
 		Compteur_Taille : T_Cache_Arbre;
 	begin
 		-- On initialise le compteur pour la taille
@@ -44,10 +43,13 @@ package body cache_tree is
 			null;
 		end if;
 
+		-- On stocke la taille binaire de l'adresse
+		Taille_Adresse := Get_taille_binaire(Adresse);
+
 		-- On convertit l'adresse IP en binaire ainsi que le cache
 		-- On regarde pour chaque bit si il vaut 0 ou 1 pour savoir quelle direction prendre
-		for i in 1..Get_taille_binaire(Adresse) loop
-			if bit = 0 then
+		for i in 0..(Taille_Adresse - 1) loop
+			if (Adresse AND (2 ** (Taille_Adresse - i)) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Cache.Gauche) then
 				-- Cas où le cache à gauche est vide
