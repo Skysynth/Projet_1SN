@@ -7,14 +7,14 @@ package cache_tree is
     procedure Initialiser(Cache: out T_Cache) with
         Post => Est_Vide(Cache);
 
-    function Est_Vide (Cache : T_Cache) return Boolean;
+    function Est_Vide(Cache : T_Cache) return Boolean;
 
-    procedure Vider (Cache : in out T_Cache) with
-		Post => Est_Vide (Cache);
+    procedure Vider(Cache : in out T_Cache) with
+		Post => Est_Vide(Cache);
 
-    procedure Enregistrer (Cache : in out T_Cache; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String) with; -- manque peut être des pré et des post conditions
+    procedure Enregistrer(Cache : in out T_Cache; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String) with; -- manque peut être des pré et des post conditions
 
-    procedure Ajouter_Frequence (Cache : in out T_Cache; Adresse : in T_Adresse_IP) with
+    procedure Ajouter_Frequence(Cache : in out T_Cache; Adresse : in T_Adresse_IP) with
         Pre => not Est_Vide(Cache),
         Post => Cache.All.Frequence = Cache.All.Frequence'Last + 1;
 

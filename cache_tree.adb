@@ -31,10 +31,15 @@ package body cache_tree is
 
 	procedure Enregistrer(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String) is
 		bit : Integer; -- soit 0 ou 1 (voir pour mettre un modulo 1)
+		Compteur_Taille : T_Cache_Arbre;
 	begin
+		-- On initialise le compteur pour la taille
+		Compteur_Taille := Cache;
+
 		-- Cas où le cache est vide
 		if Est_Vide(Cache) then
 			Cache := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+			Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 		else
 			null;
 		end if;
@@ -47,6 +52,7 @@ package body cache_tree is
 				if Est_Vide(Cache.Gauche) then
 				-- Cas où le cache à gauche est vide
 					Cache.Gauche := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+					Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 					Cache := Cache.All.Gauche;
 				else
 					Cache := Cache.All.Gauche;
@@ -56,6 +62,7 @@ package body cache_tree is
 				if Est_Vide(Cache.Droite) then
 				-- Cas où le cache à droite est vide
 					Cache.Droite := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+					Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 					Cache := Cache.All.Droite;
 				else
 					Cache := Cache.All.Droite;
@@ -69,9 +76,12 @@ package body cache_tree is
 		Cache.All.Masque := Masque;
 		Cache.All.Sortie := Sortie;
 		Cache.All.Active := True;
+
+		-- On détruit le compteur pour la taille
+		Free(Compteur_Taille);
 	end Enregistrer;
 
-	procedure Ajouter_Frequence (Cache : in out T_Cache; Adresse : in T_Adresse_IP) is
+	procedure Ajouter_Frequence(Cache : in out T_Cache; Adresse : in T_Adresse_IP) is
 	begin
 	end Ajouter_Frequence;
 
