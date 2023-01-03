@@ -54,7 +54,7 @@ package body cache_tree is
 
 		-- On convertit l'adresse IP en binaire ainsi que le cache
 		-- On regarde pour chaque bit si il vaut 0 ou 1 pour savoir quelle direction prendre
-		for i in 1..Taille_Cache(Cache) loop
+		for i in 1..Get_taille_binaire(Adresse) loop
 			if bit = 0 then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Cache.Gauche) then
@@ -77,6 +77,10 @@ package body cache_tree is
 		end loop;
 
 		-- On devrait être au niveau d'une feuille à présent
+		-- Il reste à stocker toutes les informations nécessaires
+		Cache.All.Adresse := Adresse;
+		Cache.All.Masque := Masque;
+		Cache.All.Sortie := Sortie;
 	end Enregistrer;
 
 
