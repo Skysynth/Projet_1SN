@@ -5,7 +5,7 @@ package cache_tree is
     type T_Cache is limited private;
 
     procedure Initialiser(Cache: out T_Cache) with
-        post => Est_Vide(Cache);
+        Post => Est_Vide(Cache);
 
     function Est_Vide (Cache : T_Cache) return Boolean;
 
@@ -15,6 +15,8 @@ package cache_tree is
     procedure Vider (Cache : in out T_Cache) with
 		Post => Est_Vide (Cache);
 
+    procedure Enregistrer (Cache : in out T_Cache, ) with; -- manque peut être des pré et des post conditions
+
 private
 
     type T_Cache_Cellule;
@@ -22,12 +24,13 @@ private
     type T_Cache is access T_Cache_Cellule;
 
     type T_Cache_Cellule is record
-        Taille : Integer;
+        Taille : Integer; -- il s'agit de la hauteur de l'arbre
         Adresse : T_Adresse_IP;
         Masque : T_Adresse_IP;
-        Interface : Unbounded_String;
+        Sortie : Unbounded_String;
         Gauche : T_Cache;
-        Droit : T_Cache;
+        Droite : T_Cache;
+        Frequence : Integer; -- pour appliquer les politiques
     end record;
 
 end cache_tree;
