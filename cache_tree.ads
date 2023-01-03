@@ -15,13 +15,13 @@ package cache_tree is
     procedure Vider (Cache : in out T_Cache) with
 		Post => Est_Vide (Cache);
 
-    procedure Enregistrer (Cache : in out T_Cache, ) with; -- manque peut être des pré et des post conditions
+    procedure Enregistrer (Cache : in out T_Cache; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String) with; -- manque peut être des pré et des post conditions
 
 private
 
     type T_Cache_Cellule;
 
-    type T_Cache is access T_Cache_Cellule;
+    type T_Cache_Arbre is access T_Cache_Cellule;
 
     type T_Cache_Cellule is record
         Taille : Integer; -- il s'agit de la hauteur de l'arbre
@@ -31,6 +31,7 @@ private
         Gauche : T_Cache;
         Droite : T_Cache;
         Frequence : Integer; -- pour appliquer les politiques
+        Active : Boolean; -- pour savoir si la cellule est active ou non
     end record;
 
 end cache_tree;

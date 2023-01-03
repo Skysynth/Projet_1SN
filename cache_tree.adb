@@ -24,7 +24,7 @@ package body cache_tree is
 		if Est_Vide(Cache) then
 			Cache := new T_Cache_Cellule(Taille, Adresse, Masque, Interface, Null, Null);
 		else
-			Null;
+			Null; -- à compléter
 		end if;
 
         Taille_Cache(Cache.Gauche, Taille - 1);
@@ -41,6 +41,43 @@ package body cache_tree is
             Free(Cache.All);
         end if;
 	end Vider;
+
+	procedure Enregistrer(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String) is
+		bit : Integer; -- soit 0 ou 1 (voir pour mettre un modulo 1)
+	begin
+		-- Cas où le cache est vide
+		if Est_Vide(Cache) then
+			Cache := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+		else
+			null;
+		end if;
+
+		-- On convertit l'adresse IP en binaire ainsi que le cache
+		-- On regarde pour chaque bit si il vaut 0 ou 1 pour savoir quelle direction prendre
+		for i in 1..Taille_Cache(Cache) loop
+			if bit = 0 then
+				--  Cas où le bit vaut 0
+				if Est_Vide(Cache.Gauche) then
+				-- Cas où le cache à gauche est vide
+					Cache.Gauche := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+					Cache := Cache.All.Gauche;
+				else
+					Cache := Cache.All.Gauche;
+				end if;
+			else
+				-- Cas où le bit vaut 1
+				if Est_Vide(Cache.Droite) then
+				-- Cas où le cache à droite est vide
+					Cache.Droite := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+					Cache := Cache.All.Droite;
+				else
+					Cache := Cache.All.Droite;
+				end if;
+			end if;
+		end loop;
+
+		-- On devrait être au niveau d'une feuille à présent
+	end Enregistrer;
 
 
 end cache_tree;
