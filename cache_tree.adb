@@ -85,10 +85,50 @@ package body cache_tree is
 
 	procedure Ajouter_Frequence(Cache : in out T_Cache; Adresse : in T_Adresse_IP) is
 	begin
+		-- Cas où le cache est vide
+		if Est_Vide(Cache) then
+			Cache := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+			Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
+		else
+			null;
+		end if;
+
+		-- On stocke la taille binaire de l'adresse
+		Taille_Adresse := Get_taille_binaire(Adresse);
+
+		-- On convertit l'adresse IP en binaire ainsi que le cache
+		-- On regarde pour chaque bit si il vaut 0 ou 1 pour savoir quelle direction prendre
+		for i in 0..(Taille_Adresse - 1) loop
+			if (Adresse AND (2 ** (Taille_Adresse - i)) = 0) then
+				--  Cas où le bit vaut 0
+				if Est_Vide(Cache.Gauche) then
+				-- Cas où le cache à gauche est vide
+					raise Adresse_Absente_Exception;
+				else
+					Cache := Cache.All.Gauche;
+				end if;
+			else
+				-- Cas où le bit vaut 1
+				if Est_Vide(Cache.Droite) then
+				-- Cas où le cache à droite est vide
+					raise Adresse_Absente_Exception;
+				else
+					Cache := Cache.All.Droite;
+				end if;
+			end if;
+		end loop;
+
+		-- On devrait être au niveau de la feuille correspondante à l'adresse désormais
+		Cache.All.Frequence := Cache.All.Frequence + 1;
+	exception
+		when Adresse_Absente_Exception => Put("L'adresse demandée n'est pas présente.");
 	end Ajouter_Frequence;
 
 	procedure Supprimer(Cache : in out T_Cache; Politique : in T_Politique) is
+		Compteur_Taille : T_Cache;
 	begin
+		-- On initialise le compteur pour la taille
+		Compteur_Taille := Cache;
 	end Supprimer;
 
 
