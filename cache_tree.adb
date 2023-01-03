@@ -18,19 +18,6 @@ package body cache_tree is
 		return (Cache = Null);
 	end;
 
-
-	procedure Taille_Cache(Cache : in T_Cache; Taille: in Integer) return Integer is
-	begin
-		if Est_Vide(Cache) then
-			Cache := new T_Cache_Cellule(Taille, Adresse, Masque, Interface, Null, Null);
-		else
-			Null; -- à compléter
-		end if;
-
-        Taille_Cache(Cache.Gauche, Taille - 1);
-        Taille_Cache(Cache.Droit, Taille - 1);
-	end Taille_Cache;
-
     procedure Vider(Cache : in out T_Cache) is
 	begin
         if Est_Vide(Cache) then
@@ -83,6 +70,10 @@ package body cache_tree is
 		Cache.All.Sortie := Sortie;
 		Cache.All.Active := True;
 	end Enregistrer;
+
+	procedure Ajouter_Frequence (Cache : in out T_Cache; Adresse : in T_Adresse_IP) is
+	begin
+	end Ajouter_Frequence;
 
 
 end cache_tree;
