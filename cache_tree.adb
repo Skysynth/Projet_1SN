@@ -129,7 +129,13 @@ package body cache_tree is
 	begin
 		-- On initialise le compteur pour la taille
 		Compteur_Taille := Cache;
+
+		-- On regarde quelle est la procédure
+		case Politique 
 	end Supprimer;
 
+	function Est_Plein(Cache : in T_Cache) return Boolean is
+	begin
+	end Est_Plein;
 
 end cache_tree;

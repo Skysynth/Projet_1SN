@@ -63,6 +63,15 @@ package cache_tree is
         Pre => not Est_Vide(Cache),
         Post => Cache.All.Taille = Cache.All.Taille'Last - 1;
 
+
+    -- nom : Est_Plein
+    -- sémantique : Permet de savoir si le cache est plein ou non
+    -- paramètres :
+    --      Cache : Mode In T_Cache; -- le cache
+    -- pré-condition : not Est_Vide(Cache)
+    function Est_Plein(Cache : in T_Cache) with
+        Pre => not Est_Vide(Cache);
+
 private
 
     type T_Cache_Cellule;
