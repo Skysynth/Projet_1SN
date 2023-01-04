@@ -23,7 +23,7 @@ package body cache_tree is
             -- Si le cache n'est pas vide
 			Vider(Cache.All.Gauche);
             Vider(Cache.All.Droit);
-            Free(Cache.All);
+            Free(Cache);
         else
 			-- Si le cache est vide
             Put_Line("Le cache est pas vide. Pas besoin de le vider.");
@@ -44,12 +44,9 @@ package body cache_tree is
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
 
-		-- On stocke la taille binaire de l'adresse
-		Taille_Adresse := Get_taille_binaire(Adresse);
-
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-		for i in 0..(Taille_Adresse - 1) loop
-			if (Adresse AND (2 ** (Taille_Adresse - i)) = 0) then
+		for i in 0..31 loop
+			if (Adresse AND (2 ** (31 - i)) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Cache.Gauche) then
 				-- Cas où le cache à gauche est vide
@@ -93,12 +90,9 @@ package body cache_tree is
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
 
-		-- On stocke la taille binaire de l'adresse
-		Taille_Adresse := Get_taille_binaire(Adresse);
-
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-		for i in 0..(Taille_Adresse - 1) loop
-			if (Adresse AND (2 ** (Taille_Adresse - i)) = 0) then
+		for i in 0..(31 - 1) loop
+			if (Adresse AND (2 ** (31 - i)) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Cache.Gauche) then
 				-- Cas où le cache à gauche est vide
@@ -203,8 +197,8 @@ package body cache_tree is
 			Suppresseur := Cache;
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-			for i in 0..(Taille_Adresse - 1) loop
-				if (Adresse AND (2 ** (Taille_Adresse - i)) = 0) then
+			for i in 0..(31 - 1) loop
+				if (Adresse AND (2 ** (31 - i)) = 0) then
 					--  Cas où le bit vaut 0
 						Suppresseur := Suppresseur.All.Gauche;
 				else
@@ -223,10 +217,14 @@ package body cache_tree is
 
 		-- On regarde quelle est la procédure
 		case Politique is
-			when (Politique'Val = FIFO) => Supprimer_FIFO(Cache); -- à faire
-			when (Politique'Val = LRU) => Supprimer_LRU(Cache); -- à faire
+			-- when (Politique'Val = FIFO) => Supprimer_FIFO(Cache); -- à faire (peut être)
+			-- when (Politique'Val = LRU) => Supprimer_LRU(Cache); -- à faire (peut être)
 			when (Politique'Val = LFU) => Supprimer_LFU(Cache);
+			when others => raise Politique_non_valide_exception;
 		end case;
+
+	exception
+		when Politique_non_valide_exception => Put("La politique demandée n'est pas valide.");
 	end Supprimer;
 
 	function Est_Plein(Cache : in T_Cache_Arbre; Taille : Integer) return Boolean is
