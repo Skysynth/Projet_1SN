@@ -143,44 +143,50 @@ package body cache_tree is
 			Recherche_Frequence1 : T_Cache;
 			Recherche_Frequence2 : T_Cache;
 			Min : Integer;
+			Adresse : T_Adresse_IP;
 		begin
 			-- On fait pointer les pointeurs sur la racine
 			Recherche_Frequence1 := Cache;
 			Recherche_Frequence2 := Cache;
 			Min := 100000; -- on n'utilisera en pratique jamais plus de 100,000 fois une adresse
+			Adresse := 0; -- par défaut
 			
 			-- On recherche le minimum à droite et à gauche
 			if Recherche_Frequence1 /= null and then Recherche_Frequence1.Gauche /= null then
 				if Min > Cache.All.Frequence1 then
 					Min := Recherche_Frequence1.All.Frequence;
+					Adresse := Recherche_Frequence1.All.Adresse;
 				else
 					null; -- il ne ne passe rien
 				end if;
 
 				Recherche_Frequence1 := Recherche_Frequence1.All.Gauche;
 
-				Min := Recherche_Frequence_Min(Recherche_Frequence1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+				Adresse := Recherche_Frequence_Min(Recherche_Frequence1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 			elsif Recherche_Frequence2 /= null and then Recherche_Frequence2.Droite /= null then
 				if Min > Cache.All.Frequence2 then
 					Min := Recherche_Frequence2.All.Frequence;
+					Adresse := Recherche_Frequence1.All.Adresse;
 				else
 					null; -- il ne se passe rien
 				end if;
 
 				Recherche_Frequence2 := Recherche_Frequence2.All.Droite;
 
-				Min := Recherche_Frequence_Min(Recherche_Frequence2); -- on procède par récursivité
+				Adresse := Recherche_Frequence_Min(Recherche_Frequence2); -- on procède par récursivité
 			else
 				-- On regarde les cas où on sort des if à cause des premières conditions
 				if Recherche_Frequence1 /= null then
 					if Min > Cache.All.Frequence1 then
 						Min := Recherche_Frequence1.All.Frequence;
+						Adresse := Recherche_Frequence1.All.Adresse;
 					else
 						null; -- il ne ne passe rien
 					end if;
 				elsif Recherche_Frequence2 /= null then
 					if Min > Cache.All.Frequence2 then
 						Min := Recherche_Frequence2.All.Frequence;
+						Adresse := Recherche_Frequence1.All.Adresse;
 					else
 						null; -- il ne ne passe rien
 					end if;
@@ -189,7 +195,7 @@ package body cache_tree is
 				end if;
 			end if;
 
-			return Min;
+			return Adresse_Min;
 		end Recherche_Frequence;
 
 		procedure Supprimer_LFU(Cache : in T_Cache) is
