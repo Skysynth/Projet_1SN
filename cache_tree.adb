@@ -223,8 +223,8 @@ package body cache_tree is
 
 		-- On regarde quelle est la procédure
 		case Politique is
-			when (Politique'Val = FIFO) => Supprimer_FIFO(Cache);
-			when (Politique'Val = LRU) => Supprimer_LRU(Cache);
+			when (Politique'Val = FIFO) => Supprimer_FIFO(Cache); -- à faire
+			when (Politique'Val = LRU) => Supprimer_LRU(Cache); -- à faire
 			when (Politique'Val = LFU) => Supprimer_LFU(Cache);
 		end case;
 	end Supprimer;
