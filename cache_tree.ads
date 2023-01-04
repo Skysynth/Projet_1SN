@@ -36,7 +36,7 @@ package cache_tree is
     --      Masque : Mode In T_Adresse_IP; -- le masque à ajouter
     --      Sortie : Mode In Unbounded_String; -- la sortie à ajouter
     -- post-condition : Cache.All.Taille = Cache.All.Taille'Last + 1
-    procedure Enregistrer(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String) with
+    procedure Enregistrer(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String; Taille : Integer) with
         Post => Cache.All.Taille = Cache.All.Taille'Last + 1;
 
 
@@ -59,7 +59,7 @@ package cache_tree is
     --      Politique : Mode In T_Politique; -- la politique choisie
     -- pré-condition : Est_Plein(Cache)
     -- post-condition : Cache.All.Taille = Cache.All.Taille'Last - 1
-    procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in T_Politique) with
+    procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in Unbounded_String) with
         Pre => Est_Plein(Cache),
         Post => Cache.All.Taille = Cache.All.Taille'Last - 1;
 

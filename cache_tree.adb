@@ -1,4 +1,4 @@
--- with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 with routeur_exceptions; use routeur_exceptions;
 with Ada.Unchecked_Deallocation;
 
@@ -30,15 +30,16 @@ package body cache_tree is
         end if;
 	end Vider;
 
-	procedure Enregistrer(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String) is
+	procedure Enregistrer(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String; Taille : Integer) is
 		Compteur_Taille : T_Cache_Arbre;
 	begin
 		-- On initialise le compteur pour la taille
 		Compteur_Taille := Cache;
 
+
 		-- Cas où le cache est vide
 		if Est_Vide(Cache) then
-			Cache := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+			Cache := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, 0, False);
 			Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 		else
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
@@ -46,11 +47,11 @@ package body cache_tree is
 
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 		for i in 0..31 loop
-			if (Adresse AND (2 ** (31 - i)) = 0) then
+			if ((Adresse AND (2 ** (31 - i))) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Cache.All.Gauche) then
 				-- Cas où le cache à gauche est vide
-					Cache.All.Gauche := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+					Cache.All.Gauche := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, 0, False);
 					Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 					Cache := Cache.All.Gauche;
 				else
@@ -60,7 +61,7 @@ package body cache_tree is
 				-- Cas où le bit vaut 1
 				if Est_Vide(Cache.All.Droite) then
 				-- Cas où le cache à droite est vide
-					Cache.All.Droite := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+					Cache.All.Droite := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, 0, False);
 					Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 					Cache := Cache.All.Droite;
 				else
@@ -84,15 +85,14 @@ package body cache_tree is
 	begin
 		if Est_Vide(Cache) then
 		-- Cas où le cache est vide
-			Cache := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
-			Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
+			raise Adresse_Absente_Exception;
 		else
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
 
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 		for i in 0..(31 - 1) loop
-			if (Adresse AND (2 ** (31 - i)) = 0) then
+			if ((Adresse AND (2 ** (31 - i))) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Cache.Gauche) then
 				-- Cas où le cache à gauche est vide
@@ -117,22 +117,24 @@ package body cache_tree is
 		when Adresse_Absente_Exception => Put("L'adresse demandée n'est pas présente.");
 	end Ajouter_Frequence;
 
-	procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in T_Politique) is
-		Compteur_Taille : T_Cache;
+	procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in Unbounded_String) is
+		Compteur_Taille : T_Cache_Arbre;
 
-		procedure Supprimer_FIFO(Cache : in T_Cache_Arbre) is
+		procedure Supprimer_FIFO(Cache : in out T_Cache_Arbre) is
 		begin
 			null; -- à compléter
+			Cache.All.Taille := Cache.All.Taille - 1;
 		end Supprimer_FIFO;
 
-		procedure Supprimer_LRU(Cache : in T_Cache_Arbre) is
+		procedure Supprimer_LRU(Cache : in out T_Cache_Arbre) is
 		begin
 			null; -- à compléter
+			Cache.All.Taille := Cache.All.Taille - 1;
 		end Supprimer_LRU;
 
 		function Recherche_Frequence_Min(Cache : in T_Cache_Arbre) return T_Adresse_IP is
-			Recherche_Frequence1 : T_Cache;
-			Recherche_Frequence2 : T_Cache;
+			Recherche_Frequence1 : T_Cache_Arbre;
+			Recherche_Frequence2 : T_Cache_Arbre;
 			Min : Integer;
 			Adresse : T_Adresse_IP;
 		begin
@@ -144,7 +146,7 @@ package body cache_tree is
 			
 			-- On recherche le minimum à droite et à gauche
 			if Recherche_Frequence1 /= null and then Recherche_Frequence1.Gauche /= null then
-				if Min > Recherche_Frequence1.All.Frequence1 then
+				if Min > Recherche_Frequence1.All.Frequence then
 					Min := Recherche_Frequence1.All.Frequence;
 					Adresse := Recherche_Frequence1.All.Adresse;
 				else
@@ -155,7 +157,7 @@ package body cache_tree is
 
 				Adresse := Recherche_Frequence_Min(Recherche_Frequence1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 			elsif Recherche_Frequence2 /= null and then Recherche_Frequence2.Droite /= null then
-				if Min > Recherche_Frequence2.All.Frequence2 then
+				if Min > Recherche_Frequence2.All.Frequence then
 					Min := Recherche_Frequence2.All.Frequence;
 					Adresse := Recherche_Frequence1.All.Adresse;
 				else
@@ -168,14 +170,14 @@ package body cache_tree is
 			else
 				-- On regarde les cas où on sort des if à cause des premières conditions
 				if Recherche_Frequence1 /= null then
-					if Min > Cache.All.Frequence1 then
+					if Min > Cache.All.Frequence then
 						Min := Recherche_Frequence1.All.Frequence;
 						Adresse := Recherche_Frequence1.All.Adresse;
 					else
 						null; -- il ne ne passe rien
 					end if;
 				elsif Recherche_Frequence2 /= null then
-					if Min > Cache.All.Frequence2 then
+					if Min > Cache.All.Frequence then
 						Min := Recherche_Frequence2.All.Frequence;
 						Adresse := Recherche_Frequence1.All.Adresse;
 					else
@@ -189,9 +191,9 @@ package body cache_tree is
 			return Adresse;
 		end Recherche_Frequence_Min;
 
-		procedure Supprimer_LFU(Cache : in T_Cache_Arbre) is
+		procedure Supprimer_LFU(Cache : in out T_Cache_Arbre) is
 			Adresse : T_Adresse_IP;
-			Suppresseur : T_Cache;
+			Suppresseur : T_Cache_Arbre;
 		begin
 			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
 			Adresse := Recherche_Frequence_Min(Cache); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
@@ -199,7 +201,7 @@ package body cache_tree is
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			for i in 0..(31 - 1) loop
-				if (Adresse AND (2 ** (31 - i)) = 0) then
+				if ((Adresse AND (2 ** (31 - i))) = 0) then
 					--  Cas où le bit vaut 0
 						Suppresseur := Suppresseur.All.Gauche;
 				else
@@ -208,19 +210,17 @@ package body cache_tree is
 				end if;
 			end loop;
 
-			-- Il ne reste plus qu'à supprimer cette cellule
+			-- Il ne reste plus qu'à supprimer cette cellule et diminiuer la taille de 1
+			Cache.All.Taille := Cache.All.Taille - 1;
 			Free(Suppresseur);
 		end Supprimer_LFU;
 
 	begin
-		-- On initialise le compteur pour la taille
-		Compteur_Taille := Cache;
-
 		-- On regarde quelle est la procédure
 		case Politique is
-			-- when (Politique'Val = FIFO) => Supprimer_FIFO(Cache); -- à faire (peut être)
-			-- when (Politique'Val = LRU) => Supprimer_LRU(Cache); -- à faire (peut être)
-			when (Politique'Val = LFU) => Supprimer_LFU(Cache);
+			-- when (Politique = "FIFO") => Supprimer_FIFO(Cache); -- à faire (peut être)
+			-- when (Politique = "LRU") => Supprimer_LRU(Cache); -- à faire (peut être)
+			when (Politique = "LFU") => Supprimer_LFU(Cache);
 			when others => raise Politique_non_valide_exception;
 		end case;
 
