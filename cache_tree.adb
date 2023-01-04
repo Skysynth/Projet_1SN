@@ -217,10 +217,10 @@ package body cache_tree is
 
 	begin
 		-- On regarde quelle est la procédure
-		case Politique'Val is
-			-- when "FIFO" => Supprimer_FIFO(Cache); -- FIFO : à faire (peut être)
-			-- when "LRU" => Supprimer_LRU(Cache); -- LRU : à faire (peut être)
-			when "LFU" => Supprimer_LFU(Cache); -- LFU
+		case T_Politique'Pos(Politique) is
+			-- when 1 => Supprimer_FIFO(Cache); -- FIFO : à faire (peut être)
+			-- when 2 => Supprimer_LRU(Cache); -- LRU : à faire (peut être)
+			when 3 => Supprimer_LFU(Cache); -- LFU
 			when others => raise Politique_non_valide_exception;
 		end case;
 
