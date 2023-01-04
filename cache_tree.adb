@@ -117,7 +117,7 @@ package body cache_tree is
 		when Adresse_Absente_Exception => Put("L'adresse demandée n'est pas présente.");
 	end Ajouter_Frequence;
 
-	procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in Unbounded_String) is
+	procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in T_Politique) is
 		Compteur_Taille : T_Cache_Arbre;
 
 		procedure Supprimer_FIFO(Cache : in out T_Cache_Arbre) is
@@ -217,10 +217,10 @@ package body cache_tree is
 
 	begin
 		-- On regarde quelle est la procédure
-		case Politique is
-			-- when (Politique = "FIFO") => Supprimer_FIFO(Cache); -- à faire (peut être)
-			-- when (Politique = "LRU") => Supprimer_LRU(Cache); -- à faire (peut être)
-			when (Politique = "LFU") => Supprimer_LFU(Cache);
+		case Politique'Val is
+			-- when "FIFO" => Supprimer_FIFO(Cache); -- FIFO : à faire (peut être)
+			-- when "LRU" => Supprimer_LRU(Cache); -- LRU : à faire (peut être)
+			when "LFU" => Supprimer_LFU(Cache); -- LFU
 			when others => raise Politique_non_valide_exception;
 		end case;
 

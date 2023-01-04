@@ -1,4 +1,5 @@
 with tools; use tools;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package cache_tree is
 
@@ -59,7 +60,7 @@ package cache_tree is
     --      Politique : Mode In T_Politique; -- la politique choisie
     -- pré-condition : Est_Plein(Cache)
     -- post-condition : Cache.All.Taille = Cache.All.Taille'Last - 1
-    procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in Unbounded_String) with
+    procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in T_Politique) with
         Pre => Est_Plein(Cache),
         Post => Cache.All.Taille = Cache.All.Taille'Last - 1;
 
