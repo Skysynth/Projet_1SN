@@ -230,7 +230,11 @@ package body cache_tree is
 	end Supprimer;
 
 	function Est_Plein(Cache : in T_Cache) return Boolean is
+		Est_Plein : Boolean;
 	begin
+		null; -- à compléter
+
+		return Est_Plein;
 	end Est_Plein;
 
 end cache_tree;
