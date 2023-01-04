@@ -72,6 +72,12 @@ package cache_tree is
     function Est_Plein(Cache : in T_Cache_Arbre; Taille : Integer) with
         Pre => not Est_Vide(Cache);
 
+    -- nom : Afficher_Cache
+    -- sémantique : Permet d'afficher le cache
+    -- paramètres :
+    --      Cache : Mode In T_Cache_Arbre; -- le cache à afficher
+    procedure Afficher_Cache(Cache : in T_Cache_Arbre);
+
 private
 
     type T_Cache_Cellule;
