@@ -78,13 +78,17 @@ package Table_Routage is
 	procedure Vider (Table_Routage : in out T_Table_Routage) with
 		Post => Est_Vide (Table_Routage);
 
-    
+    -- nom : Afficher
+    -- Semantique : Affiche la table de routage 
+    -- parametres :
+    --      Table_routage : Mode In/Out T_Table_Routage; -- le table de routage a afficher
+
     procedure Afficher(Table_Routage : in T_Table_Routage; file : File_Type);
 
     
     function Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage) return Unbounded_String;
     
-    -- fonction qui permettent d acceder aux differentes valeur ou pointe les pointeurs
+    -- fonction qui permettent d acceder aux differentes valeur ou pointe les pointeurs (car c est en limited private)
     function Get_Adresse(Table_Routage: in T_Table_Routage) return T_Adresse_IP;
     function Get_Masque(Table_Routage: in T_Table_Routage) return T_Adresse_IP;
     function Get_Sortie(Table_Routage: in T_Table_Routage) return Unbounded_String;
