@@ -2,7 +2,7 @@ with tools; use tools;
 
 package cache_tree is
 
-    type T_Cache is limited private;
+    type T_Cache_Arbre is limited private;
 
     -- nom : Initialiser
     -- sémantique : Initialiser le cache à initialiser
@@ -24,7 +24,7 @@ package cache_tree is
     -- post-condition : Est_Vide(Cache)
     -- tests :
     --      entrées : Cache. sortie : Cache = null.
-    procedure Vider(Cache : in out T_Cache) with
+    procedure Vider(Cache : in out T_Cache_Arbre) with
 		Post => Est_Vide(Cache);
 
 
@@ -69,7 +69,7 @@ package cache_tree is
     -- paramètres :
     --      Cache : Mode In T_Cache_Arbre; -- le cache
     -- pré-condition : not Est_Vide(Cache)
-    function Est_Plein(Cache : in T_Cache_Arbre; Taille : Integer) with
+    function Est_Plein(Cache : in T_Cache_Arbre; Taille : in Integer) return Boolean with
         Pre => not Est_Vide(Cache);
 
     -- nom : Afficher_Cache
@@ -89,8 +89,8 @@ private
         Adresse : T_Adresse_IP;
         Masque : T_Adresse_IP;
         Sortie : Unbounded_String;
-        Gauche : T_Cache;
-        Droite : T_Cache;
+        Gauche : T_Cache_Arbre;
+        Droite : T_Cache_Arbre;
         Frequence : Integer; -- pour appliquer les politiques
         Active : Boolean; -- pour savoir si la cellule est active ou non
     end record;

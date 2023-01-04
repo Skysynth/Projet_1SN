@@ -1,5 +1,5 @@
 -- with Ada.Text_IO; use Ada.Text_IO;
-with SDA_Exceptions; use SDA_Exceptions;
+with routeur_exceptions; use routeur_exceptions;
 with Ada.Unchecked_Deallocation;
 
 package body cache_tree is
@@ -7,7 +7,7 @@ package body cache_tree is
 	procedure Free is
 		new Ada.Unchecked_Deallocation(Object => T_Cache_Cellule, Name => T_Cache_Arbre);
 
-	procedure Initialiser(Sda : out T_Cache_Arbre) is
+	procedure Initialiser(Cache : out T_Cache_Arbre) is
 	begin
 		Cache := Null;
 	end Initialiser;
@@ -22,7 +22,7 @@ package body cache_tree is
         if not Est_Vide(Cache) then
             -- Si le cache n'est pas vide
 			Vider(Cache.All.Gauche);
-            Vider(Cache.All.Droit);
+            Vider(Cache.All.Droite);
             Free(Cache);
         else
 			-- Si le cache est vide
@@ -48,9 +48,9 @@ package body cache_tree is
 		for i in 0..31 loop
 			if (Adresse AND (2 ** (31 - i)) = 0) then
 				--  Cas où le bit vaut 0
-				if Est_Vide(Cache.Gauche) then
+				if Est_Vide(Cache.All.Gauche) then
 				-- Cas où le cache à gauche est vide
-					Cache.Gauche := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+					Cache.All.Gauche := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
 					Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 					Cache := Cache.All.Gauche;
 				else
@@ -58,9 +58,9 @@ package body cache_tree is
 				end if;
 			else
 				-- Cas où le bit vaut 1
-				if Est_Vide(Cache.Droite) then
+				if Est_Vide(Cache.All.Droite) then
 				-- Cas où le cache à droite est vide
-					Cache.Droite := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+					Cache.All.Droite := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
 					Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 					Cache := Cache.All.Droite;
 				else
@@ -128,7 +128,7 @@ package body cache_tree is
 		procedure Supprimer_LRU(Cache : in T_Cache_Arbre) is
 		begin
 			null; -- à compléter
-		end Supprimer_FIFO;
+		end Supprimer_LRU;
 
 		function Recherche_Frequence_Min(Cache : in T_Cache_Arbre) return T_Adresse_IP is
 			Recherche_Frequence1 : T_Cache;
@@ -144,7 +144,7 @@ package body cache_tree is
 			
 			-- On recherche le minimum à droite et à gauche
 			if Recherche_Frequence1 /= null and then Recherche_Frequence1.Gauche /= null then
-				if Min > Cache.All.Frequence1 then
+				if Min > Recherche_Frequence1.All.Frequence1 then
 					Min := Recherche_Frequence1.All.Frequence;
 					Adresse := Recherche_Frequence1.All.Adresse;
 				else
@@ -155,7 +155,7 @@ package body cache_tree is
 
 				Adresse := Recherche_Frequence_Min(Recherche_Frequence1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 			elsif Recherche_Frequence2 /= null and then Recherche_Frequence2.Droite /= null then
-				if Min > Cache.All.Frequence2 then
+				if Min > Recherche_Frequence2.All.Frequence2 then
 					Min := Recherche_Frequence2.All.Frequence;
 					Adresse := Recherche_Frequence1.All.Adresse;
 				else
@@ -186,14 +186,15 @@ package body cache_tree is
 				end if;
 			end if;
 
-			return Adresse_Min;
-		end Recherche_Frequence;
+			return Adresse;
+		end Recherche_Frequence_Min;
 
 		procedure Supprimer_LFU(Cache : in T_Cache_Arbre) is
+			Adresse : T_Adresse_IP;
 			Suppresseur : T_Cache;
 		begin
 			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
-			Adresse_A_Supprimer := Recherche_Frequence_Min(Cache); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
+			Adresse := Recherche_Frequence_Min(Cache); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
 			Suppresseur := Cache;
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
@@ -209,7 +210,7 @@ package body cache_tree is
 
 			-- Il ne reste plus qu'à supprimer cette cellule
 			Free(Suppresseur);
-		end Supprimer_FIFO;
+		end Supprimer_LFU;
 
 	begin
 		-- On initialise le compteur pour la taille
@@ -227,7 +228,7 @@ package body cache_tree is
 		when Politique_non_valide_exception => Put("La politique demandée n'est pas valide.");
 	end Supprimer;
 
-	function Est_Plein(Cache : in T_Cache_Arbre; Taille : Integer) return Boolean is
+	function Est_Plein(Cache : in T_Cache_Arbre; Taille : in Integer) return Boolean is
 		Est_Plein : Boolean;
 	begin
 		if Cache.All.Taille >= Taille then
