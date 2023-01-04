@@ -1,15 +1,18 @@
+with Ada.Strings; use Ada.Strings;
 with Ada.Text_IO; use Ada.Text_IO;
 -- with Ada.Integer_Text_IO; use Ada.Integer_Text_IO;
 with Ada.Command_Line; use Ada.Command_Line;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with routeur_exceptions; use routeur_exceptions;
 with tools; use tools;
+with Table_Routage; use Table_Routage;
+with Ada.Exceptions; use Ada.Exceptions;
 
 procedure Main is
 
-    iterateur : Integer;
-
     param : T_Param;
+
+    tr : T_Table_Routage;
 
     -- Afficher l'usage
     procedure Afficher_Usage is
@@ -28,62 +31,59 @@ procedure Main is
         New_Line;
     end Afficher_Usage;
 
+    File_paquet : File_Type;
+    File_resultat : File_Type;
+    ligne : Unbounded_String;
 
+    num_ligne : Integer;
 begin
 
-
-    param := Initialiser;
-    iterateur := 1;
+    param := Initialiser_Param;
 
     begin
 
-        while iterateur <= Argument_Count loop
-
-                if Argument(iterateur)(1) = '-' and Argument(iterateur)'Length = 2 then
-
-                    case Argument(iterateur)(2) is
-
-                        when 'c' =>
-                            param.taille_cache := Integer'Value(Argument(iterateur + 1));
-                            iterateur := iterateur + 1;
-
-                        when 'P' =>
-                            param.politique := T_Politique'Value(Argument(iterateur + 1));
-                            iterateur := iterateur + 1;
-
-                        when 's' => param.afficher_stats := True;
-
-                        when 'S' => param.afficher_stats := False;
-
-                        when 't' =>
-                            param.file_table_routage := To_Unbounded_String(Argument(iterateur + 1));
-                            iterateur := iterateur + 1;
-
-                        when 'p' =>
-                            param.file_paquets := To_Unbounded_String(Argument(iterateur + 1));
-                            iterateur := iterateur + 1;
-
-                        when 'r' =>
-                            param.file_resultats := To_Unbounded_String(Argument(iterateur + 1));
-                            iterateur := iterateur + 1;
-
-                        when others => raise Option_non_valide_exception;
-
-                    end case;
-
-                    iterateur := iterateur + 1;
-
-                else
-                    raise Option_non_valide_exception;
-                end if;
-
-        end loop;
+        Remplir_param(param);
 
         Afficher_Param(param);
 
-    exception
+        Initialiser(param         => param,
+                    Table_routage => tr);
 
-        when others => Afficher_Usage;
+        New_Line;
+        Afficher(tr, Standard_Output);
+
+        -- PAQUETS :
+        Open (File => File_paquet, Mode => In_File, Name => To_String(param.file_paquets));
+
+        Create (File => File_resultat, Mode => Out_File, Name => To_String(param.file_resultats));
+
+        num_ligne := 1;
+
+        While not End_Of_File (File_paquet) Loop
+
+            ligne := To_Unbounded_String(Get_Line(File_paquet));
+            Trim(ligne, Both);
+
+            if Is_Command_And_Then_Execute(To_String(ligne), tr, File_resultat, num_ligne) then
+               null;
+            else
+                Put_Line(File_resultat, To_String(ligne) & " " & To_String(Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr)));
+            end if;
+
+            num_ligne := num_ligne + 1;
+
+        end loop;
+
+        Close (File_paquet);
+        Close (File_resultat);
+
+
+    exception
+        when Option_non_valide_exception => Afficher_Usage;
+        when Name_Error => raise Name_Error with "Un des fichiers passés en paramètres n'existe pas !";
+        when COMMAND_FIN_CALLED => Put_Line("Fin du programme.");
+
+        when E : others => Put_Line (Exception_Message (E));
     end;
 
 end Main;

@@ -1,72 +1,24 @@
-with Ada.Text_IO;            use Ada.Text_IO;
-with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Unchecked_Deallocation;
-with tools; use tools;
-with Routeur_Exceptions;    use Routeur_Exceptions;
+with Routeur_Exceptions; use Routeur_Exceptions;
 
 -- R1 : Concevoir et initialiser un routeur
 package body Table_Routage is
     
     procedure Free is
         new Ada.Unchecked_Deallocation (Object => T_Cellule, Name => T_Table_Routage);
-    
-    function Convert_Unbounded_String_To_T_Adresse_IP(ligne : Unbounded_String) return T_Adresse_IP is
-        Adresse_Converti : T_Adresse_IP := 0;
-        mot : Unbounded_String;
-        N : Integer;
-        j : Integer := 1;
-    begin
-            
-        for i in 0..3 loop 
-            mot := Null_Unbounded_String;
-                
-            N := length(ligne);
-                
-            while j <= N and then Element(ligne, j) /= '.' loop
-                
-                mot := mot & Element(ligne, j);
-                j := j+1;
-                    
-            end loop;
-                
-            -- Enregistrer la destination et le masque une fois converti dans le routeur et enregistrer l'interface dans le routeur
-              
-            Adresse_Converti := Adresse_Converti + T_Adresse_IP'Value(To_String(mot)) * (2 ** (24-8*i));
-            
-            j := j + 1;
-            
-        end loop;
-            
-        return Adresse_Converti;
-            
-    end;
-    
-    procedure Afficher(Table_Routage : in T_Table_Routage) is
-        
-        table_temp : T_Table_Routage := Table_Routage;
-    begin
-        
-        while table_temp /= null loop
-            
-            Put_Line("Adresse : " & T_Adresse_IP'Image(table_temp.all.Adresse) 
-                     & "   Masque : " & T_Adresse_IP'Image(table_temp.all.Masque) 
-                     & "   Interface : " & To_String(table_temp.all.Sortie)); 
-            
-            table_temp := table_temp.all.Suivant;
-        end loop;
-        
-    end;
+
+
+
     
     -- R2 : Initialiser un routeur 
     procedure Initialiser(param : in T_Param; Table_Routage: out T_Table_Routage) is
         File : File_Type;
         Donnee : array(1..3) of Unbounded_String;
     
-        -- Concevoir le tableau de taille 3
+        
         iterateur : Integer;
         ligne : Unbounded_String;
         
-        mot : Unbounded_String;
         N : Integer;
         
         table_routage_temp : T_Table_Routage;
@@ -86,8 +38,7 @@ package body Table_Routage is
             N := length(ligne);
             iterateur := 1;
             
-            -- Concevoir un tableau de taille 3 qui va stocker des chaines de caracteres
-            
+            -- R3 : Concevoir un tableau de taille 3 qui va stocker des chaînes de caracteres( Destination , masque et interface) 
             for j in 1..3 loop
                 
                 Donnee(j) := Null_Unbounded_String;
@@ -104,11 +55,14 @@ package body Table_Routage is
                    
             end loop;
             
-            -- Convertir l'adresse IP de la destination et du masque
-            table_routage_temp.all.Adresse := Convert_Unbounded_String_To_T_Adresse_IP(Donnee(1));
-            table_routage_temp.all.Masque := Convert_Unbounded_String_To_T_Adresse_IP(Donnee(2));
+            --R3: Convertir l’adresse IP de la destination et du masque  
+            --R3 :  Enregistrer la destination et le masque une fois converti dans le routeur et enregistrer l interface dans le routeur.
+            table_routage_temp.all.Adresse := Unbounded_String_To_Adresse_IP(Donnee(1));
+            table_routage_temp.all.Masque := Unbounded_String_To_Adresse_IP(Donnee(2));
             table_routage_temp.all.Sortie := Donnee(3);
-                        
+
+
+            -- R3 : Concevoir une nouvelle cellule dans le routeur pour stocker les données de la prochaine ligne.           
             if not End_Of_File (File) then
                 table_routage_temp.Suivant := new T_Cellule;
                 table_routage_temp := table_routage_temp.Suivant;
@@ -122,125 +76,51 @@ package body Table_Routage is
         
     end Initialiser;
 
-    function Get_taille_binaire(adresse : T_Adresse_IP) return Integer is
-        
-        compteur : Integer := 0;
-        
-        exposant : Integer := 31;
-        
-        resultat : Integer := 1;
-        
-    begin
-        
-        while resultat /= 0 loop
-            
-            resultat := (2 ** exposant) and adresse;
-            
-            compteur := compteur + 1;
-            exposant := exposant - 1;
-            
-        end loop;
-        
-        return compteur;
-        
-    end Get_taille_binaire;
-    
-    
-    -- retourne l'interface associée à cette adresse IP
-    function Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage) return Unbounded_String is
-        
-        table_temp : T_Table_Routage;
-        
-        interface_max : Unbounded_String;
-        masque_max : T_Adresse_IP := 0;
-        
-    begin
-        
-        table_temp := Table_Routage;
-        
-        -- Parcourir les adresses ip
-        while not Est_Vide(table_temp) loop
-            -- Adresse correspond ?
-            if adresse_Correspond(Adresse_IP, table_temp.all.Adresse, table_temp.all.Masque) then
-                -- Masque plus grand que l'ancien ?
-                if get_taille_binaire(table_temp.all.Masque) > masque_max then
-                    masque_max := table_temp.all.Masque;
-                else
-                    null;
-                end if;
-            else
-                null;
-            end if;
-            
-            table_temp := table_temp.all.Suivant;
-                
-        end loop;
 
-        return interface_max;
 
-    end Get_Interface;
-    
-    
 
+
+
+
+        
     function Est_Vide (Table_Routage : in T_Table_Routage) return Boolean is
     begin
 	
         return Table_Routage = null;	
     end;
-
+    
     function Taille (Table_Routage : in T_Table_Routage) return Integer is
-	
+	result : Integer; 
+    table_temp : T_Table_Routage;
     begin
-		
-        if Table_Routage = null then 
-            return 0;
-        else 
-            return Taille(Table_Routage.all.Suivant) + 1;
-        end if;
+		result := 0;
+        table_temp:= Table_Routage;
+        while not(Est_Vide(table_temp)) loop 
+            result := result +1; 
+            table_temp := table_temp.all.Suivant;
+        end loop;
+    
+        return result;
+
+
+        
 
     end Taille;
 
-
-
-    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : in T_Adresse_IP ; Masque : in T_Adresse_IP; Sortie : Unbounded_String) is
-
+    
+    procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : in T_Adresse_IP ; Masque : in T_Adresse_IP; Sortie : in Unbounded_String) is
     begin
-        if Est_Vide(Table_Routage) then
-            Table_Routage := new T_Cellule'(Adresse, Masque,Sortie, Table_Routage);
-        else
-            Enregistrer(Table_Routage.all.Suivant, Adresse, Masque, Sortie);
-        end if;
-
+        if Est_Vide (Table_Routage) then
+			-- Structure vide
+			Table_Routage := new T_Cellule'(Adresse, Masque, Sortie, null); -- On crée une nouvelle cellule
+			
+		else
+			Enregistrer (Table_Routage.All.Suivant, Adresse, Masque, Sortie); -- Récursivité sur le pointeur suivant
+		end if;
     end Enregistrer;
 
-    function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean is
-
-	
-    begin	
-	
-        if not(Est_Vide(Table_Routage)) then 
-            if Table_Routage.all.Adresse = adresse then 
-                return true;
-            else 
-                return Adresse_Presente(Table_Routage.all.Suivant, adresse);
-            end if;
-        else 
-            return false;
-        end if; 
-    end Adresse_Presente;
-
-
-    function La_Donnee (Table_Routage : in T_Table_Routage ; adresse : T_Adresse_IP) return T_Adresse_IP is
-	
-    begin
-        return 0;
-	
-    end La_Donnee;
-
-
-    procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : T_Adresse_IP) is
+    procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : in T_Adresse_IP) is
         Table_A_Supp : T_Table_Routage;
-
     begin
         if Est_Vide(Table_Routage) then
             raise Adresse_Absente_Exception;
@@ -253,8 +133,6 @@ package body Table_Routage is
         end if;
     end Supprimer;
 
-
-
     procedure Vider (Table_Routage : in out T_Table_Routage) is
     begin
         if not(Est_Vide(Table_Routage)) then
@@ -265,6 +143,130 @@ package body Table_Routage is
         end if;
 		
     end Vider;
+    
+    procedure Afficher(Table_Routage : in T_Table_Routage; file : File_Type) is
+        
+        table_temp : T_Table_Routage := Table_Routage;
+    
+    begin
+        
+        while table_temp /= null loop
+            
+            Put_Line(file, Adresse_IP_To_String(table_temp.all.Adresse) & 
+                         " " & Adresse_IP_To_String(table_temp.all.Masque) &
+                         " " & To_String(table_temp.all.Sortie)); 
+            
+            table_temp := table_temp.all.Suivant;
+        end loop;
+        
+    end;
+
+    
+    function Adresse_Correspond(adresse1 : T_Adresse_IP; adresse2 : T_Adresse_IP; Masque: T_Adresse_IP) return Boolean is
+    begin    
+        return (adresse1 AND Masque) = (adresse2 AND Masque);
+    end Adresse_Correspond;
+    
+    -- retourne l'interface associée à cette adresse IP
+    function Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage) return Unbounded_String is
+        
+        table_temp : T_Table_Routage;
+        
+        interface_max : Unbounded_String;
+        taille_masque_max : Integer := -1;
+        taille_masque : Integer;
+        
+    begin
+        
+        table_temp := Table_Routage;
+        
+        -- Parcourir les adresses ip
+        while not Est_Vide(table_temp) loop
+            
+            if Adresse_Correspond(Adresse_IP, table_temp.all.Adresse, table_temp.all.Masque) then
+                
+                taille_masque := Get_taille_binaire(table_temp.all.Masque);
+                
+                if taille_masque > taille_masque_max then
+                    taille_masque_max := taille_masque;
+                    interface_max := table_temp.all.Sortie;
+                else
+                    null;
+                end if;
+            else
+                null;
+            end if;
+            
+            table_temp := table_temp.all.Suivant;
+                
+        end loop;
+        
+        return interface_max;
+
+    end Get_Interface;
+    
+    function Get_Adresse ( Table_Routage : T_Table_Routage ) return T_Adresse_IP is 
+    begin 
+        return Table_Routage.all.Adresse;
+    end Get_Adresse; 
+
+    function Get_Masque ( Table_Routage : T_Table_Routage ) return T_Adresse_IP is 
+    begin 
+        return Table_Routage.all.Masque;
+    end Get_Masque; 
+
+    function Get_Sortie(Table_Routage: in T_Table_Routage) return Unbounded_String is 
+    begin 
+        return Table_Routage.all.Sortie;
+    end Get_Sortie; 
+
+    function Get_Suivant(Table_Routage: in T_Table_Routage) return T_Table_Routage is 
+    begin 
+        return Table_Routage.all.Suivant; 
+    end Get_Suivant;
 
 
+    function Is_Command_And_Then_Execute(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean is
+        type Commandes is (Table, Cache, Stat, Fin); 
+    begin
+        
+        case Commandes'Value(ligne) is
+        when Table =>
+            New_Line(File    => file_output);
+            Put_Line(file_output, "Table (" & Integer'Image(num_ligne) & " )");
+            Afficher(Table_Routage => tr,
+                     file          => file_output);
+        when Cache =>
+            New_Line(File    => file_output);
+            Put_Line(file_output, "Cache (" & Integer'Image(num_ligne) & " )");
+            Put_Line(file_output, "prochainement...");
+        when Stat =>
+            New_Line(File    => file_output);
+            Put_Line(file_output, "Stat (" & Integer'Image(num_ligne) & " )");
+            Put_Line(file_output, "prochainement...");
+        when Fin =>
+            New_Line(File    => file_output);
+            Put_Line(file_output, "Fin (" & Integer'Image(num_ligne) & " )");
+            raise COMMAND_FIN_CALLED;
+        end case;
+        
+        return True;
+        
+    exception
+        when Constraint_Error => return False;
+    end Is_Command_And_Then_Execute;
+    
+    function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean is
+    begin	
+        if not(Est_Vide(Table_Routage)) then 
+            if Table_Routage.all.Adresse = adresse then 
+                return true;
+            else 
+                return Adresse_Presente(Table_Routage.all.Suivant, adresse);
+            end if;
+        else 
+            return false;
+        end if; 
+    end Adresse_Presente;
+    
 end Table_Routage;

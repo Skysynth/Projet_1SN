@@ -3,7 +3,7 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 package tools is
 
     type T_Politique is (FIFO, LRU, LFU);
-
+    -- un enregistrement qui permet de stocker les differentes donnees sur la table de routage manipulee
     type T_Param is record
 
         taille_cache : Integer; -- Parametre [-c]
@@ -14,15 +14,25 @@ package tools is
         politique : T_Politique; -- Parametre [-P]
 
     end record;
-
+    -- type des adresses IP
     type T_Adresse_IP is mod 2 ** 32;
 
-    -- function is_Param_Valid(parametre : Character) return Boolean;
-
-    -- function is_File_Valid(file : String) return Boolean;
-
-    function Initialiser return T_Param;
+    function Initialiser_Param return T_Param;
 
     procedure Afficher_Param(param : T_Param);
+
+    procedure Remplir_Param(param : out T_Param);
+
+    function Get_taille_binaire(adresse : in T_Adresse_IP) return Integer;
+
+
+    -- Unbounded_String_To_Adresse_IP permet de transformer une adresse IP (de type character, ex : 147.0.0.0) en type T_Adresse_IP
+    function Unbounded_String_To_Adresse_IP(ligne : in Unbounded_String) return T_Adresse_IP;
+    --Adresse_IP_To_String est l'operation inverse de  Unbounded_String_To_Adresse_IP
+    function Adresse_IP_To_String(adresse : in T_Adresse_IP) return String;
+
+    function Apply_Masque(adresse : in T_Adresse_IP; masque : in T_Adresse_IP) return T_Adresse_IP;
+
+    function Is_Equal_With_Mask(adresse1 : in T_Adresse_IP; adresse2 : in T_Adresse_IP; masque : in T_Adresse_IP) return Boolean;
 
 end tools;

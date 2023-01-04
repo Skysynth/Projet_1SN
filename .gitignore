@@ -1,0 +1,5 @@
+
+*.ali
+*.o
+main
+test_table_routage
