@@ -186,14 +186,15 @@ package body cache_tree is
 				end if;
 			end if;
 
-			return Adresse_Min;
+			return Adresse;
 		end Recherche_Frequence_Min;
 
 		procedure Supprimer_LFU(Cache : in T_Cache_Arbre) is
+			Adresse : T_Adresse_IP;
 			Suppresseur : T_Cache;
 		begin
 			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
-			Adresse_A_Supprimer := Recherche_Frequence_Min(Cache); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
+			Adresse := Recherche_Frequence_Min(Cache); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
 			Suppresseur := Cache;
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
