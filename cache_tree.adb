@@ -44,12 +44,9 @@ package body cache_tree is
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
 
-		-- On stocke la taille binaire de l'adresse
-		Taille_Adresse := Get_taille_binaire(Adresse);
-
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-		for i in 0..(Taille_Adresse - 1) loop
-			if (Adresse AND (2 ** (Taille_Adresse - i)) = 0) then
+		for i in 0..31 loop
+			if (Adresse AND (2 ** (31 - i)) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Cache.Gauche) then
 				-- Cas où le cache à gauche est vide
@@ -93,12 +90,9 @@ package body cache_tree is
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
 
-		-- On stocke la taille binaire de l'adresse
-		Taille_Adresse := Get_taille_binaire(Adresse);
-
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-		for i in 0..(Taille_Adresse - 1) loop
-			if (Adresse AND (2 ** (Taille_Adresse - i)) = 0) then
+		for i in 0..(31 - 1) loop
+			if (Adresse AND (2 ** (31 - i)) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Cache.Gauche) then
 				-- Cas où le cache à gauche est vide
@@ -203,8 +197,8 @@ package body cache_tree is
 			Suppresseur := Cache;
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-			for i in 0..(Taille_Adresse - 1) loop
-				if (Adresse AND (2 ** (Taille_Adresse - i)) = 0) then
+			for i in 0..(31 - 1) loop
+				if (Adresse AND (2 ** (31 - i)) = 0) then
 					--  Cas où le bit vaut 0
 						Suppresseur := Suppresseur.All.Gauche;
 				else
