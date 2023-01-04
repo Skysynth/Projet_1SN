@@ -23,7 +23,7 @@ package body cache_tree is
             -- Si le cache n'est pas vide
 			Vider(Cache.All.Gauche);
             Vider(Cache.All.Droit);
-            Free(Cache.All);
+            Free(Cache);
         else
 			-- Si le cache est vide
             Put_Line("Le cache est pas vide. Pas besoin de le vider.");
