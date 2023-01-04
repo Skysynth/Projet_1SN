@@ -1,5 +1,5 @@
 -- with Ada.Text_IO; use Ada.Text_IO;
-with SDA_Exceptions; use SDA_Exceptions;
+with routeur_exceptions; use routeur_exceptions;
 with Ada.Unchecked_Deallocation;
 
 package body cache_tree is
@@ -7,7 +7,7 @@ package body cache_tree is
 	procedure Free is
 		new Ada.Unchecked_Deallocation(Object => T_Cache_Cellule, Name => T_Cache_Arbre);
 
-	procedure Initialiser(Sda : out T_Cache_Arbre) is
+	procedure Initialiser(Cache : out T_Cache_Arbre) is
 	begin
 		Cache := Null;
 	end Initialiser;
@@ -128,7 +128,7 @@ package body cache_tree is
 		procedure Supprimer_LRU(Cache : in T_Cache_Arbre) is
 		begin
 			null; -- à compléter
-		end Supprimer_FIFO;
+		end Supprimer_LRU;
 
 		function Recherche_Frequence_Min(Cache : in T_Cache_Arbre) return T_Adresse_IP is
 			Recherche_Frequence1 : T_Cache;
@@ -187,7 +187,7 @@ package body cache_tree is
 			end if;
 
 			return Adresse_Min;
-		end Recherche_Frequence;
+		end Recherche_Frequence_Min;
 
 		procedure Supprimer_LFU(Cache : in T_Cache_Arbre) is
 			Suppresseur : T_Cache;
@@ -209,7 +209,7 @@ package body cache_tree is
 
 			-- Il ne reste plus qu'à supprimer cette cellule
 			Free(Suppresseur);
-		end Supprimer_FIFO;
+		end Supprimer_LFU;
 
 	begin
 		-- On initialise le compteur pour la taille
@@ -227,7 +227,7 @@ package body cache_tree is
 		when Politique_non_valide_exception => Put("La politique demandée n'est pas valide.");
 	end Supprimer;
 
-	function Est_Plein(Cache : in T_Cache_Arbre; Taille : Integer) return Boolean is
+	function Est_Plein(Cache : in T_Cache_Arbre; Taille : in Integer) return Boolean is
 		Est_Plein : Boolean;
 	begin
 		if Cache.All.Taille >= Taille then
