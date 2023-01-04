@@ -69,7 +69,7 @@ package cache_tree is
     -- paramètres :
     --      Cache : Mode In T_Cache; -- le cache
     -- pré-condition : not Est_Vide(Cache)
-    function Est_Plein(Cache : in T_Cache) with
+    function Est_Plein(Cache : in T_Cache; Taille : Integer) with
         Pre => not Est_Vide(Cache);
 
 private
@@ -79,7 +79,7 @@ private
     type T_Cache_Arbre is access T_Cache_Cellule;
 
     type T_Cache_Cellule is record
-        Taille : Integer; -- il s'agit de la hauteur de l'arbre
+        Taille : Integer;
         Adresse : T_Adresse_IP;
         Masque : T_Adresse_IP;
         Sortie : Unbounded_String;

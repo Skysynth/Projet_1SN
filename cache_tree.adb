@@ -229,10 +229,14 @@ package body cache_tree is
 		end case;
 	end Supprimer;
 
-	function Est_Plein(Cache : in T_Cache) return Boolean is
+	function Est_Plein(Cache : in T_Cache; Taille : Integer) return Boolean is
 		Est_Plein : Boolean;
 	begin
-		null; -- à compléter
+		if Cache.All.Taille >= Taille then
+			Est_Plein := True;
+		else
+			Est_Plein := False;
+		end if;
 
 		return Est_Plein;
 	end Est_Plein;
