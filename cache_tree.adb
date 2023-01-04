@@ -242,7 +242,9 @@ package body cache_tree is
 	end Est_Plein;
 
 	procedure Afficher_Cache(Cache : in T_Cache_Arbre) is
+		Afficheur : T_Cache_Arbre;
 	begin
+		null ; -- à compléter
 	end Afficher_Cache;
 
 end cache_tree;
