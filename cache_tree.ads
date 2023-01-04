@@ -57,10 +57,10 @@ package cache_tree is
     -- paramètres :
     --      Cache : Mode In/Out T_Cache; -- le cache
     --      Politique : Mode In T_Politique; -- la politique choisie
-    -- pré-condition : not Est_Vide(Cache)
+    -- pré-condition : Est_Plein(Cache)
     -- post-condition : Cache.All.Taille = Cache.All.Taille'Last - 1
     procedure Supprimer(Cache : in out T_Cache; Politique : in T_Politique) with
-        Pre => not Est_Vide(Cache),
+        Pre => Est_Plein(Cache),
         Post => Cache.All.Taille = Cache.All.Taille'Last - 1;
 
 

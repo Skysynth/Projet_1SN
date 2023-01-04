@@ -129,19 +129,77 @@ package body cache_tree is
 	procedure Supprimer(Cache : in out T_Cache; Politique : in T_Politique) is
 		Compteur_Taille : T_Cache;
 
-		procedure Supprimer_FIFO(Cache : in out T_Cache) is
+		procedure Supprimer_FIFO(Cache : in T_Cache) is
 		begin
 			null; -- à compléter
 		end Supprimer_FIFO;
 
-		procedure Supprimer_LRU(Cache : in out T_Cache) is
+		procedure Supprimer_LRU(Cache : in T_Cache) is
 		begin
 			null; -- à compléter
 		end Supprimer_FIFO;
 
-		procedure Supprimer_LFU(Cache : in out T_Cache) is
+		function Recherche_Frequence_Min(Cache : in T_Cache) return T_Adresse_IP is
+			Recherche_Frequence1 : T_Cache;
+			Recherche_Frequence2 : T_Cache;
+			Min : Integer;
 		begin
-			null; -- à compléter
+			-- On fait pointer les pointeurs sur la racine
+			Recherche_Frequence1 := Cache;
+			Recherche_Frequence2 := Cache;
+			Min := 100000; -- on n'utilisera en pratique jamais plus de 100,000 fois une adresse
+			
+			-- On recherche le minimum à droite et à gauche
+			if Recherche_Frequence1 /= null and then Recherche_Frequence1.Gauche /= null then
+				if Min > Cache.All.Frequence1 then
+					Min := Recherche_Frequence1.All.Frequence;
+				else
+					null; -- il ne ne passe rien
+				end if;
+
+				Recherche_Frequence1 := Recherche_Frequence1.All.Gauche;
+
+				Min := Recherche_Frequence_Min(Recherche_Frequence1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+			elsif Recherche_Frequence2 /= null and then Recherche_Frequence2.Droite /= null then
+				if Min > Cache.All.Frequence2 then
+					Min := Recherche_Frequence2.All.Frequence;
+				else
+					null; -- il ne se passe rien
+				end if;
+
+				Recherche_Frequence2 := Recherche_Frequence2.All.Droite;
+
+				Min := Recherche_Frequence_Min(Recherche_Frequence2); -- on procède par récursivité
+			else
+				-- On regarde les cas où on sort des if à cause des premières conditions
+				if Recherche_Frequence1 /= null then
+					if Min > Cache.All.Frequence1 then
+						Min := Recherche_Frequence1.All.Frequence;
+					else
+						null; -- il ne ne passe rien
+					end if;
+				elsif Recherche_Frequence2 /= null then
+					if Min > Cache.All.Frequence2 then
+						Min := Recherche_Frequence2.All.Frequence;
+					else
+						null; -- il ne ne passe rien
+					end if;
+				else
+					null; -- il ne se passe rien
+				end if;
+			end if;
+
+			return Min;
+		end Recherche_Frequence;
+
+		procedure Supprimer_LFU(Cache : in T_Cache) is
+			Supresseur : T_Cache;
+		begin
+			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
+			Adresse_A_Supprimer := Recherche_Frequence_Min(Cache);
+			Supresseur := Cache;
+
+			
 		end Supprimer_FIFO;
 
 	begin
