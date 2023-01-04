@@ -117,7 +117,7 @@ package body cache_tree is
 		when Adresse_Absente_Exception => Put("L'adresse demandée n'est pas présente.");
 	end Ajouter_Frequence;
 
-	procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in T_Politique) is
+	procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in T_Politique; Taille : in Integer) is
 		Compteur_Taille : T_Cache_Arbre;
 
 		procedure Supprimer_FIFO(Cache : in out T_Cache_Arbre) is

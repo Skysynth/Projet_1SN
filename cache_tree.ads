@@ -61,8 +61,8 @@ package cache_tree is
     --      Politique : Mode In T_Politique; -- la politique choisie
     -- pré-condition : Est_Plein(Cache)
     -- post-condition : Cache.All.Taille = Cache.All.Taille'Last - 1
-    procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in T_Politique) with
-        Pre => Est_Plein(Cache),
+    procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in T_Politique; Taille : in Integer) with
+        Pre => Est_Plein(Cache, Taille),
         Post => Cache.All.Taille = Cache.All.Taille'Old - 1;
 
 
