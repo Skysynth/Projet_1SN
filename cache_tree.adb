@@ -12,7 +12,6 @@ package body cache_tree is
 		Cache := Null;
 	end Initialiser;
 
-
 	function Est_Vide(Cache : in T_Cache) return Boolean is
 	begin
 		return (Cache = Null);
@@ -48,8 +47,7 @@ package body cache_tree is
 		-- On stocke la taille binaire de l'adresse
 		Taille_Adresse := Get_taille_binaire(Adresse);
 
-		-- On convertit l'adresse IP en binaire ainsi que le cache
-		-- On regarde pour chaque bit si il vaut 0 ou 1 pour savoir quelle direction prendre
+		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 		for i in 0..(Taille_Adresse - 1) loop
 			if (Adresse AND (2 ** (Taille_Adresse - i)) = 0) then
 				--  Cas où le bit vaut 0
@@ -98,8 +96,7 @@ package body cache_tree is
 		-- On stocke la taille binaire de l'adresse
 		Taille_Adresse := Get_taille_binaire(Adresse);
 
-		-- On convertit l'adresse IP en binaire ainsi que le cache
-		-- On regarde pour chaque bit si il vaut 0 ou 1 pour savoir quelle direction prendre
+		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 		for i in 0..(Taille_Adresse - 1) loop
 			if (Adresse AND (2 ** (Taille_Adresse - i)) = 0) then
 				--  Cas où le bit vaut 0
@@ -199,13 +196,25 @@ package body cache_tree is
 		end Recherche_Frequence;
 
 		procedure Supprimer_LFU(Cache : in T_Cache) is
-			Supresseur : T_Cache;
+			Suppresseur : T_Cache;
 		begin
 			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
-			Adresse_A_Supprimer := Recherche_Frequence_Min(Cache);
-			Supresseur := Cache;
+			Adresse_A_Supprimer := Recherche_Frequence_Min(Cache); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
+			Suppresseur := Cache;
 
-			
+			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
+			for i in 0..(Taille_Adresse - 1) loop
+				if (Adresse AND (2 ** (Taille_Adresse - i)) = 0) then
+					--  Cas où le bit vaut 0
+						Suppresseur := Suppresseur.All.Gauche;
+				else
+					-- Cas où le bit vaut 1
+						Suppresseur := Suppresseur.All.Droite;
+				end if;
+			end loop;
+
+			-- Il ne reste plus qu'à supprimer cette cellule
+			Free(Suppresseur);
 		end Supprimer_FIFO;
 
 	begin
