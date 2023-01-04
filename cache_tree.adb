@@ -5,19 +5,19 @@ with Ada.Unchecked_Deallocation;
 package body cache_tree is
 
 	procedure Free is
-		new Ada.Unchecked_Deallocation(Object => T_Cache_Cellule, Name => T_Cache);
+		new Ada.Unchecked_Deallocation(Object => T_Cache_Cellule, Name => T_Cache_Arbre);
 
-	procedure Initialiser(Sda : out T_Cache) is
+	procedure Initialiser(Sda : out T_Cache_Arbre) is
 	begin
 		Cache := Null;
 	end Initialiser;
 
-	function Est_Vide(Cache : in T_Cache) return Boolean is
+	function Est_Vide(Cache : in T_Cache_Arbre) return Boolean is
 	begin
 		return (Cache = Null);
 	end;
 
-    procedure Vider(Cache : in out T_Cache) is
+    procedure Vider(Cache : in out T_Cache_Arbre) is
 	begin
         if not Est_Vide(Cache) then
             -- Si le cache n'est pas vide
@@ -83,7 +83,7 @@ package body cache_tree is
 		Free(Compteur_Taille);
 	end Enregistrer;
 
-	procedure Ajouter_Frequence(Cache : in out T_Cache; Adresse : in T_Adresse_IP) is
+	procedure Ajouter_Frequence(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP) is
 	begin
 		if Est_Vide(Cache) then
 		-- Cas où le cache est vide
@@ -123,20 +123,20 @@ package body cache_tree is
 		when Adresse_Absente_Exception => Put("L'adresse demandée n'est pas présente.");
 	end Ajouter_Frequence;
 
-	procedure Supprimer(Cache : in out T_Cache; Politique : in T_Politique) is
+	procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in T_Politique) is
 		Compteur_Taille : T_Cache;
 
-		procedure Supprimer_FIFO(Cache : in T_Cache) is
+		procedure Supprimer_FIFO(Cache : in T_Cache_Arbre) is
 		begin
 			null; -- à compléter
 		end Supprimer_FIFO;
 
-		procedure Supprimer_LRU(Cache : in T_Cache) is
+		procedure Supprimer_LRU(Cache : in T_Cache_Arbre) is
 		begin
 			null; -- à compléter
 		end Supprimer_FIFO;
 
-		function Recherche_Frequence_Min(Cache : in T_Cache) return T_Adresse_IP is
+		function Recherche_Frequence_Min(Cache : in T_Cache_Arbre) return T_Adresse_IP is
 			Recherche_Frequence1 : T_Cache;
 			Recherche_Frequence2 : T_Cache;
 			Min : Integer;
@@ -195,7 +195,7 @@ package body cache_tree is
 			return Adresse_Min;
 		end Recherche_Frequence;
 
-		procedure Supprimer_LFU(Cache : in T_Cache) is
+		procedure Supprimer_LFU(Cache : in T_Cache_Arbre) is
 			Suppresseur : T_Cache;
 		begin
 			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
@@ -229,7 +229,7 @@ package body cache_tree is
 		end case;
 	end Supprimer;
 
-	function Est_Plein(Cache : in T_Cache; Taille : Integer) return Boolean is
+	function Est_Plein(Cache : in T_Cache_Arbre; Taille : Integer) return Boolean is
 		Est_Plein : Boolean;
 	begin
 		if Cache.All.Taille >= Taille then
@@ -240,5 +240,9 @@ package body cache_tree is
 
 		return Est_Plein;
 	end Est_Plein;
+
+	procedure Afficher_Cache(Cache : in T_Cache_Arbre) is
+	begin
+	end Afficher_Cache;
 
 end cache_tree;
