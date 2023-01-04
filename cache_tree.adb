@@ -22,7 +22,7 @@ package body cache_tree is
         if not Est_Vide(Cache) then
             -- Si le cache n'est pas vide
 			Vider(Cache.All.Gauche);
-            Vider(Cache.All.Droit);
+            Vider(Cache.All.Droite);
             Free(Cache);
         else
 			-- Si le cache est vide
@@ -48,9 +48,9 @@ package body cache_tree is
 		for i in 0..31 loop
 			if (Adresse AND (2 ** (31 - i)) = 0) then
 				--  Cas où le bit vaut 0
-				if Est_Vide(Cache.Gauche) then
+				if Est_Vide(Cache.All.Gauche) then
 				-- Cas où le cache à gauche est vide
-					Cache.Gauche := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+					Cache.All.Gauche := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
 					Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 					Cache := Cache.All.Gauche;
 				else
@@ -58,9 +58,9 @@ package body cache_tree is
 				end if;
 			else
 				-- Cas où le bit vaut 1
-				if Est_Vide(Cache.Droite) then
+				if Est_Vide(Cache.All.Droite) then
 				-- Cas où le cache à droite est vide
-					Cache.Droite := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
+					Cache.All.Droite := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
 					Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 					Cache := Cache.All.Droite;
 				else
@@ -144,7 +144,7 @@ package body cache_tree is
 			
 			-- On recherche le minimum à droite et à gauche
 			if Recherche_Frequence1 /= null and then Recherche_Frequence1.Gauche /= null then
-				if Min > Cache.All.Frequence1 then
+				if Min > Recherche_Frequence1.All.Frequence1 then
 					Min := Recherche_Frequence1.All.Frequence;
 					Adresse := Recherche_Frequence1.All.Adresse;
 				else
@@ -155,7 +155,7 @@ package body cache_tree is
 
 				Adresse := Recherche_Frequence_Min(Recherche_Frequence1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 			elsif Recherche_Frequence2 /= null and then Recherche_Frequence2.Droite /= null then
-				if Min > Cache.All.Frequence2 then
+				if Min > Recherche_Frequence2.All.Frequence2 then
 					Min := Recherche_Frequence2.All.Frequence;
 					Adresse := Recherche_Frequence1.All.Adresse;
 				else
