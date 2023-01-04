@@ -13,65 +13,68 @@ package Table_Routage is
     -- R2 : Initialiser une table de routage.  La table de routage est vide.
 
     -- nom : Initialiser
-    -- sémantique : Initialiser la table de routage à initialiser
-    -- paramètres :
+    -- semantique : Initialiser la table de routage a initialiser
+    -- parametres :
     --      Table de routage : Mode Out T_Table_Routage; -- la table de routage
     --      param : Mode In T_Param ; -- contient le fichier texte avec les informations de la table de routage (destination,masque...) 
     -- post-condition : Est_Vide(Table_Routage)
     -- tests :
-    --      entrées : . sortie : Table_routage = null.
+    --      entrees : . sortie : Table_routage = null.
     procedure Initialiser(param : in T_Param; Table_routage: out T_Table_Routage);
     
     
     
-    -- Est-ce qu'une Table_Routage est vide ?
+    -- Est-ce qu une Table_Routage est vide ?
 
     -- nom : Est_Vide
-    -- sémantique : Déterminer si la table de routage est vide ou non.
-    -- paramètres :
+    -- semantique : Determiner si la table de routage est vide ou non.
+    -- parametres :
     --      T_Table_Routage : Mode In T_Table_Routage; 
    
     function Est_Vide (Table_Routage : in T_Table_Routage) return Boolean;
 
 
-	-- Obtenir le nombre d'elements d'une Table_Routage. 
+	-- Obtenir le nombre d elements d une Table_Routage. 
 	function Taille (Table_Routage : in T_Table_Routage) return Integer with
 		Post => Taille'Result >= 0
 			and (Taille'Result = 0) = Est_Vide (Table_Routage);
     
 
-    -- Enregistrer une Donnee associee a une Cle dans une Table_Routage.
-    -- Si la cle est deja presente dans la Table_Routage, sa donnee est changee.
 
     -- nom : Enregistrer
-    -- sémantique : Enregistrer une adresse, un masque, une sortie dans la table de routage.
-    -- paramètres :
+    -- semantique : Enregistrer une adresse, un masque, une sortie dans la table de routage.
+    -- parametres :
     --      Table_Routage : Mode In/Out T_Table_Routage; -- la table de routage
-    --      Adresse : Mode In T_Adresse_IP; -- l'adresse IP à ajouter
+    --      Adresse : Mode In T_Adresse_IP; -- l adresse IP a ajouter
     --      Masque : Mode In T_Adresse_IP; -- le masque à ajouter
-    --      Sortie : Mode In Unbounded_String; -- la sortie à ajouter
+    --      Sortie : Mode In Unbounded_String; -- la sortie a ajouter
     -- post-condition : Taille(Table_Routage)  = Taille(Table_Routage)'Old +1 .
-
     procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String ) with
         Post =>  Taille (Table_Routage) = Taille(Table_Routage)'Old +1; 
 
-	-- Supprimer la Donnee associee a une Cle dans une Table_Routage.
-	-- Exception : Cle_Absente_Exception si Cle n'est pas utilisee dans la Table_Routage
+	
 
-
+    -- nom : Supprimer
+    -- semantique : Supprimer une adresse ( masque, interface) de la table de routage 
+    -- parametres :
+    --      Table_Routage : Mode In/Out T_Table_Routage; -- la table de routage
+    --      adresse : Mode In adresse -- supprimer les donnees associe a cette adresse
+    
+    -- post-condition :  Taille (Table_Routage) = Taille (Table_Routage)'Old - 1
+    -- Exception : Cle_Absente_Exception si Cle n est pas utilisee dans la Table_Routage
 	procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : in T_Adresse_IP) with
 		Post =>  Taille (Table_Routage) = Taille (Table_Routage)'Old - 1 -- un element de moins
 			and not Adresse_Presente(Table_Routage, adresse);         -- la cle a ete supprimee
     
-	-- Supprimer tous les elements d'une Table_Routage.
+
 
     -- nom : Vider
-    -- sémantique : Vider entièrement le table de routage
-    -- paramètres :
-    --      Table_routage : Mode In/Out T_Table_Routage; -- le table de routage à vider
+    -- semantique : Vider entierement la table de routage
+    -- parametres :
+    --      Table_routage : Mode In/Out T_Table_Routage; -- le table de routage a vider
     -- post-condition : Est_Vide(Table_Routage)
     -- tests :
-    --      entrées : Table_Routage. sortie : Table_Routage = null.
+    --      entrees : Table_Routage. sortie : Table_Routage = null.
 	procedure Vider (Table_Routage : in out T_Table_Routage) with
 		Post => Est_Vide (Table_Routage);
 
