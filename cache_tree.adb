@@ -20,12 +20,14 @@ package body cache_tree is
 
     procedure Vider(Cache : in out T_Cache) is
 	begin
-        if Est_Vide(Cache) then
-            Null;
-        else
-            Vider(Cache.All.Gauche);
+        if not Est_Vide(Cache) then
+            -- Si le cache n'est pas vide
+			Vider(Cache.All.Gauche);
             Vider(Cache.All.Droit);
             Free(Cache.All);
+        else
+			-- Si le cache est vide
+            Put_Line("Le cache est pas vide. Pas besoin de le vider.");
         end if;
 	end Vider;
 
@@ -40,7 +42,7 @@ package body cache_tree is
 			Cache := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
 			Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 		else
-			null;
+			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
 
 		-- On stocke la taille binaire de l'adresse
@@ -85,12 +87,12 @@ package body cache_tree is
 
 	procedure Ajouter_Frequence(Cache : in out T_Cache; Adresse : in T_Adresse_IP) is
 	begin
-		-- Cas où le cache est vide
 		if Est_Vide(Cache) then
+		-- Cas où le cache est vide
 			Cache := new T_Cache_Cellule'(Taille, Adresse, Masque, Sortie, null, null, Frequence, Active);
 			Compteur_Taille.All.Taille := Compteur_Taille.All.Taille + 1;
 		else
-			null;
+			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
 
 		-- On stocke la taille binaire de l'adresse
