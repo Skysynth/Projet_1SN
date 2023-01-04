@@ -5,6 +5,7 @@ package cache_tree is
 
     type T_Cache_Arbre is limited private;
 
+
     -- nom : Initialiser
     -- sémantique : Initialiser le cache à initialiser
     -- paramètres :
@@ -38,7 +39,7 @@ package cache_tree is
     --      Sortie : Mode In Unbounded_String; -- la sortie à ajouter
     -- post-condition : Cache.All.Taille = Cache.All.Taille'Last + 1
     procedure Enregistrer(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String; Taille : Integer) with
-        Post => Cache.All.Taille = Cache.All.Taille'Last + 1;
+        Post => Cache.All.Taille = Cache.All.Taille'Old + 1;
 
 
     -- nom : Ajouter_Frequence
@@ -50,7 +51,7 @@ package cache_tree is
     -- post-condition : Cache.All.Frequence = Cache.All.Frequence'Last + 1
     procedure Ajouter_Frequence(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP) with
         Pre => not Est_Vide(Cache),
-        Post => Cache.All.Frequence = Cache.All.Frequence'Last + 1;
+        Post => Cache.All.Frequence = Cache.All.Frequence'Old + 1;
 
 
     -- nom : Supprimer
@@ -62,7 +63,7 @@ package cache_tree is
     -- post-condition : Cache.All.Taille = Cache.All.Taille'Last - 1
     procedure Supprimer(Cache : in out T_Cache_Arbre; Politique : in T_Politique) with
         Pre => Est_Plein(Cache),
-        Post => Cache.All.Taille = Cache.All.Taille'Last - 1;
+        Post => Cache.All.Taille = Cache.All.Taille'Old - 1;
 
 
     -- nom : Est_Plein
