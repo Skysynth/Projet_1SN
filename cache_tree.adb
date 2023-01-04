@@ -223,10 +223,14 @@ package body cache_tree is
 
 		-- On regarde quelle est la procédure
 		case Politique is
-			when (Politique'Val = FIFO) => Supprimer_FIFO(Cache); -- à faire
-			when (Politique'Val = LRU) => Supprimer_LRU(Cache); -- à faire
+			-- when (Politique'Val = FIFO) => Supprimer_FIFO(Cache); -- à faire (peut être)
+			-- when (Politique'Val = LRU) => Supprimer_LRU(Cache); -- à faire (peut être)
 			when (Politique'Val = LFU) => Supprimer_LFU(Cache);
+			when others => raise Politique_non_valide_exception;
 		end case;
+
+	exception
+		when Politique_non_valide_exception => Put("La politique demandée n'est pas valide.");
 	end Supprimer;
 
 	function Est_Plein(Cache : in T_Cache_Arbre; Taille : Integer) return Boolean is
