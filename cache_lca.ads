@@ -10,7 +10,7 @@ package CACHE_LCA is
 	procedure Initialiser(Cache_lca: out T_CACHE_LCA) with
 		Post => Cache_lca == null;
 
-	-- Est-ce que le cahce est plein ?
+	-- Est-ce que le cache est plein ?
    function Est_Plein(Cache_lca : T_CACHE_LCA) return Boolean;
 
    -- Savoir si une adresse est présente dans le cache.
@@ -21,8 +21,16 @@ package CACHE_LCA is
      Pre => 1==1;
 
    -- Supprimer tous les éléments du cache.
-	procedure Vider (Cache_lca : in out T_CACHE_LCA) with
-		Post => Cache_lca == null;
+	procedure Vider(Cache_lca : in out T_CACHE_LCA) with
+     Post => Cache_lca == null;
+
+   -- Supprimer un élément du cache, suivant la politique demandée au préalable par l'utilisateur.
+   procedure Supprimer(Cache_lca : in out T_CACHE_LCA);
+
+   -- Taille du cache.
+   function Taille(Cache_lca : T_CACHE_LCA) return Integer with
+     Post => Taille'Result >= 0
+       and (Taille'Result = 0) = (Cache_lca = null);
 
 private
 
