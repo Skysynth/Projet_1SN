@@ -11,11 +11,11 @@ package cache_tree is
     -- paramètres :
     --      Cache : Mode Out T_Cache_Arbre; -- le cache
     --      Taille : Mode in Integer; -- la taille du cache
-    -- post-condition : Est_Vide(Cache.Arbre)
+    -- post-condition : Est_Vide(Cache.Arbre) and Cache.Taille = Taille
     -- tests :
     --      entrées : . sortie : Cache = null.
     procedure Initialiser(Cache : out T_Cache_Arbre; Taille : in Integer) with
-        Post => Est_Vide(Cache.Arbre);
+        Post => Est_Vide(Cache.Arbre) and Cache.Taille = Taille;
 
 
     -- nom : Est_Vide
@@ -63,7 +63,7 @@ package cache_tree is
     --      Sortie : Mode In Unbounded_String; -- la sortie à ajouter
     -- post-condition : Taille(Arbre) = Taille(Arbre)'Old + 1
     procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String; Taille : Integer) with
-        Post => Taille(Arbre) = Taille(Arbre)'Old + 1;
+        Post => Taille(Cache) = Taille(Cache)'Old + 1;
 
 
     -- nom : Ajouter_Frequence
@@ -88,7 +88,7 @@ package cache_tree is
     -- post-condition : Taille(Arbre) = Taille(Arbre)'Old - 1
     procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Politique : in T_Politique; Taille : in Integer) with
         Pre => Est_Plein(Cache, Taille),
-        Post => Taille(Arbre) = Taille(Arbre)'Old - 1;
+        Post => Taille(Cache) = Taille(Cache)'Old - 1;
 
 
     -- nom : Est_Plein
