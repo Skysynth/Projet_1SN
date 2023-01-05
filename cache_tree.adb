@@ -31,17 +31,22 @@ package body cache_tree is
         end if;
 	end Vider;
 
-	function Taille(Cache : in T_Cache_Arbre) return Integer is
+	function Taille_Cache(Cache : in T_Cache_Arbre) return Integer is
 	begin
 		return Cache.Taille;
-	end Taille;
+	end Taille_Cache;
 
-	function Frequence(Arbre : in T_Arbre) return Integer is
+	function Arbre_Cache(Cache : in T_Cache_Arbre) return T_Arbre is
+	begin
+		return Cache.Arbre;
+	end Arbre_Cache;
+
+	function Frequence_Arbre(Arbre : in T_Arbre) return Integer is
 	begin
 		return Arbre.All.Frequence;
-	end Frequence;
+	end Frequence_Arbre;
 
-	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : T_Adresse_IP; Sortie : Unbounded_String; Taille : Integer) is
+	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String) is
 	begin
 		-- Cas où le cache est vide
 		if Est_Vide(Arbre) then
@@ -120,14 +125,14 @@ package body cache_tree is
 		when Adresse_Absente_Exception => Put("L'adresse demandée n'est pas présente.");
 	end Ajouter_Frequence;
 
-	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Politique : in T_Politique; Taille : in Integer) is
+	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Politique : in T_Politique) is
 
-		procedure Supprimer_FIFO(Arbre : in out T_Arbre) is
+		procedure Supprimer_FIFO(Arbre : in T_Arbre) is
 		begin
 			null; -- à compléter
 		end Supprimer_FIFO;
 
-		procedure Supprimer_LRU(Arbre : in out T_Arbre) is
+		procedure Supprimer_LRU(Arbre : in T_Arbre) is
 		begin
 			null; -- à compléter
 		end Supprimer_LRU;
@@ -191,7 +196,7 @@ package body cache_tree is
 			return Adresse;
 		end Recherche_Frequence_Min;
 
-		procedure Supprimer_LFU(Arbre : in out T_Arbre) is
+		procedure Supprimer_LFU(Arbre : in T_Arbre) is
 			Adresse : T_Adresse_IP;
 			Suppresseur : T_Arbre;
 		begin
@@ -217,8 +222,8 @@ package body cache_tree is
 	begin
 		-- On regarde quelle est la procédure
 		case T_Politique'Pos(Politique) is
-			-- when 1 => Supprimer_FIFO(Arbre); -- FIFO : à faire (peut être)
-			-- when 2 => Supprimer_LRU(Arbre); -- LRU : à faire (peut être)
+			when 1 => Supprimer_FIFO(Arbre); -- FIFO : à faire (peut être)
+			when 2 => Supprimer_LRU(Arbre); -- LRU : à faire (peut être)
 			when 3 => Supprimer_LFU(Arbre); -- LFU
 			when others => raise Politique_non_valide_exception;
 		end case;
