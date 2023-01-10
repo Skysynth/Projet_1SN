@@ -136,7 +136,7 @@ private
         Taille : Integer;
         Defauts : Integer;
         Demandes : Integer;
-        Enregistrement : Integer; -- nombre d'enregistrement dans le cache (pas borné par la taille)
+        Enregistrement : Integer; -- nombre d'enregistrement dans le cache (pas borné par la taille, le mettre par défaut à 0)
     end record;
 
     type T_Cache_Cellule is record

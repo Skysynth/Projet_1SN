@@ -96,6 +96,8 @@ package body cache_tree is
 			when 3 => Arbre.All.Identifiant := 0; -- LFU
 			when others => raise Politique_non_valide_exception;
 		end case;
+
+		Cache.All.Enregistrement := Cache.All.Enregistrement + 1;
 	end Enregistrer;
 
 	procedure Ajouter_Frequence(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP) is
