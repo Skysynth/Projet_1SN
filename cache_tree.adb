@@ -255,14 +255,14 @@ package body cache_tree is
 		return Est_Plein;
 	end Est_Plein;
 
-	procedure Afficher_Cache(Cache : in T_Cache_Arbre) is
+	procedure Afficher_Arbre(Arbre : in T_Arbre) is
 		Afficheur1 : T_Arbre;
 		Afficheur2 : T_Arbre;
 		Compteur : Integer := 0;
 	begin
-		-- Initialisation des pointeurs qui servent à afficher l'arbre du cache
-		Afficheur1 := Cache.Arbre;
-		Afficheur2 := Cache.Arbre;
+		-- Initialisation des pointeurs qui servent à afficher l'arbre
+		Afficheur1 := Arbre;
+		Afficheur2 := Arbre;
 
 		-- Début de l'affichage
 		Put_Line("Début");
@@ -270,7 +270,7 @@ package body cache_tree is
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
 		while Afficheur1.All.Gauche /= null loop
-			-- Tant que l'arbre gauche n'est pas nul, on l'affiche
+			-- Tant que le chemin gauche de l'arbre n'est pas nul, on l'affiche
 			if Afficheur1.All.Active = True then
 				-- Cas où la cellule est une feuille
 				Compteur := Compteur + 1;
@@ -282,9 +282,11 @@ package body cache_tree is
 				null;
 			end if;
 
-			Afficheur1 := Afficheur1.All.Gauche;
+			Afficher_Arbre(Afficheur1.All.Gauche);
 		end loop;
-	end Afficher_Cache;
+
+
+	end Afficher_Arbre;
 
 	procedure Afficher_Statistiques_Cache(Cache : in T_Cache_Arbre) is
 		Taux_Defauts : Float;

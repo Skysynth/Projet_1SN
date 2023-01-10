@@ -112,11 +112,11 @@ package cache_tree is
         Pre => Taille_Cache(Cache) > 0;
 
 
-    -- nom : Afficher_Cache
+    -- nom : Afficher_Arbre
     -- sémantique : Permet d'afficher le cache
     -- paramètres :
-    --      Cache : Mode In T_Cache_Arbre; -- le cache à afficher
-    procedure Afficher_Cache(Cache : in T_Cache_Arbre);
+    --      Arbre : Mode In T_Arbre; -- le cache à afficher
+    procedure Afficher_Cache(Arbre : in T_Arbre);
 
 
     -- nom : Afficher_Statistiques_Cache
