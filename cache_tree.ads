@@ -81,6 +81,7 @@ package cache_tree is
     -- paramètres :
     --      Arbre : Mode In/Out T_Arbre; -- l'arbre du cache
     --      Adresse : Mode In T_Adresse_IP; -- l'adresse IP utilisée
+    --      Masque : Mode In T_Adresse_IP; -- le masque
     -- pré-condition : not Est_Vide(Arbre)
     -- post-condition : Frequence_Arbre(Arbre) = Frequence_Arbre(Arbre)'Last + 1
     procedure Ajouter_Frequence(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP) with
@@ -94,6 +95,7 @@ package cache_tree is
     --      Arbre : Mode In/Out T_Arbre; -- l'arbre du cache
     --      Cache : Mode In/Out T_Cache_Arbre -- le cache
     --      Politique : Mode In T_Politique; -- la politique choisie
+    --      Masque : Mode In T_Adresse_IP; -- le masque
     -- pré-condition : Est_Plein(Cache)
     -- post-condition : Taille_Cache(Arbre) = Taille_Cache(Arbre)'Old - 1
     procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Politique : in T_Politique; Masque : in T_Adresse_IP) with
@@ -114,7 +116,7 @@ package cache_tree is
     -- sémantique : Permet d'afficher le cache
     -- paramètres :
     --      Cache : Mode In T_Cache_Arbre; -- le cache à afficher
-    procedure Afficher_Cache(Cache : in T_Cache_Arbre; Masque : in T_Adresse_IP);
+    procedure Afficher_Cache(Cache : in T_Cache_Arbre);
 
 
     -- nom : Afficher_Statistiques_Cache

@@ -90,6 +90,7 @@ package body cache_tree is
 		Arbre.All.Masque := Masque;
 		Arbre.All.Sortie := Sortie;
 		Arbre.All.Active := True;
+		-- Arbre.All.Identifiant := ;
 	end Enregistrer;
 
 	procedure Ajouter_Frequence(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP) is
@@ -254,7 +255,7 @@ package body cache_tree is
 		return Est_Plein;
 	end Est_Plein;
 
-	procedure Afficher_Cache(Cache : in T_Cache_Arbre; Masque : in T_Adresse_IP) is
+	procedure Afficher_Cache(Cache : in T_Cache_Arbre) is
 		Afficheur : T_Arbre;
 	begin
 		null ; -- à compléter
