@@ -57,7 +57,7 @@ package body cache_tree is
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
 
-		Taille_Masque := Get_taille_binaire(Arbre.All.Masque);
+		Taille_Masque := Get_taille_binaire(Masque);
 
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 		for i in 0..(Taille_Masque - 1) loop
@@ -92,7 +92,7 @@ package body cache_tree is
 		Arbre.All.Active := True;
 	end Enregistrer;
 
-	procedure Ajouter_Frequence(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP) is
+	procedure Ajouter_Frequence(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP) is
 		Taille_Masque : Integer;
 	begin
 		if Est_Vide(Arbre) then
@@ -102,7 +102,7 @@ package body cache_tree is
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
 
-		Taille_Masque := Get_taille_binaire(Arbre.All.Masque);
+		Taille_Masque := Get_taille_binaire(Masque);
 
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 		for i in 0..(Taille_Masque - 1) loop
@@ -131,14 +131,14 @@ package body cache_tree is
 		when Adresse_Absente_Exception => Put("L'adresse demandée n'est pas présente.");
 	end Ajouter_Frequence;
 
-	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Politique : in T_Politique) is
+	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Politique : in T_Politique; Masque : in T_Adresse_IP) is
 
-		procedure Supprimer_FIFO(Arbre : in T_Arbre) is
+		procedure Supprimer_FIFO(Arbre : in T_Arbre; Masque : in T_Adresse_IP) is
 		begin
 			null; -- à compléter
 		end Supprimer_FIFO;
 
-		procedure Supprimer_LRU(Arbre : in T_Arbre) is
+		procedure Supprimer_LRU(Arbre : in T_Arbre; Masque : in T_Adresse_IP) is
 		begin
 			null; -- à compléter
 		end Supprimer_LRU;
@@ -202,7 +202,7 @@ package body cache_tree is
 			return Adresse;
 		end Recherche_Frequence_Min;
 
-		procedure Supprimer_LFU(Arbre : in T_Arbre) is
+		procedure Supprimer_LFU(Arbre : in T_Arbre; Masque : in T_Adresse_IP) is
 			Adresse : T_Adresse_IP;
 			Suppresseur : T_Arbre;
 			Taille_Masque : Integer;
@@ -210,7 +210,7 @@ package body cache_tree is
 			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
 			Adresse := Recherche_Frequence_Min(Arbre); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
 			Suppresseur := Arbre;
-			Taille_Masque := Get_taille_binaire(Arbre.All.Masque);
+			Taille_Masque := Get_taille_binaire(Masque);
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			for i in 0..(Taille_Masque - 1) loop
@@ -230,9 +230,9 @@ package body cache_tree is
 	begin
 		-- On regarde quelle est la procédure
 		case T_Politique'Pos(Politique) is
-			when 1 => Supprimer_FIFO(Arbre); -- FIFO : à faire (peut être)
-			when 2 => Supprimer_LRU(Arbre); -- LRU : à faire (peut être)
-			when 3 => Supprimer_LFU(Arbre); -- LFU
+			when 1 => Supprimer_FIFO(Arbre, Masque); -- FIFO : à faire (peut être)
+			when 2 => Supprimer_LRU(Arbre, Masque); -- LRU : à faire (peut être)
+			when 3 => Supprimer_LFU(Arbre, Masque); -- LFU
 			when others => raise Politique_non_valide_exception;
 		end case;
 
@@ -254,7 +254,7 @@ package body cache_tree is
 		return Est_Plein;
 	end Est_Plein;
 
-	procedure Afficher_Cache(Cache : in T_Cache_Arbre) is
+	procedure Afficher_Cache(Cache : in T_Cache_Arbre; Masque : in T_Adresse_IP) is
 		Afficheur : T_Arbre;
 	begin
 		null ; -- à compléter
