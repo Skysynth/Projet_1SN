@@ -91,13 +91,13 @@ package body cache_tree is
 		Arbre.All.Sortie := Sortie;
 		Arbre.All.Active := True;
 		case T_Politique'Pos(Politique) is
-			when 1 => Arbre.All.Identifiant := Cache.All.Enregistrement; -- FIFO
-			when 2 => Arbre.All.Identifiant := ; -- LRU
+			when 1 => Arbre.All.Identifiant := Cache.Enregistrement; -- FIFO
+			when 2 => Arbre.All.Identifiant := 0; -- LRU
 			when 3 => Arbre.All.Identifiant := 0; -- LFU
 			when others => raise Politique_non_valide_exception;
 		end case;
 
-		Cache.All.Enregistrement := Cache.All.Enregistrement + 1;
+		Cache.Enregistrement := Cache.Enregistrement + 1;
 	end Enregistrer;
 
 	procedure Ajouter_Frequence(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP) is
@@ -226,8 +226,28 @@ package body cache_tree is
 		end Supprimer_FIFO;
 
 		procedure Supprimer_LRU(Arbre : in T_Arbre; Masque : in T_Adresse_IP) is
+			Adresse : T_Adresse_IP;
+			Suppresseur : T_Arbre;
+			Taille_Masque : Integer;
 		begin
-			null; -- à compléter
+			-- Il faut faire la recherche du minimum en terme d'identifiant et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
+			Adresse := Recherche_Identifiant_Min(Arbre); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
+			Suppresseur := Arbre;
+			Taille_Masque := Get_taille_binaire(Masque);
+
+			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
+			for i in 0..(Taille_Masque - 1) loop
+				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
+					--  Cas où le bit vaut 0
+						Suppresseur := Suppresseur.All.Gauche;
+				else
+					-- Cas où le bit vaut 1
+						Suppresseur := Suppresseur.All.Droite;
+				end if;
+			end loop;
+
+			-- Il ne reste plus qu'à supprimer cette cellule
+			Free(Suppresseur);
 		end Supprimer_LRU;
 
 		function Recherche_Frequence_Min(Arbre : in T_Arbre) return T_Adresse_IP is
@@ -391,5 +411,58 @@ package body cache_tree is
 
 		Put_Line("Le taux de défauts de cache est de :" & Float'Image(Taux_Defauts));
 	end Afficher_Statistiques_Cache;
+
+	function Recherche_Identifiant_Max(Arbre : in T_Arbre) return Integer is
+			Recherche_Identifiant1 : T_Arbre;
+			Recherche_Identifiant2 : T_Arbre;
+			Max : Integer;
+		begin
+			-- On fait pointer les pointeurs sur la racine
+			Recherche_Identifiant1 := Arbre;
+			Recherche_Identifiant2 := Arbre;
+			Max := 0; -- par défaut
+			
+			-- On recherche le minimum à droite et à gauche
+			if Recherche_Identifiant1 /= null and then Recherche_Identifiant1.Gauche /= null then
+				if Max < Recherche_Identifiant1.All.Identifiant then
+					Max := Recherche_Identifiant1.All.Identifiant;
+				else
+					null; -- il ne ne passe rien
+				end if;
+
+				Recherche_Identifiant1 := Recherche_Identifiant1.All.Gauche;
+
+				Max := Recherche_Identifiant_Max(Recherche_Identifiant1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+			elsif Recherche_Identifiant2 /= null and then Recherche_Identifiant2.Droite /= null then
+				if Max < Recherche_Identifiant2.All.Identifiant then
+					Max := Recherche_Identifiant2.All.Identifiant;
+				else
+					null; -- il ne se passe rien
+				end if;
+
+				Recherche_Identifiant2 := Recherche_Identifiant2.All.Droite;
+
+				Max := Recherche_Identifiant_Max(Recherche_Identifiant2); -- on procède par récursivité
+			else
+				-- On regarde les cas où on sort des if à cause des premières conditions
+				if Recherche_Identifiant1 /= null then
+					if Max < Arbre.All.Identifiant then
+						Max := Recherche_Identifiant1.All.Identifiant;
+					else
+						null; -- il ne ne passe rien
+					end if;
+				elsif Recherche_Identifiant2 /= null then
+					if Max < Arbre.All.Identifiant then
+						Max := Recherche_Identifiant2.All.Identifiant;
+					else
+						null; -- il ne ne passe rien
+					end if;
+				else
+					null; -- il ne se passe rien
+				end if;
+			end if;
+
+			return Max;
+		end Recherche_Identifiant_Max;
 
 end cache_tree;

@@ -44,6 +44,7 @@ package cache_tree is
     -- sémantique : Permet de récupérer la taille du cache
     -- paramètres :
     --      Cache : Mode In T_Cache_Arbre; -- le cache
+    -- post-condition : Taille_Cache'Result >= 0
     function Taille_Cache(Cache : in T_Cache_Arbre) return Integer with
         Post => Taille_Cache'Result >= 0;
 
@@ -59,6 +60,7 @@ package cache_tree is
     -- sémantique : Permet de récupérer la fréquence d'une cellule de l'arbre du cache
     -- paramètres :
     --      Arbre : Mode In T_Arbre; -- l'arbre
+    -- post-condition : Frequence_Arbre'Result >= 0
     function Frequence_Arbre(Arbre : in T_Arbre) return Integer with
         Post => Frequence_Arbre'Result >= 0;
 
@@ -125,6 +127,17 @@ package cache_tree is
     -- paramètres :
     --      Cache : Mode In T_Cache_Arbre; -- le cache dont les statistiques doivent être affichées
     procedure Afficher_Statistiques_Cache(Cache : in T_Cache_Arbre);
+
+
+    -- nom : Recherche_Identifiant_Max
+    -- sémantique : Permet de trouver l'identifiant max, cela est nécessaire pour la politique LRU. En effet, lorsque j'utilise le max, je regarde si l'identifiant de la route utilisée
+    -- correspond au max des identifiants. Dans ce cas, c'est la route la plus récemment identifiée. Sinon, on affecte son identifiant à max + 1. Pour la suppression, il ne reste qu'à regarder
+    -- l'identifiant minimum.
+    -- paramètres :
+    --      Arbre : Mode In T_Arbre; -- l'arbre du cache
+    -- post-condition : Recherche_Identifiant_Max'Result >= 0
+    function Recherche_Identifiant_Max(Arbre : in T_Arbre) return Integer with
+        Post => Recherche_Identifiant_Max'Result >= 0;
 
 private
 
