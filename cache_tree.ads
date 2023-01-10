@@ -122,6 +122,8 @@ private
     type T_Cache_Arbre is record
         Arbre : T_Arbre;
         Taille : Integer;
+        Defauts : Integer;
+        Demandes : Integer;
     end record;
 
     type T_Cache_Cellule is record
