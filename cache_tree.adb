@@ -256,9 +256,34 @@ package body cache_tree is
 	end Est_Plein;
 
 	procedure Afficher_Cache(Cache : in T_Cache_Arbre) is
-		Afficheur : T_Arbre;
+		Afficheur1 : T_Arbre;
+		Afficheur2 : T_Arbre;
+		Compteur : Integer := 0;
 	begin
-		null ; -- à compléter
+		-- Initialisation des pointeurs qui servent à afficher l'arbre du cache
+		Afficheur1 := Cache.Arbre;
+		Afficheur2 := Cache.Arbre;
+
+		-- Début de l'affichage
+		Put_Line("Début");
+		Put_Line("Racine");
+
+		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
+		while Afficheur1.All.Gauche /= null loop
+			-- Tant que l'arbre gauche n'est pas nul, on l'affiche
+			if Afficheur1.All.Active = True then
+				-- Cas où la cellule est une feuille
+				Compteur := Compteur + 1;
+				Put_Line("Feuille" & Integer'Image(Compteur));
+				Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
+				Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
+				New_Line;
+			else
+				null;
+			end if;
+
+			Afficheur1 := Afficheur1.All.Gauche;
+		end loop;
 	end Afficher_Cache;
 
 	procedure Afficher_Statistiques_Cache(Cache : in T_Cache_Arbre) is
