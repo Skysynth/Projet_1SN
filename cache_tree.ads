@@ -54,10 +54,11 @@ package cache_tree is
     --      Cache : Mode In T_Cache_Arbre; -- le cache
     function Arbre_Cache(Cache : in T_Cache_Arbre) return T_Arbre;
 
+
     -- nom : Frequence_Arbre
     -- sémantique : Permet de récupérer la fréquence d'une cellule de l'arbre du cache
     -- paramètres :
-    --      Arbre : Mode In T_Arbre; -- le cache
+    --      Arbre : Mode In T_Arbre; -- l'arbre
     function Frequence_Arbre(Arbre : in T_Arbre) return Integer with
         Post => Frequence_Arbre'Result >= 0;
 
@@ -108,11 +109,19 @@ package cache_tree is
     function Est_Plein(Cache : in T_Cache_Arbre; Taille : in Integer) return Boolean with
         Pre => Taille_Cache(Cache) > 0;
 
+
     -- nom : Afficher_Cache
     -- sémantique : Permet d'afficher le cache
     -- paramètres :
     --      Cache : Mode In T_Cache_Arbre; -- le cache à afficher
     procedure Afficher_Cache(Cache : in T_Cache_Arbre; Masque : in T_Adresse_IP);
+
+
+    -- nom : Afficher_Statistiques_Cache
+    -- sémantique : Permet d'afficher les statistiques relatives au cache et à sa politique
+    -- paramètres :
+    --      Cache : Mode In T_Cache_Arbre; -- le cache dont les statistiques doivent être affichées
+    procedure Afficher_Statistiques_Cache(Cache : in T_Cache_Arbre);
 
 private
 

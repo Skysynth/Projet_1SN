@@ -260,4 +260,15 @@ package body cache_tree is
 		null ; -- à compléter
 	end Afficher_Cache;
 
+	procedure Afficher_Statistiques_Cache(Cache : in T_Cache_Arbre) is
+		Taux_Defauts : Float;
+	begin
+		Put_Line("Le nombre de défauts de cache est de :" & Integer'Image(Cache.Defauts));
+		Put_Line("Le nombre de demandes de route au cache est de :" & Integer'Image(Cache.Demandes));
+
+		Taux_Defauts := Float(Cache.Defauts) / Float(Cache.Demandes);
+
+		Put_Line("Le taux de défauts de cache est de :" & Float'Image(Taux_Defauts));
+	end Afficher_Statistiques_Cache;
+
 end cache_tree;
