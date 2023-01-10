@@ -141,8 +141,9 @@ private
         Sortie : Unbounded_String;
         Gauche : T_Arbre;
         Droite : T_Arbre;
-        Frequence : Integer; -- pour appliquer les politiques
+        Frequence : Integer; -- pour appliquer la politique LFU
         Active : Boolean; -- pour savoir si la cellule est active ou non
+        Identifiant : Integer; -- pour appliquer les politiques LRU et FIFO
     end record;
 
 end cache_tree;
