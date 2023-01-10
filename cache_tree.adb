@@ -47,6 +47,7 @@ package body cache_tree is
 	end Frequence_Arbre;
 
 	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String) is
+		Taille_Masque : Integer;
 	begin
 		-- Cas où le cache est vide
 		if Est_Vide(Arbre) then
@@ -56,9 +57,11 @@ package body cache_tree is
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
 
+		Taille_Masque := Get_taille_binaire(Arbre.All.Masque);
+
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-		for i in 0..31 loop
-			if ((Adresse AND (2 ** (31 - i))) = 0) then
+		for i in 0..(Taille_Masque - 1) loop
+			if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Arbre.All.Gauche) then
 				-- Cas où le cache à gauche est vide
@@ -90,6 +93,7 @@ package body cache_tree is
 	end Enregistrer;
 
 	procedure Ajouter_Frequence(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP) is
+		Taille_Masque : Integer;
 	begin
 		if Est_Vide(Arbre) then
 		-- Cas où le cache est vide
@@ -98,9 +102,11 @@ package body cache_tree is
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
 
+		Taille_Masque := Get_taille_binaire(Arbre.All.Masque);
+
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-		for i in 0..(31 - 1) loop
-			if ((Adresse AND (2 ** (31 - i))) = 0) then
+		for i in 0..(Taille_Masque - 1) loop
+			if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Arbre.Gauche) then
 				-- Cas où le cache à gauche est vide
@@ -199,14 +205,16 @@ package body cache_tree is
 		procedure Supprimer_LFU(Arbre : in T_Arbre) is
 			Adresse : T_Adresse_IP;
 			Suppresseur : T_Arbre;
+			Taille_Masque : Integer;
 		begin
 			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
 			Adresse := Recherche_Frequence_Min(Arbre); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
 			Suppresseur := Arbre;
+			Taille_Masque := Get_taille_binaire(Arbre.All.Masque);
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-			for i in 0..(31 - 1) loop
-				if ((Adresse AND (2 ** (31 - i))) = 0) then
+			for i in 0..(Taille_Masque - 1) loop
+				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 					--  Cas où le bit vaut 0
 						Suppresseur := Suppresseur.All.Gauche;
 				else
