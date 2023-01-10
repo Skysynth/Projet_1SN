@@ -116,7 +116,7 @@ package cache_tree is
     -- sémantique : Permet d'afficher le cache
     -- paramètres :
     --      Arbre : Mode In T_Arbre; -- le cache à afficher
-    procedure Afficher_Cache(Arbre : in T_Arbre);
+    procedure Afficher_Arbre(Arbre : in T_Arbre);
 
 
     -- nom : Afficher_Statistiques_Cache

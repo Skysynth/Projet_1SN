@@ -258,32 +258,41 @@ package body cache_tree is
 	procedure Afficher_Arbre(Arbre : in T_Arbre) is
 		Afficheur1 : T_Arbre;
 		Afficheur2 : T_Arbre;
-		Compteur : Integer := 0;
+		Compteur : Integer := 0; -- pour compter les feuilles, ce qui doit correspondre à la taille du cache
 	begin
 		-- Initialisation des pointeurs qui servent à afficher l'arbre
 		Afficheur1 := Arbre;
 		Afficheur2 := Arbre;
 
-		-- Début de l'affichage
-		Put_Line("Début");
-		Put_Line("Racine");
-
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
-		while Afficheur1.All.Gauche /= null loop
-			-- Tant que le chemin gauche de l'arbre n'est pas nul, on l'affiche
-			if Afficheur1.All.Active = True then
-				-- Cas où la cellule est une feuille
-				Compteur := Compteur + 1;
-				Put_Line("Feuille" & Integer'Image(Compteur));
-				Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
-				Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
-				New_Line;
-			else
-				null;
-			end if;
-
+		if not Afficheur1.Gauche.All.Active then
+			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur1.All.Gauche);
-		end loop;
+		else
+			-- Sinon on affiche car la cellule est une feuille
+			Afficheur1 := Afficheur1.All.Gauche;
+			Compteur := Compteur + 1;
+
+			Put_Line("Feuille" & Integer'Image(Compteur));
+			Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
+			Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
+			New_Line;
+		end if;
+
+		-- Le parcours est en profondeur, on explore tout ce qu'il y a à droite
+		if not Afficheur2.Droite.All.Active then
+			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
+			Afficher_Arbre(Afficheur2.All.Droite);
+		else
+			-- Cas où la cellule est une feuille
+			Afficheur2 := Afficheur2.All.Droite;
+			Compteur := Compteur + 1;
+
+			Put_Line("Feuille" & Integer'Image(Compteur));
+			Put_Line(T_Adresse_IP'Image(Afficheur2.All.Adresse));
+			Put_Line(T_Adresse_IP'Image(Afficheur2.All.Adresse));
+			New_Line;
+		end if;
 
 
 	end Afficher_Arbre;
