@@ -46,6 +46,21 @@ package body cache_tree is
 		return Arbre.All.Frequence;
 	end Frequence_Arbre;
 
+	function Demandes_Cache(Cachee : in T_Cache_Arbre) return Integer is
+	begin
+		return Cache.Demandes;
+	end Demandes_Cache;
+
+	function Defauts_Cache(Cache : in T_Cache_Arbre) return Integer is
+	begin
+		return Cache.Defauts;
+	end Defauts_Cache;
+
+	function Enregistrement_Cache(Cache : in T_Cache_Arbre) return Integer is
+	begin
+		return Cache.Enregistrement;
+	end Enregistrement_Cache;
+
 	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) is
 		Taille_Masque : Integer;
 	begin

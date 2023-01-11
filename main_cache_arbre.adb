@@ -34,7 +34,7 @@ procedure Main is
     end Afficher_Usage;
 
     package cache is new cache_tree(Taille => 10);
-    use cache ;
+    use cache;
 
     File_paquet : File_Type;
     File_resultat : File_Type;
