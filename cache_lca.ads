@@ -13,8 +13,20 @@ package CACHE_LCA is
 	-- Est-ce que le cache est plein ?
    function Est_Plein(Cache_lca : T_CACHE_LCA) return Boolean;
 
+   -- Supprimer un élément du cache, suivant la politique demandée au préalable par l'utilisateur.
+   procedure Supprimer(Cache_lca : in out T_CACHE_LCA);
+
    -- Savoir si une adresse est présente dans le cache.
-	function Adresse_Presente(Cache_lca : in T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return Boolean;
+   function Adresse_Presente(Cache_lca : in T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return Boolean;
+
+   -- Récupérer le masque et l'interface associés à l'adresse demandée, dans le cache.
+   procedure Recuperer(Cache_lca : in T_CACHE_LCA ; Adresse : T_ADRESSE_IP);
+
+   -- Trouver l'adresse à mettre dans le cache.
+   procedure Trouver(Table_Routage : T_Table_Routage ; Adresse : T_ADRESSE_IP);
+
+   -- Récupérer le masque le plus long dans la table de routage.
+   procedure Recuperer_Masque_Long(Table_Routage : in T_Table_Routage ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP);
 
    -- Ajouter une nouvelle route dans le cache.
    procedure Ajouter(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Eth : in T_IFACE) with
@@ -23,9 +35,6 @@ package CACHE_LCA is
    -- Supprimer tous les éléments du cache.
 	procedure Vider(Cache_lca : in out T_CACHE_LCA) with
      Post => Cache_lca == null;
-
-   -- Supprimer un élément du cache, suivant la politique demandée au préalable par l'utilisateur.
-   procedure Supprimer(Cache_lca : in out T_CACHE_LCA);
 
    -- Taille du cache.
    function Taille(Cache_lca : T_CACHE_LCA) return Integer with
@@ -44,7 +53,9 @@ private
       record
 			Adresse : T_ADRESSE_IP;
          Masque : T_ADRESSE_IP;
-         Eth : T_IFACE;
+         Eth : Unbounded_String;
+         Frequence : Integer;
+         Recent : Integer;
 			Suivant : T_CACHE_LCA;
 		end record;
 
