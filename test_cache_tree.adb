@@ -3,7 +3,7 @@ with tools; use tools;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
 with routeur_exceptions; use routeur_exceptions;
-with Ada.Unchecked_Deallocation;
+
 
 procedure test_cache_tree is
 
@@ -42,26 +42,65 @@ procedure test_cache_tree is
 -- Test de la procedure Initialiser et Est_vide
     procedure Tester_Initiliser is 
         Cache : T_Cache_Arbre;
-        Taille : Interger;
+        Taille : Integer;
     begin 
-        pragma Assert( Est_Vide(Cache));
-    
-        Initialiser(Cache, Taille => 0);
-        pragma Assert(not(Est_Vide(Cache)));
+
+        Taille := 2;
+        Initialiser(Cache, Taille);
+        pragma Assert(not(Est_Vide(Arbre_Cache(Cache))));
     
         Put_Line("Les tests de 'Initialiser' et 'Est_Vide' sont réussis !");
 
     end Tester_Initiliser;
 
--- Test de la procedure Enregistrer et Supprimer
+-- Test de la procedure Enregistrer et Supprimer et Afficher
     procedure Tester_Enregistrer_Supprimer is 
-        Arbre : T_Arbre;
+
         Cache : T_Cache_Arbre;
-        Adresse : T_Adresse_IP;
-        Masque : T_Adresse_IP;
-        Sortie : Unbounded_String;
-        Politique : in T_Politique
+        Adresse1 : T_Adresse_IP;
+        Adresse2 : T_Adresse_IP;
+        Adresse_test : T_Adresse_IP;
+        Masque1 : T_Adresse_IP;
+        Masque2 : T_Adresse_IP;
+        Sortie1 : Unbounded_String;
+        Sortie2 : Unbounded_String;
+        Politique : T_Politique;
     begin 
+        -- initialiser le cache et l'arbre
+        Initialiser(Cache, 2);
+    
+        Vider(Arbre_Cache(Cache));
+        -- Enregistrement de la premiere donnees dans le cache 
+        Adresse1 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.0.0"));
+        Masque1 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0"));
+        Sortie1 := To_Unbounded_String("eth1");
+        Politique := FIFO; -- FIFO
+        Enregistrer(Arbre,Cache,Adresse1,Masque1,Sortie1, Politique);
+        Afficher_Arbre(Arbre_Cache(Cache));
+        Adresse_test := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.12.0"));
+        -- Test qui verifie si la sortie est correcte
+        pragma Assert( Chercher_Cache(Cache , Adresse_test , Politique , Masque1 ) = Sortie1);
+
+        -- test qui verifie si le nombre de donnee dans le cache est correcte
+        pragma Assert(Enregistrement_Cache(Cache)= 1);
+        Adresse2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.255.0"));
+        Masque2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.255.0"));
+        Sortie2 := To_Unbounded_String("eth2");
+        -- Ajout d une 2eme donnee
+        Enregistrer(Arbre,Cache,Adresse1,Masque2,Sortie2, Politique);
+        pragma Assert(Enregistrement_Cache(Cache)= 2);
+        Afficher_Arbre(Arbre_Cache(Cache));
+        pragma Assert( Chercher_Cache(Cache , Adresse_test , Politique , Masque1 ) = Sortie1);
+        Adresse_test := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.255.0"));
+        pragma Assert( Chercher_Cache(Cache , Adresse_test , Politique , Masque2 ) = Sortie2);
+        Afficher_Statistiques_Cache(Cache);
+        pragma Assert(Est_Plein(Cache, 2));
+
+        Supprimer(Arbre_Cache(Cache),Cache,Politique, Masque1 ); 
+        Afficher_Arbre(Arbre_Cache(Cache));
+
+
+        Put_Line("Les tests de 'Enregistrer' et 'Supprimer' sont réussis !");
 
     end Tester_Enregistrer_Supprimer;
 
@@ -85,6 +124,7 @@ procedure test_cache_tree is
 
 begin
     Tester_Initiliser;
+    Tester_Enregistrer_Supprimer;
 
 
 end test_cache_tree;
