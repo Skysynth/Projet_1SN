@@ -46,7 +46,7 @@ package body cache_tree is
 		return Arbre.All.Frequence;
 	end Frequence_Arbre;
 
-	function Demandes_Cache(Cachee : in T_Cache_Arbre) return Integer is
+	function Demandes_Cache(Cache : in T_Cache_Arbre) return Integer is
 	begin
 		return Cache.Demandes;
 	end Demandes_Cache;
