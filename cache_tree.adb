@@ -476,57 +476,54 @@ package body cache_tree is
 			return Max;
 		end Recherche_Identifiant_Max;
 
-		function Chercher_Cache(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique; Masque : in T_Adresse_IP) return Unbounded_string is
-        	Max : Integer;
+		function Chercher_Cache(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique) return Unbounded_string is
         	Arbre : T_Arbre := Arbre_Cache(Cache);
-        	Taille_Masque : Integer;
+			Sortie : Unbounded_String;
     	begin
 
-			if Est_Vide(Arbre) then
-			-- Cas où le cache est vide
-				raise Adresse_Absente_Exception;
+			-- On fait pointer les pointeurs sur la racine
+			Recherche_Adresse1 := Arbre;
+			Recherche_Adresse2 := Arbre;
+			
+			-- On recherche l'adresse correspondante à droite et à gauche
+			if Recherche_Adresse1 /= null and then Recherche_Adresse1.Gauche /= null then
+				if Adresse = Recherche_Adresse1.All.Adresse then
+					Sortie := Recherche_Adresse1.All.Sortie;
+				else
+					null; -- il ne ne passe rien
+				end if;
+
+				Recherche_Adresse1 := Recherche_Adresse1.All.Gauche;
+
+				Sortie := Chercher_Cache(Recherche_Adresse1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+			elsif Recherche_Adresse2 /= null and then Recherche_Adresse2.Droite /= null then
+				if Adresse = Recherche_Adresse2.All.Adresse then
+					Sortie := Recherche_Adresse2.All.Sortie;
+				else
+					null; -- il ne se passe rien
+				end if;
+
+				Recherche_Adresse2 := Recherche_Adresse2.All.Droite;
+
+				Sortie := Chercher_Cache(Recherche_Adresse2); -- on procède par récursivité
 			else
-				Put_Line("Le cache n'est pas vide. On peut continuer.");
-			end if;
-
-			Taille_Masque := Get_taille_binaire(Masque);
-
-			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-			for i in 0..(Taille_Masque - 1) loop
-				if ((Adresse AND (2 ** (Taille_Masque - 1 - i))) = 0) then
-					--  Cas où le bit vaut 0
-					if Est_Vide(Arbre.Gauche) then
-					-- Cas où le cache à gauche est vide
-						raise Adresse_Absente_Exception;
+				-- On regarde les cas où on sort des if à cause des premières conditions
+				if Recherche_Adresse1 /= null then
+					if Adresse = Arbre.All.Adresse then
+						Sortie := Recherche_Adresse1.All.Sortie;
 					else
-						Arbre := Arbre.All.Gauche;
+						null; -- il ne ne passe rien
+					end if;
+				elsif Recherche_Adresse2 /= null then
+					if Adresse = Arbre.All.Adresse then
+						Sortie := Recherche_Adresse2.All.Sortie;
+					else
+						null; -- il ne ne passe rien
 					end if;
 				else
-					-- Cas où le bit vaut 1
-					if Est_Vide(Arbre.Droite) then
-					-- Cas où le cache à droite est vide
-						raise Adresse_Absente_Exception;
-					else
-						Arbre := Arbre.All.Droite;
-					end if;
+					null; -- il ne se passe rien
 				end if;
-			end loop;
-
-			-- On devrait être au niveau de la feuille correspondante à l'adresse désormais
-			Arbre.All.Frequence := Arbre.All.Frequence + 1;
-        	Max := Recherche_Identifiant_Max(Arbre);
-        	Cache.Demandes := Cache.Demandes + 1;
-
-       		-- Je mets à jour la politique LRU
-        	if (T_Politique'Pos(Politique) = 2) then -- LRU
-        	    if Arbre.All.Identifiant = Max then
-        	        null; -- rien à faire
-        	    else
-        	        Arbre.All.Identifiant := Max + 1; -- devient le plus récemment utilisé
-        	    end if;
-        	else
-        	    null; -- rien à faire
-        	end if;
+			end if;
 
         	return Arbre.All.Sortie;
 

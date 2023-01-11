@@ -170,7 +170,7 @@ package cache_tree is
     --      Adresse : Mode In T_Adresse_IP; -- l'adresse
     --      Politique : Mode In T_Politique; -- la politique
     --      Masque : Mode In T_Adresse_IP; -- le masque
-    function Chercher_Cache(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique; Masque : in T_Adresse_IP) return Unbounded_string;
+    function Chercher_Cache(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique) return Unbounded_string;
 
 private
 
