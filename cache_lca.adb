@@ -40,8 +40,11 @@ package body CACHE_LCA is
    end Supprimer;
 
    procedure Supprimer_FIFO(Cache_lca : in out T_CACHE_LCA) is
+      Cache_lca0 : T_CACHE_LCA;
    begin
-      Free(Cache_lca);
+      Cache_lca0 := Cache_lca;
+      Cache_lca := Cache_lca.all.Suivant;
+      Free(Cache_lca0);
    end Supprimer_FIFO;
 
    procedure Supprimer_LRU(Cache_lca : in out T_CACHE_LCA) is
@@ -49,9 +52,27 @@ package body CACHE_LCA is
       Free(Cache_lca);
    end Supprimer_LRU;
 
-   procedure Supprimer_LFU(Cache_lca : in out T_CACHE_LCA) is
+   function Adresse_LFU(Cache_lca : in T_CACHE_LCA) return integer is
+      Cache_lca0 : T_CACHE_LCA;
+      Freq_min : integer;
    begin
-      Free(Cache_lca);
+      Cache_lca0 := Cache_lca;
+      Freq_min := 1;
+      while not(Est_Vide(Cache_lca0)) loop
+         if Cache_lca0.all.Frequence < Freq_min then
+            Freq_min := Cache_lca0.all.Frequence;
+         else
+            null;
+         end if;
+         Cache_lca0 := Cache_lca0.all.Suivant;
+      end loop;
+      return Freq_min;
+   end Adresse_LFU;
+
+   procedure Supprimer_LFU(Cache_lca : in out T_CACHE_LCA) is
+      Freq_min : integer;
+   begin
+      Freq_min := Adresse_LFU(Cache_lca);
    end Supprimer_LFU;
 
    function Adresse_Presente(Cache_lca : in T_CACHE_LCA ; Adresse : in T_Adresse_IP) return Boolean is
@@ -86,6 +107,7 @@ package body CACHE_LCA is
          if Cache_lca0.all.Adresse = Adresse_Masquee and then Cache_lca0.all.Masque > Masque_Max then
             Masque_Max := Cache_lca0.all.Masque;
             Eth_Cache := Cache_lca0.all.Eth;
+            Cache_lca0.all.Frequence := Cache_lca0.all.Frequence + 1;
          else
             null;
          end if;
