@@ -35,11 +35,47 @@ package body CACHE_LCA is
          when FIFO => Supprimer_FIFO(Cache_lca);
          when LRU => Supprimer_LRU(Cache_lca);
          when LFU => Supprimer_LFU(Cache_lca);
-         when others => raise Error_Politique_Unknown;
+         when others => raise Politique_non_valide_exception;
       end case;
    end Supprimer;
 
-   function Adresse_Presente (Cache_lca : in T_CACHE_LCA ; Adresse : in T_Adresse_IP) return Boolean is
+   procedure Supprimer_FIFO(Cache_lca : in out T_CACHE_LCA) is
+      Cache_lca0 : T_CACHE_LCA;
+   begin
+      Cache_lca0 := Cache_lca;
+      Cache_lca := Cache_lca.all.Suivant;
+      Free(Cache_lca0);
+   end Supprimer_FIFO;
+
+   procedure Supprimer_LRU(Cache_lca : in out T_CACHE_LCA) is
+   begin
+      Free(Cache_lca);
+   end Supprimer_LRU;
+
+   function Adresse_LFU(Cache_lca : in T_CACHE_LCA) return integer is
+      Cache_lca0 : T_CACHE_LCA;
+      Freq_min : integer;
+   begin
+      Cache_lca0 := Cache_lca;
+      Freq_min := 1;
+      while not(Est_Vide(Cache_lca0)) loop
+         if Cache_lca0.all.Frequence < Freq_min then
+            Freq_min := Cache_lca0.all.Frequence;
+         else
+            null;
+         end if;
+         Cache_lca0 := Cache_lca0.all.Suivant;
+      end loop;
+      return Freq_min;
+   end Adresse_LFU;
+
+   procedure Supprimer_LFU(Cache_lca : in out T_CACHE_LCA) is
+      Freq_min : integer;
+   begin
+      Freq_min := Adresse_LFU(Cache_lca);
+   end Supprimer_LFU;
+
+   function Adresse_Presente(Cache_lca : in T_CACHE_LCA ; Adresse : in T_Adresse_IP) return Boolean is
       Presence : Boolean;
       Adresse_Masquee : T_ADRESSE_IP;
       Cache_lca0 : T_CACHE_LCA;
@@ -71,6 +107,7 @@ package body CACHE_LCA is
          if Cache_lca0.all.Adresse = Adresse_Masquee and then Cache_lca0.all.Masque > Masque_Max then
             Masque_Max := Cache_lca0.all.Masque;
             Eth_Cache := Cache_lca0.all.Eth;
+            Cache_lca0.all.Frequence := Cache_lca0.all.Frequence + 1;
          else
             null;
          end if;
@@ -80,10 +117,10 @@ package body CACHE_LCA is
 
    procedure Ajouter(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Eth : in Unbounded_String) is
    begin
-      if Cache_lca = null then
-         Cache_lca := new T_Cellule'(Adresse, Masque, 1, 1, Eth);
+      if Est_Vide(Cache_lca) then
+         Cache_lca := new T_Cellule'(Adresse, Masque, Eth, 1, Null);
       else
-         Ajouter(Cache_lca.all.Suivant);
+         Ajouter(Cache_lca.all.Suivant, Adresse, Masque, Eth);
       end if;
    end Ajouter;
 
