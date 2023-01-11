@@ -79,7 +79,7 @@ procedure test_cache_tree is
         Afficher_Arbre(Arbre_Cache(Cache));
         Adresse_test := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.12.0"));
         -- Test qui verifie si la sortie est correcte
-        pragma Assert( Chercher_Cache(Cache , Adresse_test , Politique , Masque1 ) = Sortie1);
+        pragma Assert( Chercher_Cache(Cache , Adresse_test, Politique) = Sortie1);
 
         -- test qui verifie si le nombre de donnee dans le cache est correcte
         pragma Assert(Enregistrement_Cache(Cache)= 1);
@@ -90,9 +90,9 @@ procedure test_cache_tree is
         Enregistrer(Arbre_Cache(Cache),Cache,Adresse1,Masque2,Sortie2, Politique);
         pragma Assert(Enregistrement_Cache(Cache)= 2);
         Afficher_Arbre(Arbre_Cache(Cache));
-        pragma Assert( Chercher_Cache(Cache , Adresse_test , Politique , Masque1 ) = Sortie1);
+        pragma Assert( Chercher_Cache(Cache , Adresse_test, Politique) = Sortie1);
         Adresse_test := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.255.0"));
-        pragma Assert( Chercher_Cache(Cache , Adresse_test , Politique , Masque2 ) = Sortie2);
+        pragma Assert( Chercher_Cache(Cache , Adresse_test, Politique ) = Sortie2);
         Afficher_Statistiques_Cache(Cache);
         pragma Assert(Est_Plein(Cache));
 
