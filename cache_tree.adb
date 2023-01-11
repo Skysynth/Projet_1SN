@@ -52,7 +52,6 @@ package body cache_tree is
 		-- Cas où le cache est vide
 		if Est_Vide(Arbre) then
 			Arbre := new T_Cache_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
-			Cache.Taille := Cache.Taille + 1;
 		else
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
@@ -66,7 +65,6 @@ package body cache_tree is
 				if Est_Vide(Arbre.All.Gauche) then
 				-- Cas où le cache à gauche est vide
 					Arbre.All.Gauche := new T_Cache_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
-					Cache.Taille := Cache.Taille + 1;
 					Arbre := Arbre.All.Gauche;
 				else
 					Arbre := Arbre.All.Gauche;
@@ -76,7 +74,6 @@ package body cache_tree is
 				if Est_Vide(Arbre.All.Droite) then
 				-- Cas où le cache à droite est vide
 					Arbre.All.Droite := new T_Cache_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
-					Cache.Taille := Cache.Taille + 1;
 					Arbre := Arbre.All.Droite;
 				else
 					Arbre := Arbre.All.Droite;
@@ -98,6 +95,7 @@ package body cache_tree is
 			when others => raise Politique_non_valide_exception;
 		end case;
 
+		Cache.Taille := Cache.Taille + 1;
 		Cache.Enregistrement := Cache.Enregistrement + 1;
 	end Enregistrer;
 
