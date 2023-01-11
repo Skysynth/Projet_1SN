@@ -1,8 +1,5 @@
 with tools; use tools;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
-
-generic
-    Taille : Integer;
 package cache_tree is
 
     type T_Cache_Arbre is limited private;
@@ -102,7 +99,7 @@ package cache_tree is
     -- pré-condition : Est_Plein(Cache)
     -- post-condition : Taille_Cache(Arbre) = Taille_Cache(Arbre)'Old - 1
     procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Politique : in T_Politique; Masque : in T_Adresse_IP) with
-        Pre => Est_Plein(Cache, Taille),
+        Pre => Est_Plein(Cache, Taille_Cache(Cache)),
         Post => Taille_Cache(Cache) = Taille_Cache(Cache)'Old - 1;
 
 
@@ -159,7 +156,7 @@ private
         Gauche : T_Arbre;
         Droite : T_Arbre;
         Frequence : Integer; -- pour appliquer la politique LFU
-        Active : Boolean; -- pour savoir si la cellule est active ou non
+        Active : Boolean; -- pour savoir si la cellule est active ou non, c'est-à-dire si c'est une feuille (à faire)
         Identifiant : Integer; -- pour appliquer les politiques LRU et FIFO
     end record;
 
