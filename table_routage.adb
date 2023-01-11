@@ -6,9 +6,6 @@ package body Table_Routage is
     
     procedure Free is
         new Ada.Unchecked_Deallocation (Object => T_Cellule, Name => T_Table_Routage);
-
-
-
     
     -- R2 : Initialiser un routeur 
     procedure Initialiser(param : in T_Param; Table_Routage: out T_Table_Routage) is
@@ -75,13 +72,6 @@ package body Table_Routage is
         Close (File);   
         
     end Initialiser;
-
-
-
-
-
-
-
         
     function Est_Vide (Table_Routage : in T_Table_Routage) return Boolean is
     begin

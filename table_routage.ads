@@ -116,7 +116,6 @@ private
             Masque : T_Adresse_IP;
             Sortie : Unbounded_String;
             Suivant : T_Table_Routage;
-			
         end record;
 
 end Table_Routage;
