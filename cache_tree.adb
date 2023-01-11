@@ -5,7 +5,7 @@ with Ada.Unchecked_Deallocation;
 package body cache_tree is
 
 	procedure Free is
-		new Ada.Unchecked_Deallocation(Object => T_Cache_Cellule, Name => T_Arbre);
+		new Ada.Unchecked_Deallocation(Object => T_Arbre_Cellule, Name => T_Arbre);
 
 	procedure Initialiser(Cache : out T_Cache_Arbre; Taille : in Integer) is
 	begin
@@ -51,8 +51,7 @@ package body cache_tree is
 	begin
 		-- Cas où le cache est vide
 		if Est_Vide(Arbre) then
-			Arbre := new T_Cache_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
-			Cache.Taille := Cache.Taille + 1;
+			Arbre := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 		else
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
@@ -61,12 +60,11 @@ package body cache_tree is
 
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 		for i in 0..(Taille_Masque - 1) loop
-			if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
+			if ((Adresse AND (2 ** (Taille_Masque - 1 - i))) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Arbre.All.Gauche) then
 				-- Cas où le cache à gauche est vide
-					Arbre.All.Gauche := new T_Cache_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
-					Cache.Taille := Cache.Taille + 1;
+					Arbre.All.Gauche := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 					Arbre := Arbre.All.Gauche;
 				else
 					Arbre := Arbre.All.Gauche;
@@ -75,8 +73,7 @@ package body cache_tree is
 				-- Cas où le bit vaut 1
 				if Est_Vide(Arbre.All.Droite) then
 				-- Cas où le cache à droite est vide
-					Arbre.All.Droite := new T_Cache_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
-					Cache.Taille := Cache.Taille + 1;
+					Arbre.All.Droite := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 					Arbre := Arbre.All.Droite;
 				else
 					Arbre := Arbre.All.Droite;
@@ -89,7 +86,8 @@ package body cache_tree is
 		Arbre.All.Adresse := Adresse;
 		Arbre.All.Masque := Masque;
 		Arbre.All.Sortie := Sortie;
-		Arbre.All.Active := True;
+		Arbre.All.Feuille := True;
+
 		case T_Politique'Pos(Politique) is
 			when 1 => Arbre.All.Identifiant := Cache.Enregistrement; -- FIFO
 			when 2 => Arbre.All.Identifiant := 0; -- LRU
@@ -97,6 +95,7 @@ package body cache_tree is
 			when others => raise Politique_non_valide_exception;
 		end case;
 
+		Cache.Taille := Cache.Taille + 1;
 		Cache.Enregistrement := Cache.Enregistrement + 1;
 	end Enregistrer;
 
@@ -114,7 +113,7 @@ package body cache_tree is
 
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 		for i in 0..(Taille_Masque - 1) loop
-			if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
+			if ((Adresse AND (2 ** (Taille_Masque - 1 - i))) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Arbre.Gauche) then
 				-- Cas où le cache à gauche est vide
@@ -150,7 +149,7 @@ package body cache_tree is
 			-- On fait pointer les pointeurs sur la racine
 			Recherche_Identifiant1 := Arbre;
 			Recherche_Identifiant2 := Arbre;
-			Min := 100000; -- on n'utilisera en pratique jamais plus de 100,000 fois une adresse
+			Min := 100000; -- on n'utilisera en pratique jamais plus de 100,000 fois une adresse, à changer
 			Adresse := 0; -- par défaut
 			
 			-- On recherche le minimum à droite et à gauche
@@ -162,9 +161,7 @@ package body cache_tree is
 					null; -- il ne ne passe rien
 				end if;
 
-				Recherche_Identifiant1 := Recherche_Identifiant1.All.Gauche;
-
-				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant1.All.Gauche); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 			elsif Recherche_Identifiant2 /= null and then Recherche_Identifiant2.Droite /= null then
 				if Min > Recherche_Identifiant2.All.Identifiant then
 					Min := Recherche_Identifiant2.All.Identifiant;
@@ -173,9 +170,7 @@ package body cache_tree is
 					null; -- il ne se passe rien
 				end if;
 
-				Recherche_Identifiant2 := Recherche_Identifiant2.All.Droite;
-
-				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant2); -- on procède par récursivité
+				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant2.All.Droite); -- on procède par récursivité
 			else
 				-- On regarde les cas où on sort des if à cause des premières conditions
 				if Recherche_Identifiant1 /= null then
@@ -188,7 +183,7 @@ package body cache_tree is
 				elsif Recherche_Identifiant2 /= null then
 					if Min > Arbre.All.Identifiant then
 						Min := Recherche_Identifiant2.All.Identifiant;
-						Adresse := Recherche_Identifiant1.All.Adresse;
+						Adresse := Recherche_Identifiant2.All.Adresse;
 					else
 						null; -- il ne ne passe rien
 					end if;
@@ -237,7 +232,7 @@ package body cache_tree is
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			for i in 0..(Taille_Masque - 1) loop
-				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
+				if ((Adresse AND (2 ** (Taille_Masque - 1 - i))) = 0) then
 					--  Cas où le bit vaut 0
 						Suppresseur := Suppresseur.All.Gauche;
 				else
@@ -297,7 +292,7 @@ package body cache_tree is
 				elsif Recherche_Frequence2 /= null then
 					if Min > Arbre.All.Frequence then
 						Min := Recherche_Frequence2.All.Frequence;
-						Adresse := Recherche_Frequence1.All.Adresse;
+						Adresse := Recherche_Frequence2.All.Adresse;
 					else
 						null; -- il ne ne passe rien
 					end if;
@@ -321,7 +316,7 @@ package body cache_tree is
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			for i in 0..(Taille_Masque - 1) loop
-				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
+				if ((Adresse AND (2 ** (Taille_Masque - 1 - i))) = 0) then
 					--  Cas où le bit vaut 0
 						Suppresseur := Suppresseur.All.Gauche;
 				else
@@ -371,7 +366,7 @@ package body cache_tree is
 		Afficheur2 := Arbre;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
-		if not Afficheur1.Gauche.All.Active then
+		if not Afficheur1.Gauche.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur1.All.Gauche);
 		else
@@ -386,7 +381,7 @@ package body cache_tree is
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à droite
-		if not Afficheur2.Droite.All.Active then
+		if not Afficheur2.Droite.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur2.All.Droite);
 		else
