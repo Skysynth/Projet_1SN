@@ -475,4 +475,62 @@ package body cache_tree is
 			return Max;
 		end Recherche_Identifiant_Max;
 
+		function Chercher_Cache(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique; Masque : in T_Adresse_IP) return Unbounded_string is
+        	Max : Integer;
+        	Arbre : T_Arbre := Arbre_Cache(Cache);
+        	Taille_Masque : Integer;
+    	begin
+
+			if Est_Vide(Arbre) then
+			-- Cas où le cache est vide
+				raise Adresse_Absente_Exception;
+			else
+				Put_Line("Le cache n'est pas vide. On peut continuer.");
+			end if;
+
+			Taille_Masque := Get_taille_binaire(Masque);
+
+			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
+			for i in 0..(Taille_Masque - 1) loop
+				if ((Adresse AND (2 ** (Taille_Masque - 1 - i))) = 0) then
+					--  Cas où le bit vaut 0
+					if Est_Vide(Arbre.Gauche) then
+					-- Cas où le cache à gauche est vide
+						raise Adresse_Absente_Exception;
+					else
+						Arbre := Arbre.All.Gauche;
+					end if;
+				else
+					-- Cas où le bit vaut 1
+					if Est_Vide(Arbre.Droite) then
+					-- Cas où le cache à droite est vide
+						raise Adresse_Absente_Exception;
+					else
+						Arbre := Arbre.All.Droite;
+					end if;
+				end if;
+			end loop;
+
+			-- On devrait être au niveau de la feuille correspondante à l'adresse désormais
+			Arbre.All.Frequence := Arbre.All.Frequence + 1;
+        	Max := Recherche_Identifiant_Max(Arbre);
+        	Cache.Demandes := Cache.Demandes + 1;
+
+       		-- Je mets à jour la politique LRU
+        	if (T_Politique'Pos(Politique) = 2) then -- LRU
+        	    if Arbre.All.Identifiant = Max then
+        	        null; -- rien à faire
+        	    else
+        	        Arbre.All.Identifiant := Max + 1; -- devient le plus récemment utilisé
+        	    end if;
+        	else
+        	    null; -- rien à faire
+        	end if;
+
+        	return Arbre.All.Sortie;
+
+    	exception
+        	when Adresse_Absente_Exception => Put_Line("L'adresse n'a pas été trouvée");
+    	end Chercher_Cache;
+
 end cache_tree;

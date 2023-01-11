@@ -162,6 +162,16 @@ package cache_tree is
     function Recherche_Identifiant_Max(Arbre : in T_Arbre) return Integer with
         Post => Recherche_Identifiant_Max'Result >= 0;
 
+    
+    -- nom : Chercher_Cache
+    -- sémantique : Permet de renvoyer la sortie correspondante à une adresse dans le cache
+    -- paramètres :
+    --      Arbre : Mode In/Out T_Arbre; -- l'arbre du cache
+    --      Adresse : Mode In T_Adresse_IP; -- l'adresse
+    --      Politique : Mode In T_Politique; -- la politique
+    --      Masque : Mode In T_Adresse_IP; -- le masque
+    function Chercher_Cache(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique; Masque : in T_Adresse_IP) return Unbounded_string;
+
 private
 
     type T_Arbre_Cellule;
