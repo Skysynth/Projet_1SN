@@ -10,7 +10,7 @@ with tools; use tools;
 with Table_Routage; use Table_Routage;
 with cache_tree; use cache_tree;
 
-procedure Main is
+procedure main_cache_arbre is
 
     param : T_Param;
 
@@ -33,9 +33,6 @@ procedure Main is
         New_Line;
     end Afficher_Usage;
 
-    package cache is new cache_tree(Taille => 10);
-    use cache;
-
     File_paquet : File_Type;
     File_resultat : File_Type;
     ligne : Unbounded_String;
@@ -46,24 +43,6 @@ procedure Main is
 
     -- PARTIE CACHE
     cache : T_Cache_Arbre;
-
-    function Chercher_Cache(adresse : T_Adresse_IP) return Unbounded_string is
-    begin
-        -- RECHERCHE ADRESSE
-
-        -- SI ADRESSE TROUVEE ALORS
-        -- AUGMENTER LA FREQUENCE
-        -- METTRE A JOUR LE CHIFFRE LRU
-        -- RETOURNER INTERFACE
-
-        -- SINON
-
-        -- RAISE PAS_TROUVE_EXCEPTION
-    end;
-
-
-
-
 
 begin
 
@@ -101,7 +80,7 @@ begin
 
                 begin
                     -- On cherche dans le cache
-                    interf = Chercher_dans_cache(Unbounded_String_To_Adresse_IP(ligne));
+                    interf := Chercher_Cache(Unbounded_String_To_Adresse_IP(ligne));
                 exception
                     -- si pas trouvé : on cherche à la mano dans la table de routage
                     when others => interf := Table_Routage.Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr);
@@ -128,4 +107,4 @@ begin
         when E : others => Put_Line (Exception_Message (E));
     end;
 
-end Main;
+end main_cache_arbre;
