@@ -61,6 +61,32 @@ package cache_tree is
     function Frequence_Arbre(Arbre : in T_Arbre) return Integer with
         Post => Frequence_Arbre'Result >= 0;
 
+    -- nom : Demandes_Cache
+    -- sémantique : Permet de récupérer le nombre de demandes dans le cache
+    -- paramètres :
+    --      Cache : Mode In T_Cache_Arbre; -- le cache
+    -- post-condition : Demandes_Cache'Result >= 0
+	function Demandes_Cache(Cache : in T_Cache_Arbre) return Integer with
+	    Post => Demandes_Cache'Result >= 0;
+
+
+    -- nom : Defauts_Cache
+    -- sémantique : Permet de récupérer le nombre de défauts dans le cache
+    -- paramètres :
+    --      Cache : Mode In T_Cache_Arbre; -- le cache
+    -- post-condition : Defauts_Cache'Result >= 0
+	function Defauts_Cache(Cache : in T_Cache_Arbre) return Integer with
+        Post => Defauts_Cache'Result >= 0;
+
+
+    -- nom : Enregistrement_Cache
+    -- sémantique : Permet de récupérer le nombre d'enregistrements dans le cache
+    -- paramètres :
+    --      Cache : Mode In T_Cache_Arbre; -- le cache
+    -- post-condition : Enregistrement_Cache'Result >= 0
+	function Enregistrement_Cache(Cache : in T_Cache_Arbre) return Integer with
+        Post => Enregistrement_Cache'Result >= 0;
+
 
     -- nom : Enregistrer
     -- sémantique : Enregistrer une adresse, un masque et une sortie dans le cache
