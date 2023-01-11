@@ -87,8 +87,7 @@ begin
                     -- On cherche dans le cache
                     interf := Chercher_Cache(Cache     => cache,
                                              Adresse   => adresse,
-                                             Politique => param.politique,
-                                             Masque    => 0);
+                                             Politique => param.politique);
                 exception
                         -- si pas trouvé : on cherche à la mano dans la table de routage
                     when others =>
@@ -98,8 +97,8 @@ begin
                                                                    Adresse => adresse,
                                                                    Masque  => Construct_Mask(taille_masque));
 
-                            adresse_Cache := Apply_Masque(adresse => adresse,
-                                                          masque  => masque_Cache);
+                        adresse_Cache := Apply_Masque(adresse => adresse,
+                                                      masque  => masque_Cache);
 
                         -- arbre := Arbre_Cache(Cache => cache);
 
@@ -109,8 +108,6 @@ begin
                                                Masque    => masque_Cache,
                                                Sortie    => interf,
                                                Politique => param.politique);
-
-
                 end;
 
                 Put_Line(File_resultat, To_String(ligne) & " " & To_String(interf));
