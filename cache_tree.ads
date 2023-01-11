@@ -10,11 +10,11 @@ package cache_tree is
     -- paramètres :
     --      Cache : Mode Out T_Cache_Arbre; -- le cache
     --      Taille : Mode in Integer; -- la taille du cache
-    -- post-condition : Est_Vide(Cache.Arbre) and Cache.Taille = Taille
+    -- post-condition : Est_Vide(Cache.Arbre) and Cache.Taille = 0
     -- tests :
     --      entrées : . sortie : Cache = null.
-    procedure Initialiser(Cache : out T_Cache_Arbre; Taille : in Integer) with
-        Post => Est_Vide(Arbre_Cache(Cache)) and Taille_Cache(Cache) = Taille;
+    procedure Initialiser(Cache : out T_Cache_Arbre; Taille_Max : in Integer) with
+        Post => Est_Vide(Arbre_Cache(Cache)) and Taille_Cache(Cache) = 0;
 
 
     -- nom : Est_Vide
@@ -180,6 +180,7 @@ private
     type T_Cache_Arbre is record
         Arbre : T_Arbre;
         Taille : Integer;
+        Taille_Max : Integer;
         Defauts : Integer;
         Demandes : Integer;
         Enregistrement : Integer; -- nombre d'enregistrement dans le cache (pas borné par la taille, le mettre par défaut à 0)

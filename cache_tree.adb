@@ -7,10 +7,11 @@ package body cache_tree is
 	procedure Free is
 		new Ada.Unchecked_Deallocation(Object => T_Arbre_Cellule, Name => T_Arbre);
 
-	procedure Initialiser(Cache : out T_Cache_Arbre; Taille : in Integer) is
+	procedure Initialiser(Cache : out T_Cache_Arbre; Taille_Max : in Integer) is
 	begin
 		Cache.Arbre := Null;
-		Cache.Taille := Taille;
+		Cache.Taille_Max := Taille_Max;
+		Cache.Taille := 0;
 	end Initialiser;
 
 	function Est_Vide(Arbre : in T_Arbre) return Boolean is
@@ -530,7 +531,8 @@ package body cache_tree is
         	return Arbre.All.Sortie;
 
     	exception
-        	when Adresse_Absente_Exception => Put_Line("L'adresse n'a pas été trouvée");
+        	when Adresse_Absente_Exception => Put_Line("L'adresse n'a pas été trouvée"); return To_Unbounded_String("null");
+			when others => Put_Line("Une erreur est intervenue."); return To_Unbounded_String("null");
     	end Chercher_Cache;
 
 end cache_tree;
