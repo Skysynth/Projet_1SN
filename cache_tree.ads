@@ -138,9 +138,9 @@ package cache_tree is
 
 private
 
-    type T_Cache_Cellule;
+    type T_Arbre_Cellule;
 
-    type T_Arbre is access T_Cache_Cellule;
+    type T_Arbre is access T_Arbre_Cellule;
     type T_Cache_Arbre is record
         Arbre : T_Arbre;
         Taille : Integer;
@@ -149,14 +149,14 @@ private
         Enregistrement : Integer; -- nombre d'enregistrement dans le cache (pas borné par la taille, le mettre par défaut à 0)
     end record;
 
-    type T_Cache_Cellule is record
+    type T_Arbre_Cellule is record
         Adresse : T_Adresse_IP;
         Masque : T_Adresse_IP;
         Sortie : Unbounded_String;
         Gauche : T_Arbre;
         Droite : T_Arbre;
         Frequence : Integer; -- pour appliquer la politique LFU
-        Active : Boolean; -- pour savoir si la cellule est active ou non, c'est-à-dire si c'est une feuille (à faire)
+        Feuille : Boolean; -- pour savoir si la cellule est active ou non, c'est-à-dire si c'est une feuille
         Identifiant : Integer; -- pour appliquer les politiques LRU et FIFO
     end record;
 

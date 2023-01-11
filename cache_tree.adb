@@ -5,7 +5,7 @@ with Ada.Unchecked_Deallocation;
 package body cache_tree is
 
 	procedure Free is
-		new Ada.Unchecked_Deallocation(Object => T_Cache_Cellule, Name => T_Arbre);
+		new Ada.Unchecked_Deallocation(Object => T_Arbre_Cellule, Name => T_Arbre);
 
 	procedure Initialiser(Cache : out T_Cache_Arbre; Taille : in Integer) is
 	begin
@@ -51,7 +51,7 @@ package body cache_tree is
 	begin
 		-- Cas où le cache est vide
 		if Est_Vide(Arbre) then
-			Arbre := new T_Cache_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
+			Arbre := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 		else
 			Put_Line("Le cache n'est pas vide. On peut continuer.");
 		end if;
@@ -64,7 +64,7 @@ package body cache_tree is
 				--  Cas où le bit vaut 0
 				if Est_Vide(Arbre.All.Gauche) then
 				-- Cas où le cache à gauche est vide
-					Arbre.All.Gauche := new T_Cache_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
+					Arbre.All.Gauche := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 					Arbre := Arbre.All.Gauche;
 				else
 					Arbre := Arbre.All.Gauche;
@@ -73,7 +73,7 @@ package body cache_tree is
 				-- Cas où le bit vaut 1
 				if Est_Vide(Arbre.All.Droite) then
 				-- Cas où le cache à droite est vide
-					Arbre.All.Droite := new T_Cache_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
+					Arbre.All.Droite := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 					Arbre := Arbre.All.Droite;
 				else
 					Arbre := Arbre.All.Droite;
@@ -86,7 +86,7 @@ package body cache_tree is
 		Arbre.All.Adresse := Adresse;
 		Arbre.All.Masque := Masque;
 		Arbre.All.Sortie := Sortie;
-		Arbre.All.Active := True;
+		Arbre.All.Feuille := True;
 
 		case T_Politique'Pos(Politique) is
 			when 1 => Arbre.All.Identifiant := Cache.Enregistrement; -- FIFO
@@ -366,7 +366,7 @@ package body cache_tree is
 		Afficheur2 := Arbre;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
-		if not Afficheur1.Gauche.All.Active then
+		if not Afficheur1.Gauche.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur1.All.Gauche);
 		else
@@ -381,7 +381,7 @@ package body cache_tree is
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à droite
-		if not Afficheur2.Droite.All.Active then
+		if not Afficheur2.Droite.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur2.All.Droite);
 		else
