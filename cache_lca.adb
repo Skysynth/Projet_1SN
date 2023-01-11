@@ -7,17 +7,16 @@ with Ada.Unchecked_Deallocation;
 
 package body CACHE_LCA is
 
-begin
-
    procedure Free is
      new Ada.Unchecked_Deallocation (Object => T_Cellule, Name => T_CACHE_LCA);
 
-	procedure Initialiser(Cache_lca: out T_CACHE_LCA) is
+   procedure Initialiser(Cache_lca: out T_CACHE_LCA ; Taille : Integer) is
 	begin
-		Cache_lca := null;
+      Cache_lca := null;
+      TAILLE_MAX := Taille;
    end Initialiser;
 
-   function Est_Plein(Cache_lca : in T_CACHE_LCA ; Taille_Max : integer) return Boolean is
+   function Est_Plein(Cache_lca : in T_CACHE_LCA) return Boolean is
       Cache_lca0 : T_CACHE_LCA;
       n : integer;
    begin
@@ -25,17 +24,17 @@ begin
       Cache_lca0 := Cache_lca;
       while Cache_lca0 /= null loop
          Cache_lca0 := Cache_lca0.all.Suivant;
-         n += 1;
+         n := n + 1;
       end loop;
-		return n = Taille_Max;
+      return n = TAILLE_MAX;
    end Est_Plein;
 
-   procedure Supprimer(Cache_lca : in out T_CACHE_LCA, Politique : String) is
+   procedure Supprimer(Cache_lca : in out T_CACHE_LCA ; Politique : T_Politique) is
    begin
       case Politique is
-         when "FIFO" => Supprimer_FIFO(Cache_lca : in out T_CACHE_LCA);
-         when "LRU" => Supprimer_LRU(Cache_lca : in out T_CACHE_LCA);
-         when "LFU" => Supprimer_LFU(Cache_lca : in out T_CACHE_LCA);
+         when FIFO => Supprimer_FIFO(Cache_lca);
+         when LRU => Supprimer_LRU(Cache_lca);
+         when LFU => Supprimer_LFU(Cache_lca);
          when others => raise Error_Politique_Unknown;
       end case;
    end Supprimer;
@@ -63,9 +62,10 @@ begin
       Cache_lca0 : T_CACHE_LCA;
       Adresse_Masquee : T_ADRESSE_IP;
       Masque_Max : T_ADRESSE_IP;
+      Eth_Cache : Unbounded_String;
    begin
       Cache_lca0 := Cache_lca;
-      Masque_Max := 0.0.0.0;
+      Masque_Max := 0;
       while Cache_lca0 /= null loop
          Adresse_Masquee := Adresse AND Cache_lca0.all.Masque;
          if Cache_lca0.all.Adresse = Adresse_Masquee and then Cache_lca0.all.Masque > Masque_Max then
@@ -77,44 +77,6 @@ begin
          Cache_lca0 := Cache_lca0.all.Suivant;
       end loop;
    end Recuperer;
-
-   procedure Trouver(Table_Routage : T_Table_Routage ; Adresse : T_ADRESSE_IP) is
-      Demande_Route_Masquee : T_ADRESSE_IP;
-      Adresse_Cache : T_ADRESSE_IP;
-      Masque_Cache : T_ADRESSE_IP;
-      Eth_Cache : T_IFACE;
-   begin
-      while Table_Routage /= null loop
-         Demande_Route_Masquee := Table_Routage.all.Masque AND Adresse;
-         if Demande_Route_Masquee = Table_Routage.all.Adresse then
-            Adresse_Cache := Table_Routage.all.Adresse;
-            Masque_Cache := Table_Routage.all.Masque;
-            Eth_Cache := Table_Routage.all.Eth;
-         else
-            null;
-         end if;
-         Table_Routage := Table_Routage.all.Suivant;
-      end loop;
-   end Trouver;
-
-   procedure Recuperer_Masque_Long(Table_Routage : in T_Table_Routage ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP) is
-      Table_Routage0 : T_Table_Routage;
-      Masque_Long : T_ADRESSE_IP;
-      Demande_Route_Masquee : T_ADRESSE_IP;
-      Adresse_Masquee : T_ADRESSE_IP;
-   begin
-      Masque_Long := Masque;
-      while Table_Routage0 /= null loop
-         Demande_Route_Masquee := Adresse AND Masque;
-         Adresse_Masquee := Table_Routage0.all.Adresse AND MAsque;
-         if Adresse_Masquee = Demande_Route_Masquee and then Table_Routage0.all.Masque > Masque_Long then
-            Masque_Long := Table_Routage0.all.Masque
-         else
-            null;
-         end if;
-         Table_Routage0 := Table_Routage0.all.Suivant;
-      end loop;
-   end Recuperer_Masque_Long;
 
    procedure Ajouter(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Eth : in Unbounded_String) is
    begin
@@ -134,6 +96,11 @@ begin
          Vider(Cache_lca.all.Suivant);
       end if;
    end Vider;
+
+   function Est_Vide(Cache_lca : in T_CACHE_LCA) return Boolean is
+   begin
+      return Cache_lca = null;
+   end Est_Vide;
 
    function Taille (Cache_lca : in T_CACHE_LCA) return Integer is
       n : integer;
