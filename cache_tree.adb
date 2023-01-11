@@ -521,7 +521,7 @@ package body cache_tree is
 						null; -- il ne ne passe rien
 					end if;
 				else
-					null; -- il ne se passe rien
+					raise Adresse_Absente_Exception;
 				end if;
 			end if;
 
