@@ -5,8 +5,6 @@ with Ada.Strings.Fixed; use Ada.Strings.Fixed;
 
 package body tools is
 
-
-
     function Initialiser_Param return T_Param is
 
         param : T_Param;
@@ -154,25 +152,5 @@ package body tools is
     begin
         return (adresse1 AND masque) = (adresse2 AND masque);
     end Is_Equal_With_Mask;
-
-   procedure Recuperer_Masque_Long(Table_Routage : in T_Table_Routage ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP) is
-      Table_Routage0 : T_Table_Routage;
-      Masque_Long : T_ADRESSE_IP;
-      Demande_Route_Masquee : T_ADRESSE_IP;
-      Adresse_Masquee : T_ADRESSE_IP;
-   begin
-      Masque_Long := Masque;
-      while Table_Routage0 /= null loop
-         Demande_Route_Masquee := Adresse AND Masque;
-         Adresse_Masquee := Table_Routage0.all.Adresse AND Masque;
-         if Adresse_Masquee = Demande_Route_Masquee and then Table_Routage0.all.Masque > Masque_Long then
-            Masque_Long := Table_Routage0.all.Masque;
-         else
-            null;
-         end if;
-         Table_Routage0 := Table_Routage0.all.Suivant;
-      end loop;
-   end Recuperer_Masque_Long;
-
 
 end tools;

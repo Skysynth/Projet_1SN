@@ -94,12 +94,13 @@ package Table_Routage is
     function Get_Sortie(Table_Routage: in T_Table_Routage) return Unbounded_String;
     function Get_Suivant(Table_Routage: in T_Table_Routage) return T_Table_Routage;
     
+    
     function Is_Command_And_Then_Execute(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean;
     
    
     function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean;
 
-    
+    function Recuperer_Masque_Plus_Long(Table : in T_Table_Routage ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP) return T_Adresse_IP;
     
     
 private

@@ -80,10 +80,10 @@ package body Table_Routage is
     end;
     
     function Taille (Table_Routage : in T_Table_Routage) return Integer is
-	result : Integer; 
-    table_temp : T_Table_Routage;
+        result : Integer; 
+        table_temp : T_Table_Routage;
     begin
-		result := 0;
+        result := 0;
         table_temp:= Table_Routage;
         while not(Est_Vide(table_temp)) loop 
             result := result +1; 
@@ -92,21 +92,18 @@ package body Table_Routage is
     
         return result;
 
-
-        
-
     end Taille;
 
     
     procedure Enregistrer (Table_Routage : in out T_Table_Routage ; Adresse : in T_Adresse_IP ; Masque : in T_Adresse_IP; Sortie : in Unbounded_String) is
     begin
         if Est_Vide (Table_Routage) then
-			-- Structure vide
-			Table_Routage := new T_Cellule'(Adresse, Masque, Sortie, null); -- On crée une nouvelle cellule
+            -- Structure vide
+            Table_Routage := new T_Cellule'(Adresse, Masque, Sortie, null); -- On crée une nouvelle cellule
 			
-		else
-			Enregistrer (Table_Routage.All.Suivant, Adresse, Masque, Sortie); -- Récursivité sur le pointeur suivant
-		end if;
+        else
+            Enregistrer (Table_Routage.All.Suivant, Adresse, Masque, Sortie); -- Récursivité sur le pointeur suivant
+        end if;
     end Enregistrer;
 
     procedure Supprimer (Table_Routage : in out T_Table_Routage ; adresse : in T_Adresse_IP) is
@@ -156,6 +153,8 @@ package body Table_Routage is
     begin    
         return (adresse1 AND Masque) = (adresse2 AND Masque);
     end Adresse_Correspond;
+    
+    
     
     -- retourne l'interface associée à cette adresse IP
     function Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage) return Unbounded_String is
@@ -258,5 +257,26 @@ package body Table_Routage is
             return false;
         end if; 
     end Adresse_Presente;
+    
+    
+    function Recuperer_Masque_Plus_Long(Table : in T_Table_Routage ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP) return T_Adresse_IP is
+        Masque_Long : T_ADRESSE_IP;
+        Demande_Route_Masquee : T_ADRESSE_IP;
+        Adresse_Masquee : T_ADRESSE_IP;
+    begin
+        Adresse_Masquee := Adresse AND Masque;
+        
+        while not Est_Vide(Table) loop
+            
+            Demande_Route_Masquee := Adresse AND Masque;
+            Adresse_Masquee := Table_Routage0.all.Adresse AND Masque;
+            if Adresse_Masquee = Demande_Route_Masquee and then Table_Routage0.all.Masque > Masque_Long then
+                Masque_Long := Table_Routage0.all.Masque;
+            else
+                null;
+            end if;
+            Table_Routage0 := Table_Routage0.all.Suivant;
+        end loop;
+    end Recuperer_Masque_Long;
     
 end Table_Routage;
