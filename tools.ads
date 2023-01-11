@@ -31,6 +31,8 @@ package tools is
     --Adresse_IP_To_String est l'operation inverse de  Unbounded_String_To_Adresse_IP
     function Adresse_IP_To_String(adresse : in T_Adresse_IP) return String;
 
+    function Construct_Mask(taille_masque : in Integer) return T_Adresse_IP;
+
     function Apply_Masque(adresse : in T_Adresse_IP; masque : in T_Adresse_IP) return T_Adresse_IP;
 
     function Is_Equal_With_Mask(adresse1 : in T_Adresse_IP; adresse2 : in T_Adresse_IP; masque : in T_Adresse_IP) return Boolean;

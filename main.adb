@@ -36,6 +36,9 @@ procedure Main is
     ligne : Unbounded_String;
 
     num_ligne : Integer;
+
+    interf : Unbounded_String;
+    taille_masque : Integer;
 begin
 
     param := Initialiser_Param;
@@ -66,7 +69,9 @@ begin
             if Is_Command_And_Then_Execute(To_String(ligne), tr, File_resultat, num_ligne) then
                null;
             else
-                Put_Line(File_resultat, To_String(ligne) & " " & To_String(Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr)));
+                Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr, interf, taille_masque);
+
+                Put_Line(File_resultat, To_String(ligne) & " " & To_String(interf));
             end if;
 
             num_ligne := num_ligne + 1;

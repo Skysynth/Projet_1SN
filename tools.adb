@@ -98,7 +98,7 @@ package body tools is
     end Get_taille_binaire;
 
 
---R3: Convertir l’adresse IP de la destination et du masque en T_Adesse_IP
+    --R3: Convertir l’adresse IP de la destination et du masque en T_Adesse_IP
     function Unbounded_String_To_Adresse_IP(ligne : in Unbounded_String) return T_Adresse_IP is
         Adresse_Converti : T_Adresse_IP := 0;
         mot : Unbounded_String;
@@ -129,28 +129,41 @@ package body tools is
         return Adresse_Converti;
     end Unbounded_String_To_Adresse_IP;
 
-    function Adresse_IP_To_String(adresse : in T_Adresse_IP) return String is
-        UN_OCTET : constant T_Adresse_IP :=  2 ** 8;
-        Result : Unbounded_String := Null_Unbounded_String;
+    function Construct_Mask(taille_masque : in Integer) return T_Adresse_IP is
+        masque : T_Adresse_IP := 0;
     begin
-        for i in reverse 0..3 loop
-            Result := Result & Trim(Integer'Image(Natural ((adresse / UN_OCTET ** i) mod UN_OCTET)), Ada.Strings.Left) & ".";
+
+        for i in 1..taille_masque loop
+            masque := masque + 2 ** (32-i);
         end loop;
 
+        return masque;
 
-        return To_String(Result)(1..(Length(Result) - 1));
-    end Adresse_IP_To_String;
-
-
-    function Apply_Masque(adresse : T_Adresse_IP; masque : T_Adresse_IP) return T_Adresse_IP is
-    begin
-        return adresse AND masque;
-    end Apply_Masque;
+    end Construct_Mask;
 
 
-    function Is_Equal_With_Mask(adresse1 : in T_Adresse_IP; adresse2 : in T_Adresse_IP; masque : in T_Adresse_IP) return Boolean is
-    begin
-        return (adresse1 AND masque) = (adresse2 AND masque);
-    end Is_Equal_With_Mask;
+function Adresse_IP_To_String(adresse : in T_Adresse_IP) return String is
+    UN_OCTET : constant T_Adresse_IP :=  2 ** 8;
+    Result : Unbounded_String := Null_Unbounded_String;
+begin
+    for i in reverse 0..3 loop
+        Result := Result & Trim(Integer'Image(Natural ((adresse / UN_OCTET ** i) mod UN_OCTET)), Ada.Strings.Left) & ".";
+    end loop;
+
+
+    return To_String(Result)(1..(Length(Result) - 1));
+end Adresse_IP_To_String;
+
+
+function Apply_Masque(adresse : T_Adresse_IP; masque : T_Adresse_IP) return T_Adresse_IP is
+begin
+    return adresse AND masque;
+end Apply_Masque;
+
+
+function Is_Equal_With_Mask(adresse1 : in T_Adresse_IP; adresse2 : in T_Adresse_IP; masque : in T_Adresse_IP) return Boolean is
+begin
+    return (adresse1 AND masque) = (adresse2 AND masque);
+end Is_Equal_With_Mask;
 
 end tools;

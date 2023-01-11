@@ -40,9 +40,14 @@ procedure main_cache_arbre is
     num_ligne : Integer;
 
     interf : Unbounded_String;
+    taille_masque : Integer;
 
     -- PARTIE CACHE
+    arbre : T_Arbre;
     cache : T_Cache_Arbre;
+    adresse : T_Adresse_IP;
+
+    adresse_Cache, masque_Cache : T_Adresse_IP;
 
 begin
 
@@ -55,7 +60,7 @@ begin
         Afficher_Param(param);
 
         Table_Routage.Initialiser(param         => param,
-                    Table_routage => tr);
+                                  Table_routage => tr);
 
         cache_tree.Initialiser(cache, param.taille_cache);
 
@@ -80,10 +85,31 @@ begin
 
                 begin
                     -- On cherche dans le cache
-                    interf := Chercher_Cache(Unbounded_String_To_Adresse_IP(ligne));
+                    interf := Chercher_Cache(Cache     => cache,
+                                             Adresse   => adresse,
+                                             Politique => param.politique,
+                                             Masque    => 0);
                 exception
-                    -- si pas trouvé : on cherche à la mano dans la table de routage
-                    when others => interf := Table_Routage.Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr);
+                        -- si pas trouvé : on cherche à la mano dans la table de routage
+                    when others =>
+                        Table_Routage.Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr, interf, taille_masque);
+
+                        masque_Cache := Recuperer_Masque_Plus_Long(Table   => tr,
+                                                                   Adresse => adresse,
+                                                                   Masque  => Construct_Mask(taille_masque));
+
+                            adresse_Cache := Apply_Masque(adresse => adresse,
+                                                          masque  => masque_Cache);
+
+                        -- arbre := Arbre_Cache(Cache => cache);
+
+                        cache_tree.Enregistrer(Arbre     => arbre,
+                                               Cache     => cache,
+                                               Adresse   => adresse_Cache,
+                                               Masque    => masque_Cache,
+                                               Sortie    => interf,
+                                               Politique => param.politique);
+
 
                 end;
 
