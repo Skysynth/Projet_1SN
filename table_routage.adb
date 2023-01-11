@@ -157,7 +157,7 @@ package body Table_Routage is
     
     
     -- retourne l'interface associée à cette adresse IP
-    function Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage) return Unbounded_String is
+    procedure Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage; interf : out Unbounded_String ; taille_masque_interf : out Integer) is
         
         table_temp : T_Table_Routage;
         
@@ -190,8 +190,9 @@ package body Table_Routage is
                 
         end loop;
         
-        return interface_max;
-
+        interf := interface_max;
+        taille_masque_interf := taille_masque_max;
+        
     end Get_Interface;
     
     function Get_Adresse ( Table_Routage : T_Table_Routage ) return T_Adresse_IP is 
@@ -258,25 +259,34 @@ package body Table_Routage is
         end if; 
     end Adresse_Presente;
     
-    
     function Recuperer_Masque_Plus_Long(Table : in T_Table_Routage ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP) return T_Adresse_IP is
-        Masque_Long : T_ADRESSE_IP;
-        Demande_Route_Masquee : T_ADRESSE_IP;
+        table_temp : T_Table_Routage := Table;
+        Masque_max : T_ADRESSE_IP;
         Adresse_Masquee : T_ADRESSE_IP;
+        Adresse_Masquee_tr : T_Adresse_IP;
     begin
-        Adresse_Masquee := Adresse AND Masque;
         
-        while not Est_Vide(Table) loop
+        Masque_max := Masque; -- Au moins ce masque, car c'est la solution donnée
+        
+        Adresse_Masquee := Adresse AND Masque;
+         
+        while not Est_Vide(table_temp) loop
             
-            Demande_Route_Masquee := Adresse AND Masque;
-            Adresse_Masquee := Table_Routage0.all.Adresse AND Masque;
-            if Adresse_Masquee = Demande_Route_Masquee and then Table_Routage0.all.Masque > Masque_Long then
-                Masque_Long := Table_Routage0.all.Masque;
-            else
-                null;
+            Adresse_Masquee_tr := table_temp.all.Adresse AND Masque;
+            
+            if Adresse_Masquee = Adresse_Masquee_tr then
+                -- ça match, donc on compare le masque
+                if Get_taille_binaire(Masque_max) < Get_taille_binaire(table_temp.Masque) then
+                    Masque_max := table_temp.Masque;
+                else
+                    null;
+                end if;
             end if;
-            Table_Routage0 := Table_Routage0.all.Suivant;
-        end loop;
-    end Recuperer_Masque_Long;
+            
+            end loop;
+            
+            return Masque_max;
+            
+    end Recuperer_Masque_Plus_Long;
     
 end Table_Routage;

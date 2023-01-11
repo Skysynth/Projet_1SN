@@ -85,9 +85,7 @@ package Table_Routage is
 
     procedure Afficher(Table_Routage : in T_Table_Routage; file : File_Type);
 
-    
-    function Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage) return Unbounded_String;
-    
+    procedure Get_Interface(Adresse_IP: in T_Adresse_IP; Table_Routage: in T_Table_Routage; interf : out Unbounded_String ; taille_masque_interf : out Integer);
     -- fonction qui permettent d acceder aux differentes valeur ou pointe les pointeurs (car c est en limited private)
     function Get_Adresse(Table_Routage: in T_Table_Routage) return T_Adresse_IP;
     function Get_Masque(Table_Routage: in T_Table_Routage) return T_Adresse_IP;
