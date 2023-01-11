@@ -43,6 +43,28 @@ procedure Main is
     num_ligne : Integer;
 
     interf : Unbounded_String;
+
+    -- PARTIE CACHE
+    cache : T_Cache_Arbre;
+
+    function Chercher_Cache(adresse : T_Adresse_IP) return Unbounded_string is
+    begin
+        -- RECHERCHE ADRESSE
+
+        -- SI ADRESSE TROUVEE ALORS
+        -- AUGMENTER LA FREQUENCE
+        -- METTRE A JOUR LE CHIFFRE LRU
+        -- RETOURNER INTERFACE
+
+        -- SINON
+
+        -- RAISE PAS_TROUVE_EXCEPTION
+    end;
+
+
+
+
+
 begin
 
     param := Initialiser_Param;
@@ -53,11 +75,13 @@ begin
 
         Afficher_Param(param);
 
-        Initialiser(param         => param,
+        Table_Routage.Initialiser(param         => param,
                     Table_routage => tr);
 
+        cache_tree.Initialiser(cache, param.taille_cache);
+
         New_Line;
-        Afficher(tr, Standard_Output);
+        Table_Routage.Afficher(tr, Standard_Output);
 
         -- PAQUETS :
         Open (File => File_paquet, Mode => In_File, Name => To_String(param.file_paquets));
@@ -72,15 +96,20 @@ begin
             Trim(ligne, Both);
 
             if Is_Command_And_Then_Execute(To_String(ligne), tr, File_resultat, num_ligne) then
-               null;
+                null;
             else
 
-                -- if un match dans le masque then
-                --     interf = le match
-                -- else
-                --     Get_Interface(Unbounded_String_to_adresse_ip(ligne), tr)
+                begin
+                    -- On cherche dans le cache
+                    interf = Chercher_dans_cache(Unbounded_String_To_Adresse_IP(ligne));
+                exception
+                    -- si pas trouvé : on cherche à la mano dans la table de routage
+                    when others => interf := Table_Routage.Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr);
 
-                Put_Line(File_resultat, To_String(ligne) & " " & To_String(Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr)));
+                end;
+
+                Put_Line(File_resultat, To_String(ligne) & " " & To_String(interf));
+
             end if;
 
             num_ligne := num_ligne + 1;
