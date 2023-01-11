@@ -125,7 +125,7 @@ package cache_tree is
     -- pré-condition : Est_Plein(Cache)
     -- post-condition : Taille_Cache(Arbre) = Taille_Cache(Arbre)'Old - 1
     procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Politique : in T_Politique; Masque : in T_Adresse_IP) with
-        Pre => Est_Plein(Cache, Taille_Cache(Cache)),
+        Pre => Est_Plein(Cache),
         Post => Taille_Cache(Cache) = Taille_Cache(Cache)'Old - 1;
 
 
@@ -134,7 +134,7 @@ package cache_tree is
     -- paramètres :
     --      Cache : Mode In T_Cache_Arbre; -- le cache
     -- pré-condition : Taille_Cache(Cache) > 0
-    function Est_Plein(Cache : in T_Cache_Arbre; Taille : in Integer) return Boolean with
+    function Est_Plein(Cache : in T_Cache_Arbre) return Boolean with
         Pre => Taille_Cache(Cache) > 0;
 
 

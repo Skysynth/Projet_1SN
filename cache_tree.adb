@@ -360,10 +360,10 @@ package body cache_tree is
 		when Politique_non_valide_exception => Put("La politique demandée n'est pas valide.");
 	end Supprimer;
 
-	function Est_Plein(Cache : in T_Cache_Arbre; Taille : in Integer) return Boolean is
+	function Est_Plein(Cache : in T_Cache_Arbre) return Boolean is
 		Est_Plein : Boolean;
 	begin
-		if Cache.Taille >= Taille then
+		if Cache.Taille >= Cache.Taille_Max then
 			Est_Plein := True;
 		else
 			Est_Plein := False;
