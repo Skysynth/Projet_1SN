@@ -8,7 +8,7 @@ with Ada.Exceptions; use Ada.Exceptions;
 with routeur_exceptions; use routeur_exceptions;
 with tools; use tools;
 with Table_Routage; use Table_Routage;
-with cache_tree;
+with cache_tree; use cache_tree;
 
 procedure Main is
 
