@@ -20,7 +20,7 @@ package body cache_tree is
 
 	function Est_Vide(Arbre : in T_Arbre) return Boolean is
 	begin
-		return (Arbre = Null);
+		return (Arbre = Null); 
 	end;
 
     procedure Vider(Arbre : in out T_Arbre) is
