@@ -8,9 +8,9 @@ with Ada.Exceptions; use Ada.Exceptions;
 with routeur_exceptions; use routeur_exceptions;
 with tools; use tools;
 with Table_Routage; use Table_Routage;
-with cache_tree; use cache_tree;
+with cache_LCA; use cache_LCA;
 
-procedure main_cache_arbre is
+procedure main_cache_liste is
 
     param : T_Param;
 
@@ -43,8 +43,7 @@ procedure main_cache_arbre is
     taille_masque : Integer;
 
     -- PARTIE CACHE
-    arbre : T_Arbre;
-    cache : T_Cache_Arbre;
+    cache : T_CACHE_LCA;
     adresse : T_Adresse_IP;
 
     adresse_Cache, masque_Cache : T_Adresse_IP;
@@ -62,7 +61,7 @@ begin
         Table_Routage.Initialiser(param         => param,
                                   Table_routage => tr);
 
-        cache_tree.Initialiser(cache, param.taille_cache);
+        CACHE_LCA.Initialiser(cache, param.taille_cache);
 
         New_Line;
         Table_Routage.Afficher(tr, Standard_Output);
@@ -86,8 +85,7 @@ begin
                 begin
                     -- On cherche dans le cache
                     interf := Chercher_Cache(Cache     => cache,
-                                             Adresse   => adresse,
-                                             Politique => param.politique);
+                                             Adresse   => adresse);
                 exception
                         -- si pas trouvé : on cherche à la mano dans la table de routage
                     when others =>
@@ -100,14 +98,10 @@ begin
                         adresse_Cache := Apply_Masque(adresse => adresse,
                                                       masque  => masque_Cache);
 
-                        -- arbre := Arbre_Cache(Cache => cache);
-
-                        cache_tree.Enregistrer(Arbre     => arbre,
-                                               Cache     => cache,
+                        CACHE_LCA.Enregistrer(Cache     => cache,
                                                Adresse   => adresse_Cache,
                                                Masque    => masque_Cache,
-                                               Sortie    => interf,
-                                               Politique => param.politique);
+                                               Sortie    => interf);
                 end;
 
                 Put_Line(File_resultat, To_String(ligne) & " " & To_String(interf));
@@ -130,4 +124,4 @@ begin
         when E : others => Put_Line (Exception_Message (E));
     end;
 
-end main_cache_arbre;
+end main_cache_liste;
