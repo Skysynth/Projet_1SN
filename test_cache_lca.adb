@@ -45,7 +45,7 @@ procedure test_cache_lca is
     pragma Assert(Recuperer(Cache, Adresse) = Sortie);
     Put_Line("les enregistrement des donnees dans le cache fonctionnent bien");
     pragma Assert(Est_Plein(Cache));
-    Put_Line("la procedure Est_Plein fonctionne parfaitement bien ! ")
+    Put_Line("la procedure Est_Plein fonctionne parfaitement bien ! ");
     -- test des procedure supprimer 
     Sortie := To_Unbounded_String("eth0");
     Adresse := Unbounded_String_To_Adresse_IP(To_Unbounded_String("192.168.0.0"));
