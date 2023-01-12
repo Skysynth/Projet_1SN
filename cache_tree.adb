@@ -80,7 +80,7 @@ package body cache_tree is
 
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 		for i in 1..Taille_Masque loop
-			if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
+			if ((Adresse AND (2 ** (32 - i))) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Arbre.Gauche) then
 				-- Cas où le cache à gauche est vide
@@ -195,7 +195,7 @@ package body cache_tree is
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			for i in 1..Taille_Masque loop
-				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
+				if ((Adresse AND (2 ** (32 - i))) = 0) then
 					--  Cas où le bit vaut 0
 						if not Est_Vide(Suppresseur.All.Gauche) then
 							Suppresseur := Suppresseur.All.Gauche;
@@ -231,7 +231,7 @@ package body cache_tree is
 			Suppresseur := Arbre;
 			Taille_Masque := Get_taille_binaire(Masque);
 			for i in 1..Taille_Masque loop
-				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
+				if ((Adresse AND (2 ** (32 - i))) = 0) then
 					--  Cas où le bit vaut 0
 						Suppresseur := Suppresseur.All.Gauche;
 				else
@@ -322,7 +322,7 @@ package body cache_tree is
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			for i in 1..Taille_Masque loop
-				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
+				if ((Adresse AND (2 ** (32 - i))) = 0) then
 					--  Cas où le bit vaut 0
 						Suppresseur := Suppresseur.All.Gauche;
 				else
@@ -550,6 +550,7 @@ package body cache_tree is
 			else
 				null; -- il ne se passe rien
 			end if;
+			
 			if not Est_Vide(Recherche_Adresse2.Droite) then
 				Sortie := Chercher_Arbre(Recherche_Adresse2.Droite, Cache, Adresse); -- on procède par récursivité
 			else
