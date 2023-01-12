@@ -10,7 +10,7 @@ package cache_tree is
     -- paramètres :
     --      Cache : Mode Out T_Cache_Arbre; -- le cache
     --      Taille : Mode in Integer; -- la taille du cache
-    -- post-condition : Est_Vide(Cache.Arbre) and Cache.Taille = 0
+    -- post-condition : Est_Vide(Cache.Arbre) and Cache.Taille = 0 and Cache.Defauts = 0 and Cache.Demandes = 0 and Cache.Enregistrement = 0
     -- tests :
     --      entrées : . sortie : Cache = null.
     procedure Initialiser(Cache : out T_Cache_Arbre; Taille_Max : in Integer) with
@@ -170,6 +170,7 @@ package cache_tree is
     --      Adresse : Mode In T_Adresse_IP; -- l'adresse
     --      Politique : Mode In T_Politique; -- la politique
     --      Masque : Mode In T_Adresse_IP; -- le masque
+
     function Chercher_Arbre(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique) return Unbounded_string;
 
 private

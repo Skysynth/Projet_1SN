@@ -12,6 +12,9 @@ package body cache_tree is
 		Cache.Arbre := Null;
 		Cache.Taille_Max := Taille_Max;
 		Cache.Taille := 0;
+		Cache.Defauts := 0;
+		Cache.Demandes := 0
+		Cache.Enregistrement := 0;
 	end Initialiser;
 
 	function Est_Vide(Arbre : in T_Arbre) return Boolean is
@@ -28,7 +31,7 @@ package body cache_tree is
             Free(Arbre);
         else
 			-- Si le cache est vide
-            Put_Line("Le cache est pas vide. Pas besoin de le vider.");
+            Put_Line("L'arbre du cache est vide. Pas besoin de le vider.");
         end if;
 	end Vider;
 
