@@ -2,127 +2,113 @@ with tools; use tools;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 package cache_tree is
 
-    type T_Cache_Arbre is private;
+    type T_Cache is private;
     type T_Arbre is private;
 
-    -- nom : Initialiser
-    -- sémantique : Initialiser le cache et sa taille
+    -- nom : Initialiser_Arbre
+    -- sémantique : Initialiser le cache
     -- paramètres :
-    --      Cache : Mode Out T_Cache_Arbre; -- le cache
-    --      Taille : Mode In Integer; -- la taille du cache
+    --      Arbre : Mode Out T_Arbre; -- le cache
+    -- post-condition : Est_Vide(Arbre)
+    procedure Initialiser_Arbre(Arbre : out T_Arbre) with
+        Post => Est_Vide(Arbre);
+
+    
+    -- nom : Initialiser_Cache
+    -- sémantique : Initialiser les paramètres du cache
+    -- paramètres :
+    --      Cache : Mode Out T_Cache; -- les paramètres du cache
+    --      Taille_Max : Mode In Integer; -- la taille maximale du cache (sa capacité)
     --      Politique : Mode In T_Politique; -- la politique du cache
-    -- post-condition : Est_Vide(Cache.Arbre) and Cache.Taille = 0 and Cache.Defauts = 0 and Cache.Demandes = 0 and Cache.Enregistrement = 0
-    -- tests :
-    --      entrées : . sortie : Cache = null.
-    procedure Initialiser(Cache : out T_Cache_Arbre; Taille_Max : in Integer; Politique : in T_Politique) with
-        Post => Est_Vide(Cache) and Taille_Cache(Cache) = 0;
+    -- post-condition : Cache.Taille = 0 and Cache.Defauts = 0 and Cache.Demandes = 0 and Cache.Enregistrement = 0
+    procedure Initialiser_Cache(Cache: out T_Cache; Taille_Max : in Integer; Politique : in T_Politique) with
+        Post => Taille_Cache(Cache) = 0;
 
 
     -- nom : Est_Vide
-    -- sémantique : Savoir si l'arbre du cache est vide ou non
+    -- sémantique : Savoir si le cache est vide ou non
     -- paramètres :
-    --      Cache : Mode in T_Cache_Arbre; -- le cache
-    -- tests :
-    --      entrées : . sortie : True.
-    function Est_Vide(Cache : in T_Cache_Arbre) return Boolean;
+    --      Arbre : Mode in T_Arbre; -- le cache
+    function Est_Vide(Arbre : in T_Arbre) return Boolean;
 
 
     -- nom : Vider
     -- sémantique : Vider entièrement le cache
     -- paramètres :
-    --      Cache : Mode In/Out T_Cache_Arbre; -- le cache à vider
-    -- post-condition : Est_Vide(Cache)
-    -- tests :
-    --      entrées : Cache. sortie : Cache = null.
-    procedure Vider(Cache : in out T_Cache_Arbre) with
-		Post => Est_Vide(Cache);
+    --      Arbre : Mode In/Out T_Arbre; -- le cache à vider
+    -- post-condition : Est_Vide(Arbre)
+    procedure Vider(Arbre : in out T_Arbre) with
+		Post => Est_Vide(Arbre);
 
 
     -- nom : Taille_Cache
     -- sémantique : Permet de récupérer la taille du cache
     -- paramètres :
-    --      Cache : Mode In T_Cache_Arbre; -- le cache
+    --      Cache : Mode In T_Cache; -- le cache
     -- post-condition : Taille_Cache'Result >= 0
-    function Taille_Cache(Cache : in T_Cache_Arbre) return Integer with
+    function Taille_Cache(Cache : in T_Cache) return Integer with
         Post => Taille_Cache'Result >= 0;
 
 
-    -- nom : Arbre_Cache
-    -- sémantique : Permet de récupérer l'arbre du cache
-    -- paramètres :
-    --      Cache : Mode In T_Cache_Arbre; -- le cache
-    function Arbre_Cache(Cache : in T_Cache_Arbre) return T_Arbre;
-
-
     -- nom : Frequence_Arbre
-    -- sémantique : Permet de récupérer la fréquence d'une cellule de l'arbre du cache
+    -- sémantique : Permet de récupérer la fréquence d'une cellule du cache
     -- paramètres :
-    --      Cache : Mode In T_Cache_Arbre; -- l'arbre
+    --      Arbre : Mode In T_Arbre; -- l'arbre
     -- post-condition : Frequence_Arbre'Result >= 0
-    function Frequence_Arbre(Cache : in T_Cache_Arbre) return Integer with
+    function Frequence_Arbre(Arbre : in T_Arbre) return Integer with
         Post => Frequence_Arbre'Result >= 0;
+
 
     -- nom : Demandes_Cache
     -- sémantique : Permet de récupérer le nombre de demandes dans le cache
     -- paramètres :
-    --      Cache : Mode In T_Cache_Arbre; -- le cache
+    --      Cache : Mode In T_Cache; -- le cache
     -- post-condition : Demandes_Cache'Result >= 0
-	function Demandes_Cache(Cache : in T_Cache_Arbre) return Integer with
+	function Demandes_Cache(Cache : in T_Cache) return Integer with
 	    Post => Demandes_Cache'Result >= 0;
 
 
     -- nom : Defauts_Cache
     -- sémantique : Permet de récupérer le nombre de défauts dans le cache
     -- paramètres :
-    --      Cache : Mode In T_Cache_Arbre; -- le cache
+    --      Cache : Mode In T_Cache; -- le cache
     -- post-condition : Defauts_Cache'Result >= 0
-	function Defauts_Cache(Cache : in T_Cache_Arbre) return Integer with
+	function Defauts_Cache(Cache : in T_Cache) return Integer with
         Post => Defauts_Cache'Result >= 0;
 
 
     -- nom : Enregistrement_Cache
     -- sémantique : Permet de récupérer le nombre d'enregistrements dans le cache
     -- paramètres :
-    --      Cache : Mode In T_Cache_Arbre; -- le cache
+    --      Cache : Mode In T_Cache; -- le cache
     -- post-condition : Enregistrement_Cache'Result >= 0
-	function Enregistrement_Cache(Cache : in T_Cache_Arbre) return Integer with
+	function Enregistrement_Cache(Cache : in T_Cache) return Integer with
         Post => Enregistrement_Cache'Result >= 0;
 
 
     -- nom : Enregistrer
     -- sémantique : Enregistrer une adresse, un masque et une sortie dans le cache
     -- paramètres :
-    --      Cache : Mode In/Out T_Cache_Arbre; -- le cache
+    --      Arbre : Mode In/Out T_Arbre; -- le cache
+    --      Cache : Mode In/Out T_Cache; -- les paramètres du cache
     --      Adresse : Mode In T_Adresse_IP; -- l'adresse IP à ajouter
     --      Masque : Mode In T_Adresse_IP; -- le masque à ajouter
     --      Sortie : Mode In Unbounded_String; -- la sortie à ajouter
     --      Politique : Mode In T_Politique; -- la politique utilisée
     -- post-condition : Taille_Cache(Arbre) = Taille_Cache(Arbre)'Old + 1
-    procedure Enregistrer(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) with
+    procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) with
         Post => Taille_Cache(Cache) = Taille_Cache(Cache)'Old + 1;
-
-
-    -- nom : Ajouter_Frequence
-    -- sémantique : Ajouter une fréquence lorsque l'on utilise une adresse dans le cache
-    -- paramètres :
-    --      Cache : Mode In/Out T_Cache_Arbre; -- le cache
-    --      Adresse : Mode In T_Adresse_IP; -- l'adresse IP utilisée
-    --      Masque : Mode In T_Adresse_IP; -- le masque
-    -- pré-condition : not Est_Vide(Arbre)
-    -- post-condition : Frequence_Arbre(Arbre_Cache(Arbre)) = Frequence_Arbre(Arbre_Cache(Arbre))'Last + 1
-    procedure Ajouter_Frequence(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP) with
-        Pre => not Est_Vide(Cache),
-        Post => Frequence_Arbre(Cache) = Frequence_Arbre(Cache)'Old + 1;
 
 
     -- nom : Supprimer
     -- sémantique : Supprimer un élément du cache selon la politique
     -- paramètres :
-    --      Cache : Mode In/Out T_Cache_Arbre -- le cache
+    --      Cache : Mode In/Out T_Arbre -- le cache
+    --      Cache : Mode In/Out T_Cache; -- les paramètres du cache
     --      Masque : Mode In T_Adresse_IP; -- le masque
-    -- pré-condition : Est_Plein(Cache)
+    -- pré-condition : Est_Plein(Arbre)
     -- post-condition : Taille_Cache(Arbre) = Taille_Cache(Arbre)'Old - 1
-    procedure Supprimer(Cache : in out T_Cache_Arbre; Masque : in T_Adresse_IP) with
+    procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache; Masque : in T_Adresse_IP) with
         Pre => Est_Plein(Cache),
         Post => Taille_Cache(Cache) = Taille_Cache(Cache)'Old - 1;
 
@@ -130,24 +116,24 @@ package cache_tree is
     -- nom : Est_Plein
     -- sémantique : Permet de savoir si le cache est plein ou non
     -- paramètres :
-    --      Cache : Mode In T_Cache_Arbre; -- le cache
+    --      Cache : Mode In T_Cache; -- les paramètres du cache
     -- pré-condition : Taille_Cache(Cache) > 0
-    function Est_Plein(Cache : in T_Cache_Arbre) return Boolean with
+    function Est_Plein(Cache : in T_Cache) return Boolean with
         Pre => Taille_Cache(Cache) > 0;
 
 
     -- nom : Afficher_Arbre
     -- sémantique : Permet d'afficher le cache
     -- paramètres :
-    --      Cache : Mode In T_Cache_Arbre; -- le cache à afficher
-    procedure Afficher_Arbre(Cache : in T_Cache_Arbre);
+    --      Arbre : Mode In T_Arbre; -- le cache à afficher
+    procedure Afficher_Arbre(Arbre : in T_Arbre);
 
 
     -- nom : Afficher_Statistiques_Cache
     -- sémantique : Permet d'afficher les statistiques relatives au cache et à sa politique
     -- paramètres :
-    --      Cache : Mode In T_Cache_Arbre; -- le cache dont les statistiques doivent être affichées
-    procedure Afficher_Statistiques_Cache(Cache : in T_Cache_Arbre);
+    --      Cache : Mode In T_Cache; -- le cache dont les statistiques doivent être affichées
+    procedure Afficher_Statistiques_Cache(Cache : in T_Cache);
 
 
     -- nom : Recherche_Identifiant_Max
@@ -155,28 +141,28 @@ package cache_tree is
     -- correspond au max des identifiants. Dans ce cas, c'est la route la plus récemment identifiée. Sinon, on affecte son identifiant à max + 1. Pour la suppression, il ne reste qu'à regarder
     -- l'identifiant minimum.
     -- paramètres :
-    --      Cache : Mode In T_Cache_Arbre; -- le cache
+    --      Cache : Mode In T_Arbre; -- le cache
     -- post-condition : Recherche_Identifiant_Max'Result >= 0
-    function Recherche_Identifiant_Max(Cache : in T_Cache_Arbre) return Integer with
+    function Recherche_Identifiant_Max(Arbre : in T_Arbre) return Integer with
         Post => Recherche_Identifiant_Max'Result >= 0;
 
     
     -- nom : Chercher_Arbre
     -- sémantique : Permet de renvoyer la sortie correspondante à une adresse dans le cache
     -- paramètres :
-    --      Cache : Mode In/Out T_Cache_Arbre; -- le cache
+    --      Arbre : Mode In/Out T_Arbre; -- le cache
+    --      Cache : Mode In/Out T_Cache; -- les paramètres du cache
     --      Adresse : Mode In T_Adresse_IP; -- l'adresse
-    --      Politique : Mode In T_Politique; -- la politique
-    --      Masque : Mode In T_Adresse_IP; -- le masque
-    function Chercher_Arbre(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP) return Unbounded_string;
+    function Chercher_Arbre(Arbre : in out T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string;
 
 private
 
     type T_Arbre_Cellule;
 
     type T_Arbre is access T_Arbre_Cellule;
-    type T_Cache_Arbre is record
-        Arbre : T_Arbre;
+
+    -- je stocke les paramètres du cache ici
+    type T_Cache is record
         Taille : Integer;
         Taille_Max : Integer;
         Defauts : Integer;
