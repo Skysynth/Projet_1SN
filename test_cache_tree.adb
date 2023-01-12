@@ -80,7 +80,7 @@ procedure test_cache_tree is
         Enregistrer(Arbre,Cache,Adresse1,Masque1,Sortie1,Politique);
         Afficher_Arbre(Arbre);
         -- Test qui verifie si la sortie est correcte
-        pragma Assert(Chercher_Arbre(Arbre,Cache, Adresse1) = Sortie1);
+        pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
 
         -- test qui verifie si le nombre de donnee dans le cache est correcte
         pragma Assert(Enregistrement_Cache(Cache)= 1);
@@ -91,8 +91,8 @@ procedure test_cache_tree is
         Enregistrer(Arbre, Cache, Adresse2, Masque2, Sortie2, Politique);
         pragma Assert(Enregistrement_Cache(Cache) = 2);
         Afficher_Arbre(Arbre);
+        pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse2) = Sortie2);
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
-        pragma Assert( Chercher_Arbre(Arbre, Cache, Adresse2) = Sortie2);
         Afficher_Statistiques_Cache(cache);
         pragma Assert(Est_Plein(cache));
 

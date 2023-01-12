@@ -84,7 +84,7 @@ package body cache_tree is
 				--  Cas où le bit vaut 0
 				if Est_Vide(Arbre.Gauche) then
 				-- Cas où le cache à gauche est vide
-					Arbre.All.Gauche := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
+					Arbre.Gauche := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 					Arbre := Arbre.All.Gauche;
 				else
 					Arbre := Arbre.All.Gauche;
@@ -93,7 +93,7 @@ package body cache_tree is
 				-- Cas où le bit vaut 1
 				if Est_Vide(Arbre.Droite) then
 				-- Cas où le cache à droite est vide
-					Arbre.All.Droite := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
+					Arbre.Droite := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 					Arbre := Arbre.All.Droite;
 				else
 					Arbre := Arbre.All.Droite;
@@ -507,7 +507,7 @@ package body cache_tree is
 			
 		-- On recherche l'adresse correspondante à droite et à gauche
 		if not Est_Vide(Recherche_Adresse1) then
-			if Adresse = Recherche_Adresse1.All.Adresse then
+			if Recherche_Adresse1.All.Feuille and then Adresse = Recherche_Adresse1.All.Adresse then
 				Sortie := Recherche_Adresse1.All.Sortie;
 				Recherche_Adresse1.All.Frequence := Recherche_Adresse1.All.Frequence + 1;
 				if Politique = LRU then -- LRU
@@ -534,7 +534,7 @@ package body cache_tree is
 		end if;
 
 		if not Est_Vide(Recherche_Adresse2) then
-			if Adresse = Recherche_Adresse2.All.Adresse then
+			if Recherche_Adresse2.All.Feuille and then Adresse = Recherche_Adresse2.All.Adresse then
 				Sortie := Recherche_Adresse2.All.Sortie;
 				Recherche_Adresse2.All.Frequence := Recherche_Adresse2.All.Frequence + 1;
 				if Politique = LRU then -- LRU
