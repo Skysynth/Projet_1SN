@@ -6,6 +6,8 @@ package CACHE_LCA is
 
    TAILLE_MAX : Integer;
 
+   type T_RECENT_LCA is limited private;
+
 	type T_CACHE_LCA is limited private;
 
 	-- Initialiser le cache.  Le cache est vide.
@@ -21,6 +23,12 @@ package CACHE_LCA is
    -- Supprime un élément suivant la politique FIFO.
    procedure Supprimer_FIFO(Cache_lca : in out T_CACHE_LCA);
 
+   -- Ajouter une adresse à la liste chaînée Récente.
+   procedure Ajouter_Recent(Rec_lca : in out T_RECENT_LCA ; Adresse : in T_ADRESSE_IP);
+
+   -- Supprimer une adresse à la liste chaînée Récente.
+   procedure Supprimer_Recent(Rec_lca : in out T_RECENT_LCA ; Adresse : in T_ADRESSE_IP);
+
    -- Supprime un élément suivant la politique LRU.
    procedure Supprimer_LRU(Cache_lca : in out T_CACHE_LCA);
 
@@ -34,7 +42,7 @@ package CACHE_LCA is
    function Adresse_Presente(Cache_lca : in T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return Boolean;
 
    -- Récupérer le masque et l'interface associés à l'adresse demandée, dans le cache.
-   procedure Recuperer(Cache_lca : in T_CACHE_LCA ; Adresse : T_ADRESSE_IP);
+   procedure Recuperer(Cache_lca : in out T_CACHE_LCA ; Adresse : T_ADRESSE_IP);
 
    -- Ajouter une nouvelle route dans le cache.
    procedure Ajouter(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Eth : in Unbounded_String);
@@ -53,6 +61,16 @@ package CACHE_LCA is
 
 private
 
+   type T_Case;
+
+   type T_RECENT_LCA is access T_Case;
+
+   type T_Case is
+      record
+         Adresse : T_ADRESSE_IP;
+         Suivant : T_RECENT_LCA;
+      end record;
+
    type T_Cellule;
 
 	type T_CACHE_LCA is access T_Cellule;
@@ -64,6 +82,8 @@ private
          Eth : Unbounded_String;
          Frequence : Integer;
 			Suivant : T_CACHE_LCA;
-		end record;
+      end record;
+
+   RECENT_LCA : T_RECENT_LCA;
 
 end CACHE_LCA;
