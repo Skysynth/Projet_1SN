@@ -192,7 +192,7 @@ package body cache_tree is
 
 				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant2.All.Droite); -- on procède par récursivité
 			else
-				-- On regarde les cas où on sort des if à cause des premières conditions
+				-- On regarde les cas où on sort des if à cause des deuxièmes conditions
 				if Recherche_Identifiant1 /= null then
 					if Min > Arbre.All.Identifiant then
 						Min := Recherche_Identifiant1.All.Identifiant;
