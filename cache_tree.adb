@@ -412,7 +412,8 @@ package body cache_tree is
 
 				Put_Line("Feuille" & Integer'Image(Compteur));
 				Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
-				Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
+				Put_Line(T_Adresse_IP'Image(Afficheur1.All.Masque));
+				Put_Line(To_String(Afficheur1.All.Sortie));
 				New_Line;
 			else
 				null;
@@ -431,7 +432,8 @@ package body cache_tree is
 
 				Put_Line("Feuille" & Integer'Image(Compteur));
 				Put_Line(T_Adresse_IP'Image(Afficheur2.All.Adresse));
-				Put_Line(T_Adresse_IP'Image(Afficheur2.All.Adresse));
+				Put_Line(T_Adresse_IP'Image(Afficheur2.All.Masque));
+				Put_Line(To_String(Afficheur2.All.Sortie));
 				New_Line;
 			else
 				null;
