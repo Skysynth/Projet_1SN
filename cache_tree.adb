@@ -70,7 +70,7 @@ package body cache_tree is
 	begin
 		-- Cas où le cache est vide
 		if not Est_Vide(Arbre) then
-			Arbre := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
+			Arbre := new T_Arbre_Cellule'(Adresse, Masque, Sortie, Null, Null, 0, False, 0);
 		else
 			null;
 		end if;
@@ -82,7 +82,7 @@ package body cache_tree is
 		for i in 0..Taille_Masque loop
 			if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 				--  Cas où le bit vaut 0
-				if not Est_Vide(Arbre.All.Gauche) then
+				if not Est_Vide(Arbre.Gauche) then
 				-- Cas où le cache à gauche est vide
 					Arbre.All.Gauche := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 					Arbre := Arbre.All.Gauche;
@@ -91,7 +91,7 @@ package body cache_tree is
 				end if;
 			else
 				-- Cas où le bit vaut 1
-				if not Est_Vide(Arbre.All.Droite) then
+				if not Est_Vide(Arbre.Droite) then
 				-- Cas où le cache à droite est vide
 					Arbre.All.Droite := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 					Arbre := Arbre.All.Droite;

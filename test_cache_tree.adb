@@ -70,6 +70,7 @@ procedure test_cache_tree is
         -- initialiser le cache et l'arbre
         Politique := FIFO; -- FIFO
         Initialiser_Cache(Cache, 2, Politique);
+        Initialiser_Arbre(Arbre);
         
         -- Enregistrement de la premiere donnees dans le cache 
         Adresse1 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.0.0"));
