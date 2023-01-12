@@ -20,16 +20,8 @@ package body CACHE_LCA is
    end Initialiser;
 
    function Est_Plein(Cache_lca : in T_CACHE_LCA) return Boolean is
-      Cache_lca0 : T_CACHE_LCA;
-      n : integer;
    begin
-      n := 0;
-      Cache_lca0 := Cache_lca;
-      while Cache_lca0 /= null loop
-         Cache_lca0 := Cache_lca0.all.Suivant;
-         n := n + 1;
-      end loop;
-      return n = TAILLE_MAX;
+      return Taille(Cache_lca) = TAILLE_MAX;
    end Est_Plein;
 
    procedure Supprimer(Cache_lca : in out T_CACHE_LCA ; Politique : T_Politique) is
