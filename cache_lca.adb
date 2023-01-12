@@ -71,8 +71,15 @@ package body CACHE_LCA is
 
    procedure Supprimer_LFU(Cache_lca : in out T_CACHE_LCA) is
       Freq_min : integer;
+      Cache_lca0 : T_CACHE_LCA;
    begin
       Freq_min := Adresse_LFU(Cache_lca);
+      while Cache_lca.all.Frequence /= Freq_min loop
+         Cache_lca := Cache_lca.all.Suivant;
+      end loop;
+      Cache_lca0 := Cache_lca;
+      Cache_lca := Cache_lca.all.Suivant;
+      Free(Cache_lca0);
    end Supprimer_LFU;
 
    function Adresse_Presente(Cache_lca : in T_CACHE_LCA ; Adresse : in T_Adresse_IP) return Boolean is

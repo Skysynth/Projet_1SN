@@ -24,6 +24,9 @@ package CACHE_LCA is
    -- Supprime un élément suivant la politique LRU.
    procedure Supprimer_LRU(Cache_lca : in out T_CACHE_LCA);
 
+   -- Récupérer la fréquence minimale d'utilisation des adresses dans le cache.
+   function Adresse_LFU(Cache_lca : in T_CACHE_LCA) return integer;
+
    -- Supprime un élément suivant la politique LFU.
    procedure Supprimer_LFU(Cache_lca : in out T_CACHE_LCA);
 
