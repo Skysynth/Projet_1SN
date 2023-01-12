@@ -406,13 +406,17 @@ package body cache_tree is
 			Afficher_Arbre(Afficheur1.All.Gauche);
 		else
 			-- Sinon on affiche car la cellule est une feuille
-			Afficheur1 := Afficheur1.All.Gauche;
-			Compteur := Compteur + 1;
+			if Afficheur1.All.Gauche /= null then
+				Afficheur1 := Afficheur1.All.Gauche;
+				Compteur := Compteur + 1;
 
-			Put_Line("Feuille" & Integer'Image(Compteur));
-			Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
-			Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
-			New_Line;
+				Put_Line("Feuille" & Integer'Image(Compteur));
+				Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
+				Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
+				New_Line;
+			else
+				null;
+			end if;
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à droite
@@ -421,13 +425,17 @@ package body cache_tree is
 			Afficher_Arbre(Afficheur2.All.Droite);
 		else
 			-- Cas où la cellule est une feuille
-			Afficheur2 := Afficheur2.All.Droite;
-			Compteur := Compteur + 1;
+			if Afficheur2.All.Droite /= null then
+				Afficheur2 := Afficheur2.All.Droite;
+				Compteur := Compteur + 1;
 
-			Put_Line("Feuille" & Integer'Image(Compteur));
-			Put_Line(T_Adresse_IP'Image(Afficheur2.All.Adresse));
-			Put_Line(T_Adresse_IP'Image(Afficheur2.All.Adresse));
-			New_Line;
+				Put_Line("Feuille" & Integer'Image(Compteur));
+				Put_Line(T_Adresse_IP'Image(Afficheur2.All.Adresse));
+				Put_Line(T_Adresse_IP'Image(Afficheur2.All.Adresse));
+				New_Line;
+			else
+				null;
+			end if;
 		end if;
 
 	end Afficher_Arbre;
