@@ -159,9 +159,11 @@ package body cache_tree is
 		when Adresse_Absente_Exception => Put("L'adresse demandée n'est pas présente.");
 	end Ajouter_Frequence;
 
-	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Politique : in T_Politique; Masque : in T_Adresse_IP) is
+	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Masque : in T_Adresse_IP) is
 
-		function Recherche_Identifiant_Min(Arbre : in T_Arbre) return T_Adresse_IP is
+		Politique : constant T_Politique := Cache.Politique;
+
+		function Recherche_Identifiant_Min(Arbre : in T_Arbre; Politique : in T_Politique) return T_Adresse_IP is
 			Recherche_Identifiant1 : T_Arbre;
 			Recherche_Identifiant2 : T_Arbre;
 			Min : Integer;
@@ -182,7 +184,7 @@ package body cache_tree is
 					null; -- il ne ne passe rien
 				end if;
 
-				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant1.All.Gauche); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant1.All.Gauche, Politique); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 			else
 				-- On regarde les cas où on sort des if à cause des deuxièmes conditions
 				if Recherche_Identifiant1 /= null then
@@ -203,7 +205,7 @@ package body cache_tree is
 					null; -- il ne se passe rien
 				end if;
 
-				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant2.All.Droite); -- on procède par récursivité
+				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant2.All.Droite, Politique); -- on procède par récursivité
 			else
 				-- On regarde les cas où on sort des if à cause des deuxièmes conditions
 				if Recherche_Identifiant2 /= null then
@@ -227,7 +229,7 @@ package body cache_tree is
 			Taille_Masque : Integer;
 		begin
 			-- Il faut faire la recherche du minimum en terme d'identifiant et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
-			Adresse := Recherche_Identifiant_Min(Arbre); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
+			Adresse := Recherche_Identifiant_Min(Arbre, Politique); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
 			Suppresseur := Arbre;
 			Taille_Masque := Get_taille_binaire(Masque);
 
@@ -252,7 +254,7 @@ package body cache_tree is
 			Taille_Masque : Integer;
 		begin
 			-- Il faut faire la recherche du minimum en terme d'identifiant et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
-			Adresse := Recherche_Identifiant_Min(Arbre); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
+			Adresse := Recherche_Identifiant_Min(Arbre, Politique); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			Suppresseur := Arbre;
@@ -271,7 +273,7 @@ package body cache_tree is
 			Free(Suppresseur);
 		end Supprimer_LRU;
 
-		function Recherche_Frequence_Min(Arbre : in T_Arbre) return T_Adresse_IP is
+		function Recherche_Frequence_Min(Arbre : in T_Arbre; Politique : in T_Politique) return T_Adresse_IP is
 			Recherche_Frequence1 : T_Arbre;
 			Recherche_Frequence2 : T_Arbre;
 			Min : Integer;
@@ -294,7 +296,7 @@ package body cache_tree is
 
 				Recherche_Frequence1 := Recherche_Frequence1.All.Gauche;
 
-				Adresse := Recherche_Frequence_Min(Recherche_Frequence1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+				Adresse := Recherche_Frequence_Min(Recherche_Frequence1, Politique); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 			else
 				-- On regarde les cas où on sort des if à cause des premières conditions
 				if Recherche_Frequence1 /= null then
@@ -319,7 +321,7 @@ package body cache_tree is
 
 				Recherche_Frequence2 := Recherche_Frequence2.All.Droite;
 
-				Adresse := Recherche_Frequence_Min(Recherche_Frequence2); -- on procède par récursivité
+				Adresse := Recherche_Frequence_Min(Recherche_Frequence2, Politique); -- on procède par récursivité
 			else
 				-- On regarde les cas où on sort des if à cause des premières conditions
 				if Recherche_Frequence2 /= null then
@@ -337,13 +339,13 @@ package body cache_tree is
 			return Adresse;
 		end Recherche_Frequence_Min;
 
-		procedure Supprimer_LFU(Arbre : in T_Arbre; Masque : in T_Adresse_IP) is
+		procedure Supprimer_LFU(Arbre : in T_Arbre; Masque : in T_Adresse_IP; Politique: in T_Politique) is
 			Adresse : T_Adresse_IP;
 			Suppresseur : T_Arbre;
 			Taille_Masque : Integer;
 		begin
 			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
-			Adresse := Recherche_Frequence_Min(Arbre); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
+			Adresse := Recherche_Frequence_Min(Arbre, Politique); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
 			Suppresseur := Arbre;
 			Taille_Masque := Get_taille_binaire(Masque);
 
@@ -367,7 +369,7 @@ package body cache_tree is
 		case T_Politique'Pos(Politique) is
 			when 1 => Supprimer_FIFO(Arbre, Masque); -- FIFO
 			when 2 => Supprimer_LRU(Arbre, Masque); -- LRU
-			when 3 => Supprimer_LFU(Arbre, Masque); -- LFU
+			when 3 => Supprimer_LFU(Arbre, Masque, Politique); -- LFU
 			when others => raise Politique_non_valide_exception;
 		end case;
 
@@ -502,11 +504,12 @@ package body cache_tree is
 			return Max;
 		end Recherche_Identifiant_Max;
 
-		function Chercher_Arbre(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique; Cache : in out T_Cache_Arbre) return Unbounded_string is
+		function Chercher_Arbre(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Cache : in out T_Cache_Arbre) return Unbounded_string is
 			Sortie : Unbounded_String;
 			Recherche_Adresse1 : T_Arbre;
 			Recherche_Adresse2 : T_Arbre;
 			Max : Integer;
+			Politique : constant T_Politique := Cache.Politique;
     	begin
 
 			Cache.Demandes := Cache.Demandes + 1;
@@ -536,7 +539,7 @@ package body cache_tree is
 
 				Recherche_Adresse1 := Recherche_Adresse1.All.Gauche;
 
-				Sortie := Chercher_Arbre(Recherche_Adresse1, Adresse, Politique, Cache); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+				Sortie := Chercher_Arbre(Recherche_Adresse1, Adresse, Cache); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 			else
 				-- On regarde les cas où on sort des if à cause des premières conditions
 				if Recherche_Adresse1 /= null then
@@ -581,7 +584,7 @@ package body cache_tree is
 
 				Recherche_Adresse2 := Recherche_Adresse2.All.Droite;
 
-				Sortie := Chercher_Arbre(Recherche_Adresse2, Adresse, Politique, Cache); -- on procède par récursivité
+				Sortie := Chercher_Arbre(Recherche_Adresse2, Adresse, Cache); -- on procède par récursivité
 			else
 				-- On regarde les cas où on sort des if à cause des premières conditions
 				if Recherche_Adresse2 /= null then

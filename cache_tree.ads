@@ -121,11 +121,10 @@ package cache_tree is
     -- paramètres :
     --      Arbre : Mode In/Out T_Arbre; -- l'arbre du cache
     --      Cache : Mode In/Out T_Cache_Arbre -- le cache
-    --      Politique : Mode In T_Politique; -- la politique choisie
     --      Masque : Mode In T_Adresse_IP; -- le masque
     -- pré-condition : Est_Plein(Cache)
     -- post-condition : Taille_Cache(Arbre) = Taille_Cache(Arbre)'Old - 1
-    procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Politique : in T_Politique; Masque : in T_Adresse_IP) with
+    procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Masque : in T_Adresse_IP) with
         Pre => Est_Plein(Cache),
         Post => Taille_Cache(Cache) = Taille_Cache(Cache)'Old - 1;
 
@@ -172,7 +171,7 @@ package cache_tree is
     --      Politique : Mode In T_Politique; -- la politique
     --      Masque : Mode In T_Adresse_IP; -- le masque
     --      Cache : Mode In/Out T_Cache_Arbre; -- le cache
-    function Chercher_Arbre(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique; Cache : in out T_Cache_Arbre) return Unbounded_string;
+    function Chercher_Arbre(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Cache : in out T_Cache_Arbre) return Unbounded_string;
 
 private
 
