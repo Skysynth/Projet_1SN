@@ -365,7 +365,7 @@ package body cache_tree is
 	procedure Afficher_Arbre(Arbre : in T_Arbre) is
 		Afficheur1 : T_Arbre;
 		Afficheur2 : T_Arbre;
-		Compteur : Integer := 0; -- pour compter les feuilles, ce qui doit correspondre à la taille du cache
+		Compteur : Integer := 0; -- pour compter les feuilles
 	begin
 		-- Initialisation des pointeurs qui servent à afficher l'arbre
 		Afficheur1 := Arbre;
