@@ -80,8 +80,8 @@ package body cache_tree is
 		Taille_Masque := Get_taille_binaire(Masque);
 
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-		for i in 0..(Taille_Masque - 1) loop
-			if ((Adresse AND (2 ** (Taille_Masque - 1 - i))) = 0) then
+		for i in 0..Taille_Masque loop
+			if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Arbre.All.Gauche) then
 				-- Cas où le cache à gauche est vide
@@ -133,8 +133,8 @@ package body cache_tree is
 		Taille_Masque := Get_taille_binaire(Masque);
 
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-		for i in 0..(Taille_Masque - 1) loop
-			if ((Adresse AND (2 ** (Taille_Masque - 1 - i))) = 0) then
+		for i in 0..Taille_Masque loop
+			if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Arbre.Gauche) then
 				-- Cas où le cache à gauche est vide
@@ -234,7 +234,7 @@ package body cache_tree is
 			Taille_Masque := Get_taille_binaire(Masque);
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-			for i in 0..(Taille_Masque - 1) loop
+			for i in 0..Taille_Masque loop
 				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 					--  Cas où le bit vaut 0
 						Suppresseur := Suppresseur.All.Gauche;
@@ -259,8 +259,8 @@ package body cache_tree is
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			Suppresseur := Arbre;
 			Taille_Masque := Get_taille_binaire(Masque);
-			for i in 0..(Taille_Masque - 1) loop
-				if ((Adresse AND (2 ** (Taille_Masque - 1 - i))) = 0) then
+			for i in 0..Taille_Masque loop
+				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 					--  Cas où le bit vaut 0
 						Suppresseur := Suppresseur.All.Gauche;
 				else
@@ -350,8 +350,8 @@ package body cache_tree is
 			Taille_Masque := Get_taille_binaire(Masque);
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-			for i in 0..(Taille_Masque - 1) loop
-				if ((Adresse AND (2 ** (Taille_Masque - 1 - i))) = 0) then
+			for i in 0..Taille_Masque loop
+				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 					--  Cas où le bit vaut 0
 						Suppresseur := Suppresseur.All.Gauche;
 				else

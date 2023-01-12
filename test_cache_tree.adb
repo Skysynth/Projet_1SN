@@ -67,7 +67,7 @@ procedure test_cache_tree is
     begin 
         -- initialiser le cache et l'arbre
         Politique := FIFO; -- FIFO
-        Initialiser(Cache, 2,Politique);
+        Initialiser(Cache, 2, Politique);
         Arbre := Arbre_Cache(Cache);
         
         -- Enregistrement de la premiere donnees dans le cache 
@@ -89,6 +89,7 @@ procedure test_cache_tree is
         Sortie2 := To_Unbounded_String("eth2");
         -- Ajout d une 2eme donnee
         Enregistrer(Arbre,Cache,Adresse1,Masque2,Sortie2, Politique);
+        Put_Line("Le deuxième enregistrement est réussi !");
         pragma Assert(Enregistrement_Cache(Cache)= 2);
         Afficher_Arbre(Arbre_Cache(Cache));
         pragma Assert( Chercher_Arbre(Arbre , Adresse_test, Cache) = Sortie1);
