@@ -90,8 +90,8 @@ procedure test_cache_tree is
         Adresse2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.255.0"));
         Masque2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.255.0"));
         Sortie2 := To_Unbounded_String("eth2");
+        Adresse3 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("2.16.1.2"));
 
-        Adresse3 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.240.0"));
         -- Ajout d'une 2eme donnee
         Enregistrer(Arbre, Cache, Adresse2, Masque2, Sortie2, Politique);
         pragma Assert(Enregistrement_Cache(Cache) = 2);
