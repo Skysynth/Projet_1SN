@@ -73,7 +73,7 @@ package body cache_tree is
 		Arbre : T_Arbre := Cache.Arbre;
 	begin
 		-- Cas où le cache est vide
-		if Est_Vide(Arbre) then
+		if Arbre /= null then
 			Arbre := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 		else
 			null;
@@ -86,7 +86,7 @@ package body cache_tree is
 		for i in 0..Taille_Masque loop
 			if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 				--  Cas où le bit vaut 0
-				if Est_Vide(Arbre.All.Gauche) then
+				if Arbre.All.Gauche /= null then
 				-- Cas où le cache à gauche est vide
 					Arbre.All.Gauche := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 					Arbre := Arbre.All.Gauche;
@@ -95,7 +95,7 @@ package body cache_tree is
 				end if;
 			else
 				-- Cas où le bit vaut 1
-				if Est_Vide(Arbre.All.Droite) then
+				if Arbre.All.Droite /= null then
 				-- Cas où le cache à droite est vide
 					Arbre.All.Droite := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 					Arbre := Arbre.All.Droite;
@@ -127,7 +127,7 @@ package body cache_tree is
 		Taille_Masque : Integer;
 		Arbre : T_Arbre := Cache.Arbre;
 	begin
-		if Est_Vide(Arbre) then
+		if Arbre /= null then
 		-- Cas où le cache est vide
 			raise Adresse_Absente_Exception;
 		else
@@ -140,7 +140,7 @@ package body cache_tree is
 		for i in 0..Taille_Masque loop
 			if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 				--  Cas où le bit vaut 0
-				if Est_Vide(Arbre.Gauche) then
+				if Arbre.Gauche /= null then
 				-- Cas où le cache à gauche est vide
 					raise Adresse_Absente_Exception;
 				else
@@ -148,7 +148,7 @@ package body cache_tree is
 				end if;
 			else
 				-- Cas où le bit vaut 1
-				if Est_Vide(Arbre.Droite) then
+				if Arbre.Droite /= null then
 				-- Cas où le cache à droite est vide
 					raise Adresse_Absente_Exception;
 				else
@@ -242,14 +242,14 @@ package body cache_tree is
 			for i in 0..Taille_Masque loop
 				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 					--  Cas où le bit vaut 0
-						if not Est_Vide(Suppresseur.All.Gauche) then
+						if Suppresseur.All.Gauche /= null then
 							Suppresseur := Suppresseur.All.Gauche;
 						else
 							raise Suppression_Exception;
 						end if;
 				else
 					-- Cas où le bit vaut 1
-						if not Est_Vide(Suppresseur.All.droite) then
+						if Suppresseur.All.droite /= null then
 							Suppresseur := Suppresseur.All.Droite;
 						else
 							raise Suppression_Exception;
@@ -417,19 +417,19 @@ package body cache_tree is
 		Afficheur1 := Arbre;
 		Afficheur2 := Arbre;
 
-		if Est_Vide(Arbre) then
+		if Arbre /= null then
 			raise Arbre_Vide_Exception;
 		else
 			null;
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
-		if not Est_Vide(Afficheur1.All.Gauche) and then not Afficheur1.Gauche.All.Feuille then
+		if Afficheur1.All.Gauche /= null and then not Afficheur1.Gauche.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur1.All.Gauche);
 		else
 			-- Sinon on affiche car la cellule est une feuille
-			if not Est_Vide(Afficheur1.All.Gauche) then
+			if Afficheur1.All.Gauche /= null then
 				Afficheur1 := Afficheur1.All.Gauche;
 				Compteur := Compteur + 1;
 
@@ -444,12 +444,12 @@ package body cache_tree is
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à droite
-		if not Est_Vide(Afficheur2.All.Droite) and then not Afficheur2.Droite.All.Feuille then
+		if Afficheur2.All.Droite /= null and then not Afficheur2.Droite.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur2.All.Droite);
 		else
 			-- Cas où la cellule est une feuille
-			if not Est_Vide(Afficheur2.All.Droite) then
+			if Afficheur2.All.Droite /= null then
 				Afficheur2 := Afficheur2.All.Droite;
 				Compteur := Compteur + 1;
 
@@ -554,12 +554,12 @@ package body cache_tree is
 		Recherche_Adresse2 := Arbre;
 			
 		-- On recherche l'adresse correspondante à droite et à gauche
-		if not Est_Vide(Recherche_Adresse1) and then Recherche_Adresse1.Gauche /= null then
+		if Recherche_Adresse1 /= null and then Recherche_Adresse1.Gauche /= null then
 			if Adresse = Recherche_Adresse1.All.Adresse then
 				Sortie := Recherche_Adresse1.All.Sortie;
 				Recherche_Adresse1.All.Frequence := Recherche_Adresse1.All.Frequence + 1;
 				if Politique = LRU then -- LRU
-					Max := Recherche_Identifiant_Max(Arbre);
+					Max := Recherche_Identifiant_Max(Cache);
 					if Recherche_Adresse1.All.Identifiant /= Max then
 						Recherche_Adresse1.All.Identifiant := Max + 1;
 					else
@@ -574,15 +574,15 @@ package body cache_tree is
 
 			Recherche_Adresse1 := Recherche_Adresse1.All.Gauche;
 
-			Sortie := Chercher_Arbre(Recherche_Adresse1, Adresse, Cache); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+			Sortie := Chercher_Arbre(Recherche_Adresse1, Adresse); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 		else
 			-- On regarde les cas où on sort des if à cause des premières conditions
-			if not Est_Vide(Recherche_Adresse1) then
+			if Recherche_Adresse1 /= null then
 				if Adresse = Arbre.All.Adresse then
 					Sortie := Recherche_Adresse1.All.Sortie;
 					Recherche_Adresse1.All.Frequence := Recherche_Adresse1.All.Frequence + 1;
 					if Politique = LRU then -- LRU
-						Max := Recherche_Identifiant_Max(Arbre);
+						Max := Recherche_Identifiant_Max(Cache);
 						if Recherche_Adresse1.All.Identifiant /= Max then
 							Recherche_Adresse1.All.Identifiant := Max + 1;
 						else
@@ -599,12 +599,12 @@ package body cache_tree is
 			end if;
 		end if;
 
-		if not Est_Vide(Recherche_Adresse2) and then Recherche_Adresse2.Droite /= null then
+		if Recherche_Adresse2 /= null and then Recherche_Adresse2.Droite /= null then
 			if Adresse = Recherche_Adresse2.All.Adresse then
 				Sortie := Recherche_Adresse2.All.Sortie;
 				Recherche_Adresse2.All.Frequence := Recherche_Adresse2.All.Frequence + 1;
 				if Politique = LRU then -- LRU
-					Max := Recherche_Identifiant_Max(Arbre);
+					Max := Recherche_Identifiant_Max(Cache);
 					if Recherche_Adresse2.All.Identifiant /= Max then
 						Recherche_Adresse2.All.Identifiant := Max + 1;
 					else
@@ -619,15 +619,15 @@ package body cache_tree is
 
 			Recherche_Adresse2 := Recherche_Adresse2.All.Droite;
 
-			Sortie := Chercher_Arbre(Recherche_Adresse2, Adresse, Cache); -- on procède par récursivité
+			Sortie := Chercher_Arbre(Recherche_Adresse2, Adresse); -- on procède par récursivité
 		else
 			-- On regarde les cas où on sort des if à cause des premières conditions
-			if not Est_Vide(Recherche_Adresse2) then
+			if Recherche_Adresse2 /= null then
 				if Adresse = Arbre.All.Adresse then
 					Sortie := Recherche_Adresse2.All.Sortie;
 					Recherche_Adresse2.All.Frequence := Recherche_Adresse2.All.Frequence + 1;
 					if Politique = LRU then -- LRU
-						Max := Recherche_Identifiant_Max(Arbre);
+						Max := Recherche_Identifiant_Max(Cache);
 						if Recherche_Adresse2.All.Identifiant /= Max then
 							Recherche_Adresse2.All.Identifiant := Max + 1;
 						else
