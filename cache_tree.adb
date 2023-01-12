@@ -7,7 +7,7 @@ package body cache_tree is
 	procedure Free is
 		new Ada.Unchecked_Deallocation(Object => T_Arbre_Cellule, Name => T_Arbre);
 
-	procedure Initialiser(Cache : out T_Cache_Arbre; Taille_Max : in Integer) is
+	procedure Initialiser(Cache : out T_Cache_Arbre; Taille_Max : in Integer; Politique : in T_Politique) is
 	begin
 		Cache.Arbre := Null;
 		Cache.Taille_Max := Taille_Max;
@@ -15,6 +15,7 @@ package body cache_tree is
 		Cache.Defauts := 0;
 		Cache.Demandes := 0;
 		Cache.Enregistrement := 0;
+		Cache.Politique := Politique;
 	end Initialiser;
 
 	function Est_Vide(Arbre : in T_Arbre) return Boolean is
