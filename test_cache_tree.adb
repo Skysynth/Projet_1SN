@@ -2,7 +2,6 @@ with cache_tree; use cache_tree;
 with tools; use tools;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
-with routeur_exceptions; use routeur_exceptions;
 
 
 procedure test_cache_tree is
@@ -77,7 +76,7 @@ procedure test_cache_tree is
         Sortie1 := To_Unbounded_String("eth1");
         
         Enregistrer(Arbre,Cache,Adresse1,Masque1,Sortie1, Politique);
-        Put_Line("le premier enregistrement est reussi !");
+        Put_Line("Le premier enregistrement est réussi !");
         Afficher_Arbre(Arbre);
         Adresse_test := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.12.0"));
         -- Test qui verifie si la sortie est correcte

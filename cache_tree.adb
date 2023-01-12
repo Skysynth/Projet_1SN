@@ -400,7 +400,7 @@ package body cache_tree is
 		Afficheur1 := Arbre;
 		Afficheur2 := Arbre;
 
-		if Arbre = Null then
+		if Est_Vide(Arbre) then
 			raise Arbre_Vide_Exception;
 		else
 			null;
