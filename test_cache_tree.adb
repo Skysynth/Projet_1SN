@@ -88,7 +88,7 @@ procedure test_cache_tree is
         Masque2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.255.0"));
         Sortie2 := To_Unbounded_String("eth2");
         -- Ajout d une 2eme donnee
-        Enregistrer(Arbre,Cache,Adresse1,Masque2,Sortie2, Politique);
+        Enregistrer(Arbre,Cache,Adresse2,Masque2,Sortie2, Politique);
         Put_Line("Le deuxième enregistrement est réussi !");
         pragma Assert(Enregistrement_Cache(Cache)= 2);
         Afficher_Arbre(Arbre_Cache(Cache));
