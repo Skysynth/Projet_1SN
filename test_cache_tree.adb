@@ -94,7 +94,7 @@ procedure test_cache_tree is
         Put_Line("Le deuxième enregistrement est réussi !");
         pragma Assert(Enregistrement_Cache(Cache)= 2);
         Afficher_Arbre(Arbre);
-        pragma Assert( Chercher_Arbre(Arbre, cache, Adresse_test) = Sortie1);
+        pragma Assert(Chercher_Arbre(Arbre, cache, Adresse_test) = Sortie1);
         Adresse_test := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.255.0"));
         pragma Assert( Chercher_Arbre(Arbre, cache, Adresse_test) = Sortie2);
         Afficher_Statistiques_Cache(cache);
