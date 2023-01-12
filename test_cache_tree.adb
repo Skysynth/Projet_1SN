@@ -78,9 +78,9 @@ procedure test_cache_tree is
         Enregistrer(Arbre,Cache,Adresse1,Masque1,Sortie1, Politique);
         Put_Line("Le premier enregistrement est réussi !");
         Afficher_Arbre(Arbre);
-        Adresse_test := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.12.0"));
+        Adresse_test := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.0.0"));
         -- Test qui verifie si la sortie est correcte
-        pragma Assert(Chercher_Arbre(Arbre , Adresse_test, Cache) = Sortie1);
+        pragma Assert(Chercher_Arbre(Arbre, Adresse_test, Cache) = Sortie1);
 
         -- test qui verifie si le nombre de donnee dans le cache est correcte
         pragma Assert(Enregistrement_Cache(Cache)= 1);
