@@ -6,6 +6,7 @@ package Routeur_Exceptions is
     Argument_non_valide_exception : Exception;	-- Un argument n'est pas valide
     Adresse_Absente_Exception : Exception;      -- Une adresse invalide 
     Politique_non_valide_exception : Exception; -- La politique demandée est invalide
+    Arbre_Vide_Exception : Exception; -- L'arbre est vide
 
     COMMAND_FIN_CALLED : Exception;
 

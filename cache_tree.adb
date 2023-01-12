@@ -400,6 +400,12 @@ package body cache_tree is
 		Afficheur1 := Arbre;
 		Afficheur2 := Arbre;
 
+		if Arbre = Null then
+			raise Abre_Vide_Exception;
+		else
+			null;
+		end if;
+
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
 		if Afficheur1.All.Gauche /= null and then not Afficheur1.Gauche.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
@@ -440,6 +446,8 @@ package body cache_tree is
 			end if;
 		end if;
 
+	exception
+		when Arbre_Vide_Exception => Put_Line("L'arbre est vide.");
 	end Afficher_Arbre;
 
 	procedure Afficher_Statistiques_Cache(Cache : in T_Cache_Arbre) is
