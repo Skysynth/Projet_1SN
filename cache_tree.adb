@@ -13,7 +13,7 @@ package body cache_tree is
 		Cache.Taille_Max := Taille_Max;
 		Cache.Taille := 0;
 		Cache.Defauts := 0;
-		Cache.Demandes := 0
+		Cache.Demandes := 0;
 		Cache.Enregistrement := 0;
 	end Initialiser;
 
