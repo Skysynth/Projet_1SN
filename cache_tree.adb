@@ -185,7 +185,7 @@ package body cache_tree is
 			elsif Recherche_Identifiant2 /= null and then Recherche_Identifiant2.Droite /= null then
 				if Min > Recherche_Identifiant2.All.Identifiant then
 					Min := Recherche_Identifiant2.All.Identifiant;
-					Adresse := Recherche_Identifiant1.All.Adresse;
+					Adresse := Recherche_Identifiant2.All.Adresse;
 				else
 					null; -- il ne se passe rien
 				end if;
