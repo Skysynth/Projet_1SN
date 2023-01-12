@@ -18,12 +18,13 @@ package body cache_tree is
 		Cache.Politique := Politique;
 	end Initialiser;
 
-	function Est_Vide(Arbre : in T_Arbre) return Boolean is
+	function Est_Vide(Cache : in T_Cache_Arbre) return Boolean is
 	begin
-		return (Arbre = Null); 
+		return (Cache.Arbre = Null); 
 	end;
 
-    procedure Vider(Arbre : in out T_Arbre) is
+    procedure Vider(Cache : in out T_Cache_Arbre) is
+		Arbre : T_Arbre := Cache.Arbre;
 	begin
         if not Est_Vide(Arbre) then
             -- Si le cache n'est pas vide
@@ -46,7 +47,8 @@ package body cache_tree is
 		return Cache.Arbre;
 	end Arbre_Cache;
 
-	function Frequence_Arbre(Arbre : in T_Arbre) return Integer is
+	function Frequence_Arbre(Cache : in T_Cache_Arbre) return Integer is
+		Arbre : T_Arbre := Cache.Arbre;
 	begin
 		return Arbre.All.Frequence;
 	end Frequence_Arbre;
@@ -66,8 +68,9 @@ package body cache_tree is
 		return Cache.Enregistrement;
 	end Enregistrement_Cache;
 
-	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) is
+	procedure Enregistrer(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) is
 		Taille_Masque : Integer;
+		Arbre : T_Arbre := Cache.Arbre;
 	begin
 		-- Cas où le cache est vide
 		if Est_Vide(Arbre) then
@@ -120,8 +123,9 @@ package body cache_tree is
 		Cache.Enregistrement := Cache.Enregistrement + 1;
 	end Enregistrer;
 
-	procedure Ajouter_Frequence(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP) is
+	procedure Ajouter_Frequence(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP) is
 		Taille_Masque : Integer;
+		Arbre : T_Arbre := Cache.Arbre;
 	begin
 		if Est_Vide(Arbre) then
 		-- Cas où le cache est vide
@@ -159,9 +163,10 @@ package body cache_tree is
 		when Adresse_Absente_Exception => Put("L'adresse demandée n'est pas présente.");
 	end Ajouter_Frequence;
 
-	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache_Arbre; Masque : in T_Adresse_IP) is
+	procedure Supprimer(Cache : in out T_Cache_Arbre; Masque : in T_Adresse_IP) is
 
 		Politique : constant T_Politique := Cache.Politique;
+		Arbre : T_Arbre := Cache.Arbre;
 
 		function Recherche_Identifiant_Min(Arbre : in T_Arbre; Politique : in T_Politique) return T_Adresse_IP is
 			Recherche_Identifiant1 : T_Arbre;
@@ -402,9 +407,10 @@ package body cache_tree is
 		return Est_Plein;
 	end Est_Plein;
 
-	procedure Afficher_Arbre(Arbre : in T_Arbre) is
+	procedure Afficher_Arbre(Cache : in T_Cache_Arbre) is
 		Afficheur1 : T_Arbre;
 		Afficheur2 : T_Arbre;
+		Arbre : T_Arbre := Cache.Arbre;
 		Compteur : Integer := 0; -- pour compter les feuilles, ce qui doit correspondre à la taille du cache
 	begin
 		-- Initialisation des pointeurs qui servent à afficher l'arbre
@@ -471,10 +477,11 @@ package body cache_tree is
 		Put_Line("Le taux de défauts de cache est de :" & Float'Image(Taux_Defauts));
 	end Afficher_Statistiques_Cache;
 
-	function Recherche_Identifiant_Max(Arbre : in T_Arbre) return Integer is
+	function Recherche_Identifiant_Max(Cache : in T_Cache_Arbre) return Integer is
 			Recherche_Identifiant1 : T_Arbre;
 			Recherche_Identifiant2 : T_Arbre;
 			Max : Integer;
+			Arbre : T_Arbre := Cache.Arbre;
 		begin
 			-- On fait pointer les pointeurs sur la racine
 			Recherche_Identifiant1 := Arbre;
@@ -531,11 +538,12 @@ package body cache_tree is
 			return Max;
 		end Recherche_Identifiant_Max;
 
-	function Chercher_Arbre(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Cache : in out T_Cache_Arbre) return Unbounded_string is
+	function Chercher_Arbre(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP) return Unbounded_string is
 		Sortie : Unbounded_String;
 		Recherche_Adresse1 : T_Arbre;
 		Recherche_Adresse2 : T_Arbre;
 		Max : Integer;
+		Arbre : T_Arbre := Cache.Arbre;
 		Politique : constant T_Politique := Cache.Politique;
     begin
 
