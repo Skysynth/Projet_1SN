@@ -85,7 +85,7 @@ package body cache_tree is
 				if Est_Vide(Arbre.All.Gauche) then
 				-- Cas où le cache à gauche est vide
 					Arbre.All.Gauche := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
-					Arbre := Arbre.All.Gauche
+					Arbre := Arbre.All.Gauche;
 				else
 					Arbre := Arbre.All.Gauche;
 				end if;
@@ -426,7 +426,6 @@ package body cache_tree is
 		Put_Line("Le nombre de demandes de route au cache est de :" & Integer'Image(Cache.Demandes));
 
 		Taux_Defauts := Float(Cache.Defauts) / Float(Cache.Demandes);
-
 		Put_Line("Le taux de défauts de cache est de :" & Float'Image(Taux_Defauts));
 	end Afficher_Statistiques_Cache;
 
@@ -483,7 +482,7 @@ package body cache_tree is
 			return Max;
 		end Recherche_Identifiant_Max;
 
-		function Chercher_Arbre(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique) return Unbounded_string is
+		function Chercher_Arbre(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique; Cache : in out T_Cache_Arbre) return Unbounded_string is
 			Sortie : Unbounded_String;
 			Recherche_Adresse1 : T_Arbre;
 			Recherche_Adresse2 : T_Arbre;
@@ -503,7 +502,7 @@ package body cache_tree is
 
 				Recherche_Adresse1 := Recherche_Adresse1.All.Gauche;
 
-				Sortie := Chercher_Arbre(Recherche_Adresse1, Adresse, Politique); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+				Sortie := Chercher_Arbre(Recherche_Adresse1, Adresse, Politique, Cache); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 			elsif Recherche_Adresse2 /= null and then Recherche_Adresse2.Droite /= null then
 				if Adresse = Recherche_Adresse2.All.Adresse then
 					Sortie := Recherche_Adresse2.All.Sortie;
@@ -513,7 +512,7 @@ package body cache_tree is
 
 				Recherche_Adresse2 := Recherche_Adresse2.All.Droite;
 
-				Sortie := Chercher_Arbre(Recherche_Adresse2, Adresse, Politique); -- on procède par récursivité
+				Sortie := Chercher_Arbre(Recherche_Adresse2, Adresse, Politique, Cache); -- on procède par récursivité
 			else
 				-- On regarde les cas où on sort des if à cause des premières conditions
 				if Recherche_Adresse1 /= null then
@@ -533,11 +532,13 @@ package body cache_tree is
 				end if;
 			end if;
 
+			Cache.Demandes := Cache.Demandes + 1;
+
         	return Sortie;
 
     	exception
-        	when Adresse_Absente_Exception => Put_Line("L'adresse n'a pas été trouvée"); return To_Unbounded_String("null");
-			when others => Put_Line("Une erreur est intervenue."); return To_Unbounded_String("null");
+        	when Adresse_Absente_Exception => Put_Line("L'adresse n'a pas été trouvée"); Cache.Demandes := Cache.Demandes + 1; Cache.Defauts := Cache.Defauts + 1; return To_Unbounded_String("null");
+			when others => Put_Line("Une erreur est intervenue."); Cache.Demandes := Cache.Demandes + 1; Cache.Defauts := Cache.Defauts + 1; return To_Unbounded_String("null");
     	end Chercher_Arbre;
 
 end cache_tree;
