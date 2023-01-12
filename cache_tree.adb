@@ -73,7 +73,7 @@ package body cache_tree is
 		if Est_Vide(Arbre) then
 			Arbre := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
 		else
-			Put_Line("L'arbre du cache n'est pas vide. On peut continuer.");
+			null;
 		end if;
 
 		-- On récupère la taille du masque
@@ -127,7 +127,7 @@ package body cache_tree is
 		-- Cas où le cache est vide
 			raise Adresse_Absente_Exception;
 		else
-			Put_Line("Le cache n'est pas vide. On peut continuer.");
+			null;
 		end if;
 
 		Taille_Masque := Get_taille_binaire(Masque);
