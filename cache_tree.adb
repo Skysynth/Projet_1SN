@@ -401,7 +401,7 @@ package body cache_tree is
 		Afficheur2 := Arbre;
 
 		if Arbre = Null then
-			raise Abre_Vide_Exception;
+			raise Arbre_Vide_Exception;
 		else
 			null;
 		end if;
