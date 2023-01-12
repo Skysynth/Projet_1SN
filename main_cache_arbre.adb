@@ -62,7 +62,7 @@ begin
         Table_Routage.Initialiser(param         => param,
                                   Table_routage => tr);
 
-        cache_tree.Initialiser(cache, param.taille_cache);
+        cache_tree.Initialiser(cache, param.taille_cache, politique);
 
         New_Line;
         Table_Routage.Afficher(tr, Standard_Output);
@@ -85,9 +85,7 @@ begin
 
                 begin
                     -- On cherche dans le cache
-                    interf := Chercher_Cache(Cache     => cache,
-                                             Adresse   => adresse,
-                                             Politique => param.politique);
+                    interf := Chercher_Arbre(Arbre => cache.Arbre, Adresse => adresse, Politique => param.politique, Cache => cache);
                 exception
                         -- si pas trouvé : on cherche à la mano dans la table de routage
                     when others =>
