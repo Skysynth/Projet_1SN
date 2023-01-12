@@ -430,8 +430,6 @@ package body cache_tree is
 			New_Line;
 		end if;
 
-		Vider(Afficheur1);
-		Vider(Afficheur2);
 	end Afficher_Arbre;
 
 	procedure Afficher_Statistiques_Cache(Cache : in T_Cache_Arbre) is
