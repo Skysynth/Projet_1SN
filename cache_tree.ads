@@ -2,8 +2,8 @@ with tools; use tools;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 package cache_tree is
 
-    type T_Cache_Arbre is limited private;
-    type T_Arbre is limited private;
+    type T_Cache_Arbre is private;
+    type T_Arbre is private;
 
     -- nom : Initialiser
     -- sémantique : Initialiser le cache et sa taille
