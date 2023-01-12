@@ -401,7 +401,7 @@ package body cache_tree is
 		Afficheur2 := Arbre;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
-		if not Afficheur1.Gauche.All.Feuille then
+		if Afficheur1.All.Gauche /= null and not Afficheur1.Gauche.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur1.All.Gauche);
 		else
@@ -416,7 +416,7 @@ package body cache_tree is
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à droite
-		if not Afficheur2.Droite.All.Feuille then
+		if Afficheur2.All.Droite /= null and not Afficheur2.Droite.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur2.All.Droite);
 		else
