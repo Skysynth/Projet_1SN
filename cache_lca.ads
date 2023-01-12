@@ -6,6 +6,8 @@ package CACHE_LCA is
 
    TAILLE_MAX : Integer;
 
+   type T_RECENT_LCA is limited private;
+
 	type T_CACHE_LCA is limited private;
 
 	-- Initialiser le cache.  Le cache est vide.
@@ -15,31 +17,37 @@ package CACHE_LCA is
 	-- Le cache est-il plein ?
    function Est_Plein(Cache_lca : T_CACHE_LCA) return Boolean;
 
-   -- Supprimer un élément du cache, suivant la politique demandée au préalable par l'utilisateur.
+   -- Supprimer un element du cache, suivant la politique demandee au prealable par l'utilisateur.
    procedure Supprimer(Cache_lca : in out T_CACHE_LCA ; Politique : T_Politique);
 
-   -- Supprime un élément suivant la politique FIFO.
+   -- Supprime un element suivant la politique FIFO.
    procedure Supprimer_FIFO(Cache_lca : in out T_CACHE_LCA);
 
-   -- Supprime un élément suivant la politique LRU.
+   -- Ajouter une adresse a la liste chainee Recente.
+   procedure Ajouter_Recent(Rec_lca : in out T_RECENT_LCA ; Adresse : in T_ADRESSE_IP);
+
+   -- Supprimer une adresse a la liste chainee Recente.
+   procedure Supprimer_Recent(Rec_lca : in out T_RECENT_LCA ; Adresse : in T_ADRESSE_IP);
+
+   -- Supprime un element suivant la politique LRU.
    procedure Supprimer_LRU(Cache_lca : in out T_CACHE_LCA);
 
-   -- Récupérer la fréquence minimale d'utilisation des adresses dans le cache.
+   -- Recuperer la frequence minimale d'utilisation des adresses dans le cache.
    function Adresse_LFU(Cache_lca : in T_CACHE_LCA) return integer;
 
-   -- Supprime un élément suivant la politique LFU.
+   -- Supprime un element suivant la politique LFU.
    procedure Supprimer_LFU(Cache_lca : in out T_CACHE_LCA);
 
-   -- Savoir si une adresse est présente dans le cache.
+   -- Savoir si une adresse est presente dans le cache.
    function Adresse_Presente(Cache_lca : in T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return Boolean;
 
-   -- Récupérer le masque et l'interface associés à l'adresse demandée, dans le cache.
-   procedure Recuperer(Cache_lca : in T_CACHE_LCA ; Adresse : T_ADRESSE_IP);
+   -- Recuperer le masque et l'interface associes a l'adresse demandee, dans le cache.
+   procedure Recuperer(Cache_lca : in out T_CACHE_LCA ; Adresse : T_ADRESSE_IP);
 
    -- Ajouter une nouvelle route dans le cache.
    procedure Ajouter(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Eth : in Unbounded_String);
 
-   -- Supprimer tous les éléments du cache.
+   -- Supprimer tous les elements du cache.
 	procedure Vider(Cache_lca : in out T_CACHE_LCA) with
      Post => Est_Vide(Cache_lca);
 
@@ -53,6 +61,16 @@ package CACHE_LCA is
 
 private
 
+   type T_Case;
+
+   type T_RECENT_LCA is access T_Case;
+
+   type T_Case is
+      record
+         Adresse : T_ADRESSE_IP;
+         Suivant : T_RECENT_LCA;
+      end record;
+
    type T_Cellule;
 
 	type T_CACHE_LCA is access T_Cellule;
@@ -64,6 +82,8 @@ private
          Eth : Unbounded_String;
          Frequence : Integer;
 			Suivant : T_CACHE_LCA;
-		end record;
+      end record;
+
+   RECENT_LCA : T_RECENT_LCA;
 
 end CACHE_LCA;
