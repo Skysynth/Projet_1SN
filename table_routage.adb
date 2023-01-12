@@ -174,7 +174,7 @@ package body Table_Routage is
             
             if Adresse_Correspond(Adresse_IP, table_temp.all.Adresse, table_temp.all.Masque) then
                 
-                taille_masque := Get_taille_binaire(table_temp.all.Masque);
+                taille_masque := Get_taille_binaire_masque(table_temp.all.Masque);
                 
                 if taille_masque > taille_masque_max then
                     taille_masque_max := taille_masque;
@@ -240,6 +240,8 @@ package body Table_Routage is
             raise COMMAND_FIN_CALLED;
         end case;
         
+        Put_Line(file_output, "--------------------------------");
+        
         return True;
         
     exception
@@ -270,22 +272,24 @@ package body Table_Routage is
         
         Adresse_Masquee := Adresse AND Masque;
          
-        while not Est_Vide(table_temp) loop
+        while table_temp /= null loop
             
             Adresse_Masquee_tr := table_temp.all.Adresse AND Masque;
             
             if Adresse_Masquee = Adresse_Masquee_tr then
                 -- ça match, donc on compare le masque
-                if Get_taille_binaire(Masque_max) < Get_taille_binaire(table_temp.Masque) then
+                if Get_taille_binaire_masque(Masque_max) < Get_taille_binaire_masque(table_temp.Masque) then
                     Masque_max := table_temp.Masque;
                 else
                     null;
                 end if;
             end if;
             
-            end loop;
+            table_temp := table_temp.all.Suivant;
             
-            return Masque_max;
+        end loop;
+            
+        return Masque_max;
             
     end Recuperer_Masque_Plus_Long;
     

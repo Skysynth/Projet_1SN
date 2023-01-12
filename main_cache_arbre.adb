@@ -43,8 +43,7 @@ procedure main_cache_arbre is
     taille_masque : Integer;
 
     -- PARTIE CACHE
-    arbre : T_Arbre;
-    cache : T_Cache_Arbre;
+    cache : T_Arbre;
     adresse : T_Adresse_IP;
 
     adresse_Cache, masque_Cache : T_Adresse_IP;
@@ -62,7 +61,7 @@ begin
         Table_Routage.Initialiser(param         => param,
                                   Table_routage => tr);
 
-        cache_tree.Initialiser(cache, param.taille_cache, politique);
+        cache_tree.Initialiser_Arbre(cache, param.taille_cache, politique);
 
         New_Line;
         Table_Routage.Afficher(tr, Standard_Output);
@@ -89,6 +88,7 @@ begin
                 exception
                         -- si pas trouvé : on cherche à la mano dans la table de routage
                     when others =>
+
                         Table_Routage.Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr, interf, taille_masque);
 
                         masque_Cache := Recuperer_Masque_Plus_Long(Table   => tr,

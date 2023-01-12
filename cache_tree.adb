@@ -76,7 +76,7 @@ package body cache_tree is
 		end if;
 
 		-- On récupère la taille du masque
-		Taille_Masque := Get_taille_binaire(Masque);
+		Taille_Masque := Get_taille_binaire_masque(Masque);
 
 		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 		for i in 1..Taille_Masque loop
@@ -191,7 +191,7 @@ package body cache_tree is
 			-- Il faut faire la recherche du minimum en terme d'identifiant et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
 			Adresse := Recherche_Identifiant_Min(Arbre, Politique); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
 			Suppresseur := Arbre;
-			Taille_Masque := Get_taille_binaire(Masque);
+			Taille_Masque := Get_taille_binaire_masque(Masque);
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			for i in 1..Taille_Masque loop
@@ -229,7 +229,7 @@ package body cache_tree is
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			Suppresseur := Arbre;
-			Taille_Masque := Get_taille_binaire(Masque);
+			Taille_Masque := Get_taille_binaire_masque(Masque);
 			for i in 1..Taille_Masque loop
 				if ((Adresse AND (2 ** (32 - i))) = 0) then
 					--  Cas où le bit vaut 0
@@ -318,7 +318,7 @@ package body cache_tree is
 			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
 			Adresse := Recherche_Frequence_Min(Arbre, Politique); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
 			Suppresseur := Arbre;
-			Taille_Masque := Get_taille_binaire(Masque);
+			Taille_Masque := Get_taille_binaire_masque(Masque);
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			for i in 1..Taille_Masque loop
