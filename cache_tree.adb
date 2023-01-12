@@ -530,6 +530,8 @@ package body cache_tree is
 				null;
 			end if;
 		else
+			Put_Line("L'adresse n'a pas été trouvée");
+			Cache.Defauts := Cache.Defauts + 1;
 			raise Adresse_Absente_Exception;
 		end if;
 
@@ -556,14 +558,15 @@ package body cache_tree is
 				null;
 			end if;
 		else
+			Put_Line("L'adresse n'a pas été trouvée");
+			Cache.Defauts := Cache.Defauts + 1;
 			raise Adresse_Absente_Exception;
 		end if;
 
     	return Sortie;
 
     exception
-    	when Adresse_Absente_Exception => Put_Line("L'adresse n'a pas été trouvée"); Cache.Defauts := Cache.Defauts + 1; return To_Unbounded_String("null");
-		when others => Put_Line("Une erreur est intervenue."); Cache.Defauts := Cache.Defauts + 1; return To_Unbounded_String("null");
+    	when Adresse_Absente_Exception => return To_Unbounded_String("null");
     end Chercher_Arbre;
 
 end cache_tree;
