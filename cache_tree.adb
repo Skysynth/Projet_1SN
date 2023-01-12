@@ -85,7 +85,7 @@ package body cache_tree is
 				if Est_Vide(Arbre.All.Gauche) then
 				-- Cas où le cache à gauche est vide
 					Arbre.All.Gauche := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
-					Arbre := Arbre.All.Gauche;
+					Arbre := Arbre.All.Gauche
 				else
 					Arbre := Arbre.All.Gauche;
 				end if;
@@ -247,10 +247,10 @@ package body cache_tree is
 		begin
 			-- Il faut faire la recherche du minimum en terme d'identifiant et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
 			Adresse := Recherche_Identifiant_Min(Arbre); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
-			Suppresseur := Arbre;
-			Taille_Masque := Get_taille_binaire(Masque);
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
+			Suppresseur := Arbre;
+			Taille_Masque := Get_taille_binaire(Masque);
 			for i in 0..(Taille_Masque - 1) loop
 				if ((Adresse AND (2 ** (Taille_Masque - 1 - i))) = 0) then
 					--  Cas où le bit vaut 0
