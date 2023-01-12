@@ -407,12 +407,12 @@ package body cache_tree is
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
-		if Afficheur1.All.Gauche /= null and then not Afficheur1.Gauche.All.Feuille then
+		if not Est_Vide(Afficheur1.All.Gauche) and then not Afficheur1.Gauche.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur1.All.Gauche);
 		else
 			-- Sinon on affiche car la cellule est une feuille
-			if Afficheur1.All.Gauche /= null then
+			if not Est_Vide(Afficheur1.All.Gauche) then
 				Afficheur1 := Afficheur1.All.Gauche;
 				Compteur := Compteur + 1;
 
@@ -427,12 +427,12 @@ package body cache_tree is
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à droite
-		if Afficheur2.All.Droite /= null and then not Afficheur2.Droite.All.Feuille then
+		if not Est_Vide(Afficheur2.All.Droite) and then not Afficheur2.Droite.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur2.All.Droite);
 		else
 			-- Cas où la cellule est une feuille
-			if Afficheur2.All.Droite /= null then
+			if not Est_Vide(Afficheur2.All.Droite) then
 				Afficheur2 := Afficheur2.All.Droite;
 				Compteur := Compteur + 1;
 
@@ -535,7 +535,7 @@ package body cache_tree is
 			Recherche_Adresse2 := Arbre;
 			
 			-- On recherche l'adresse correspondante à droite et à gauche
-			if Recherche_Adresse1 /= null and then Recherche_Adresse1.Gauche /= null then
+			if not Est_Vide(Recherche_Adresse1) and then Recherche_Adresse1.Gauche /= null then
 				if Adresse = Recherche_Adresse1.All.Adresse then
 					Sortie := Recherche_Adresse1.All.Sortie;
 					Recherche_Adresse1.All.Frequence := Recherche_Adresse1.All.Frequence + 1;
@@ -558,7 +558,7 @@ package body cache_tree is
 				Sortie := Chercher_Arbre(Recherche_Adresse1, Adresse, Cache); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 			else
 				-- On regarde les cas où on sort des if à cause des premières conditions
-				if Recherche_Adresse1 /= null then
+				if not Est_Vide(Recherche_Adresse1) then
 					if Adresse = Arbre.All.Adresse then
 						Sortie := Recherche_Adresse1.All.Sortie;
 						Recherche_Adresse1.All.Frequence := Recherche_Adresse1.All.Frequence + 1;
@@ -580,7 +580,7 @@ package body cache_tree is
 				end if;
 			end if;
 
-			if Recherche_Adresse2 /= null and then Recherche_Adresse2.Droite /= null then
+			if not Est_Vide(Recherche_Adresse2) and then Recherche_Adresse2.Droite /= null then
 				if Adresse = Recherche_Adresse2.All.Adresse then
 					Sortie := Recherche_Adresse2.All.Sortie;
 					Recherche_Adresse2.All.Frequence := Recherche_Adresse2.All.Frequence + 1;
@@ -603,7 +603,7 @@ package body cache_tree is
 				Sortie := Chercher_Arbre(Recherche_Adresse2, Adresse, Cache); -- on procède par récursivité
 			else
 				-- On regarde les cas où on sort des if à cause des premières conditions
-				if Recherche_Adresse2 /= null then
+				if not Est_Vide(Recherche_Adresse2) then
 					if Adresse = Arbre.All.Adresse then
 						Sortie := Recherche_Adresse2.All.Sortie;
 						Recherche_Adresse2.All.Frequence := Recherche_Adresse2.All.Frequence + 1;
