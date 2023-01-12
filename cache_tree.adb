@@ -476,9 +476,10 @@ package body cache_tree is
 			return Max;
 		end Recherche_Identifiant_Max;
 
-		function Chercher_Cache(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique) return Unbounded_string is
-        	Arbre : T_Arbre := Arbre_Cache(Cache);
+		function Chercher_Arbre(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique) return Unbounded_string is
 			Sortie : Unbounded_String;
+			Recherche_Adresse1 : T_Arbre;
+			Recherche_Adresse2 : T_Arbre;
     	begin
 
 			-- On fait pointer les pointeurs sur la racine
@@ -495,7 +496,7 @@ package body cache_tree is
 
 				Recherche_Adresse1 := Recherche_Adresse1.All.Gauche;
 
-				Sortie := Chercher_Cache(Recherche_Adresse1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+				Sortie := Chercher_Arbre(Recherche_Adresse1, Adresse, Politique); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
 			elsif Recherche_Adresse2 /= null and then Recherche_Adresse2.Droite /= null then
 				if Adresse = Recherche_Adresse2.All.Adresse then
 					Sortie := Recherche_Adresse2.All.Sortie;
@@ -505,7 +506,7 @@ package body cache_tree is
 
 				Recherche_Adresse2 := Recherche_Adresse2.All.Droite;
 
-				Sortie := Chercher_Cache(Recherche_Adresse2); -- on procède par récursivité
+				Sortie := Chercher_Arbre(Recherche_Adresse2, Adresse, Politique); -- on procède par récursivité
 			else
 				-- On regarde les cas où on sort des if à cause des premières conditions
 				if Recherche_Adresse1 /= null then
@@ -525,11 +526,11 @@ package body cache_tree is
 				end if;
 			end if;
 
-        	return Arbre.All.Sortie;
+        	return Sortie;
 
     	exception
         	when Adresse_Absente_Exception => Put_Line("L'adresse n'a pas été trouvée"); return To_Unbounded_String("null");
 			when others => Put_Line("Une erreur est intervenue."); return To_Unbounded_String("null");
-    	end Chercher_Cache;
+    	end Chercher_Arbre;
 
 end cache_tree;

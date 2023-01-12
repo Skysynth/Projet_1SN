@@ -163,14 +163,14 @@ package cache_tree is
         Post => Recherche_Identifiant_Max'Result >= 0;
 
     
-    -- nom : Chercher_Cache
+    -- nom : Chercher_Arbre
     -- sémantique : Permet de renvoyer la sortie correspondante à une adresse dans le cache
     -- paramètres :
     --      Arbre : Mode In/Out T_Arbre; -- l'arbre du cache
     --      Adresse : Mode In T_Adresse_IP; -- l'adresse
     --      Politique : Mode In T_Politique; -- la politique
     --      Masque : Mode In T_Adresse_IP; -- le masque
-    function Chercher_Cache(Cache : in out T_Cache_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique) return Unbounded_string;
+    function Chercher_Arbre(Arbre : in out T_Arbre; Adresse : in T_Adresse_IP; Politique : in T_Politique) return Unbounded_string;
 
 private
 
