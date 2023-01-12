@@ -7,6 +7,7 @@ package Routeur_Exceptions is
     Adresse_Absente_Exception : Exception;      -- Une adresse invalide 
     Politique_non_valide_exception : Exception; -- La politique demandée est invalide
     Arbre_Vide_Exception : Exception; -- L'arbre est vide
+    Suppression_Exception : Exception; -- L'élément à supprimer n'est pas trouvé
 
     COMMAND_FIN_CALLED : Exception;
 

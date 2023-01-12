@@ -32,7 +32,7 @@ package body cache_tree is
             Free(Arbre);
         else
 			-- Si le cache est vide
-            Put_Line("L'arbre du cache est vide. Pas besoin de le vider.");
+            null;
         end if;
 	end Vider;
 
@@ -237,15 +237,26 @@ package body cache_tree is
 			for i in 0..Taille_Masque loop
 				if ((Adresse AND (2 ** (Taille_Masque - i))) = 0) then
 					--  Cas où le bit vaut 0
-						Suppresseur := Suppresseur.All.Gauche;
+						if not Est_Vide(Suppresseur.All.Gauche) then
+							Suppresseur := Suppresseur.All.Gauche;
+						else
+							raise Suppression_Exception;
+						end if;
 				else
 					-- Cas où le bit vaut 1
-						Suppresseur := Suppresseur.All.Droite;
+						if not Est_Vide(Suppresseur.All.droite) then
+							Suppresseur := Suppresseur.All.Droite;
+						else
+							raise Suppression_Exception;
+						end if;
 				end if;
 			end loop;
 
 			-- Il ne reste plus qu'à supprimer cette cellule
 			Free(Suppresseur);
+
+		exception
+			when Suppression_Exception => Put_Line("L'élément à supprimer n'existe pas.");
 		end Supprimer_FIFO;
 
 		procedure Supprimer_LRU(Arbre : in T_Arbre; Masque : in T_Adresse_IP) is
