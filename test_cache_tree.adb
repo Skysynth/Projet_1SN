@@ -78,7 +78,6 @@ procedure test_cache_tree is
         Sortie1 := To_Unbounded_String("eth1");
         
         Enregistrer(Arbre,Cache,Adresse1,Masque1,Sortie1,Politique);
-        Put_Line("Le premier enregistrement est réussi !");
         Afficher_Arbre(Arbre);
         Adresse_test := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.0.0"));
         -- Test qui verifie si la sortie est correcte
@@ -90,13 +89,12 @@ procedure test_cache_tree is
         Masque2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.255.0"));
         Sortie2 := To_Unbounded_String("eth2");
         -- Ajout d'une 2eme donnee
-        Enregistrer(Arbre, Cache,Adresse2,Masque2,Sortie2, Politique);
-        Put_Line("Le deuxième enregistrement est réussi !");
-        pragma Assert(Enregistrement_Cache(Cache)= 2);
+        Enregistrer(Arbre, Cache, Adresse2, Masque2, Sortie2, Politique);
+        pragma Assert(Enregistrement_Cache(Cache) = 2);
         Afficher_Arbre(Arbre);
-        pragma Assert(Chercher_Arbre(Arbre, cache, Adresse_test) = Sortie1);
+        pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse_test) = Sortie1);
         Adresse_test := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.255.0"));
-        pragma Assert( Chercher_Arbre(Arbre, cache, Adresse_test) = Sortie2);
+        pragma Assert( Chercher_Arbre(Arbre, Cache, Adresse_test) = Sortie2);
         Afficher_Statistiques_Cache(cache);
         pragma Assert(Est_Plein(cache));
 
