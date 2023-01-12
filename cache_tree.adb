@@ -84,7 +84,7 @@ package body cache_tree is
 				--  Cas où le bit vaut 0
 				if Est_Vide(Arbre.Gauche) then
 				-- Cas où le cache à gauche est vide
-					Arbre.Gauche := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
+					Arbre.Gauche := new T_Arbre_Cellule'(0, 0, To_Unbounded_String(""), null, null, 0, False, 0);
 					Arbre := Arbre.All.Gauche;
 				else
 					Arbre := Arbre.All.Gauche;
@@ -93,7 +93,7 @@ package body cache_tree is
 				-- Cas où le bit vaut 1
 				if Est_Vide(Arbre.Droite) then
 				-- Cas où le cache à droite est vide
-					Arbre.Droite := new T_Arbre_Cellule'(Adresse, Masque, Sortie, null, null, 0, False, 0);
+					Arbre.Droite := new T_Arbre_Cellule'(0, 0, To_Unbounded_String(""), null, null, 0, False, 0);
 					Arbre := Arbre.All.Droite;
 				else
 					Arbre := Arbre.All.Droite;
