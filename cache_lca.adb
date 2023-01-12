@@ -13,10 +13,11 @@ package body CACHE_LCA is
    procedure Free_Rec is
      new Ada.Unchecked_Deallocation (Object => T_Case, Name => T_RECENT_LCA);
 
-   procedure Initialiser(Cache_lca: out T_CACHE_LCA ; Taille : Integer) is
+   procedure Initialiser(Cache_lca: out T_CACHE_LCA ; Taille : Integer ; pol : T_Politique) is
 	begin
       Cache_lca := null;
-      TAILLE_MAX := Taille;
+        TAILLE_MAX := Taille;
+        POLITIQUE := pol;
    end Initialiser;
 
    function Est_Plein(Cache_lca : in T_CACHE_LCA) return Boolean is
@@ -24,9 +25,9 @@ package body CACHE_LCA is
       return Taille(Cache_lca) = TAILLE_MAX;
    end Est_Plein;
 
-   procedure Supprimer(Cache_lca : in out T_CACHE_LCA ; Politique : T_Politique) is
+   procedure Supprimer(Cache_lca : in out T_CACHE_LCA) is
    begin
-      case Politique is
+      case POLITIQUE is
          when FIFO => Supprimer_FIFO(Cache_lca);
          when LRU => Supprimer_LRU(Cache_lca);
          when LFU => Supprimer_LFU(Cache_lca);
