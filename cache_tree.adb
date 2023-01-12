@@ -505,6 +505,7 @@ package body cache_tree is
 			Sortie : Unbounded_String;
 			Recherche_Adresse1 : T_Arbre;
 			Recherche_Adresse2 : T_Arbre;
+			Max : Integer;
     	begin
 
 			-- On fait pointer les pointeurs sur la racine
@@ -515,6 +516,17 @@ package body cache_tree is
 			if Recherche_Adresse1 /= null and then Recherche_Adresse1.Gauche /= null then
 				if Adresse = Recherche_Adresse1.All.Adresse then
 					Sortie := Recherche_Adresse1.All.Sortie;
+					Recherche_Adresse1.All.Frequence := Recherche_Adresse1.All.Frequence + 1;
+					if T_Politique'Pos(Politique) = 2 then -- LRU
+						Max := Recherche_Identifiant_Max(Arbre);
+						if Recherche_Adresse1.All.Identifiant /= Max then
+							Recherche_Adresse1.All.Identifiant := Max + 1;
+						else
+							null;
+						end if;
+					else
+						null;
+					end if;
 				else
 					null; -- il ne ne passe rien
 				end if;
@@ -527,6 +539,17 @@ package body cache_tree is
 				if Recherche_Adresse1 /= null then
 					if Adresse = Arbre.All.Adresse then
 						Sortie := Recherche_Adresse1.All.Sortie;
+						Recherche_Adresse1.All.Frequence := Recherche_Adresse1.All.Frequence + 1;
+						if T_Politique'Pos(Politique) = 2 then -- LRU
+							Max := Recherche_Identifiant_Max(Arbre);
+							if Recherche_Adresse1.All.Identifiant /= Max then
+								Recherche_Adresse1.All.Identifiant := Max + 1;
+							else
+								null;
+							end if;
+						else
+							null;
+						end if;						
 					else
 						null; -- il ne ne passe rien
 					end if;
@@ -534,9 +557,21 @@ package body cache_tree is
 					raise Adresse_Absente_Exception;
 				end if;
 			end if;
+
 			if Recherche_Adresse2 /= null and then Recherche_Adresse2.Droite /= null then
 				if Adresse = Recherche_Adresse2.All.Adresse then
 					Sortie := Recherche_Adresse2.All.Sortie;
+					Recherche_Adresse2.All.Frequence := Recherche_Adresse2.All.Frequence + 1;
+					if T_Politique'Pos(Politique) = 2 then -- LRU
+						Max := Recherche_Identifiant_Max(Arbre);
+						if Recherche_Adresse2.All.Identifiant /= Max then
+							Recherche_Adresse2.All.Identifiant := Max + 1;
+						else
+							null;
+						end if;
+					else
+						null;
+					end if;		
 				else
 					null; -- il ne se passe rien
 				end if;
@@ -549,6 +584,17 @@ package body cache_tree is
 				if Recherche_Adresse2 /= null then
 					if Adresse = Arbre.All.Adresse then
 						Sortie := Recherche_Adresse2.All.Sortie;
+						Recherche_Adresse2.All.Frequence := Recherche_Adresse2.All.Frequence + 1;
+						if T_Politique'Pos(Politique) = 2 then -- LRU
+							Max := Recherche_Identifiant_Max(Arbre);
+							if Recherche_Adresse2.All.Identifiant /= Max then
+								Recherche_Adresse2.All.Identifiant := Max + 1;
+							else
+								null;
+							end if;
+						else
+							null;
+						end if;		
 					else
 						null; -- il ne ne passe rien
 					end if;
