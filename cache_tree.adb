@@ -550,7 +550,6 @@ package body cache_tree is
 			else
 				null; -- il ne se passe rien
 			end if;
-			
 			if not Est_Vide(Recherche_Adresse2.Droite) then
 				Sortie := Chercher_Arbre(Recherche_Adresse2.Droite, Cache, Adresse); -- on procède par récursivité
 			else
