@@ -109,11 +109,11 @@ package body cache_tree is
 		Arbre.All.Sortie := Sortie;
 		Arbre.All.Feuille := True;
 
-		case T_Politique'Pos(Politique) is
-			when 1 => Arbre.All.Identifiant := Cache.Enregistrement; -- FIFO
-			when 2 => Arbre.All.Identifiant := 0; -- LRU
-			when 3 => Arbre.All.Identifiant := 0; -- LFU
-			when others => raise Politique_non_valide_exception;
+		case Politique is
+			when FIFO => Arbre.All.Identifiant := Cache.Enregistrement; -- FIFO
+			when LRU => Arbre.All.Identifiant := 0; -- LRU
+			when LFU => Arbre.All.Identifiant := 0; -- LFU
+			-- when others => raise Politique_non_valide_exception;
 		end case;
 
 		Cache.Taille := Cache.Taille + 1;
@@ -366,11 +366,11 @@ package body cache_tree is
 
 	begin
 		-- On regarde quelle est la procédure
-		case T_Politique'Pos(Politique) is
-			when 1 => Supprimer_FIFO(Arbre, Masque); -- FIFO
-			when 2 => Supprimer_LRU(Arbre, Masque); -- LRU
-			when 3 => Supprimer_LFU(Arbre, Masque, Politique); -- LFU
-			when others => raise Politique_non_valide_exception;
+		case Politique is
+			when FIFO => Supprimer_FIFO(Arbre, Masque); -- FIFO
+			when LRU => Supprimer_LRU(Arbre, Masque); -- LRU
+			when LFU => Supprimer_LFU(Arbre, Masque, Politique); -- LFU
+			-- when others => raise Politique_non_valide_exception;
 		end case;
 
 		Cache.Taille := Cache.Taille - 1;
@@ -521,7 +521,7 @@ package body cache_tree is
 				if Adresse = Recherche_Adresse1.All.Adresse then
 					Sortie := Recherche_Adresse1.All.Sortie;
 					Recherche_Adresse1.All.Frequence := Recherche_Adresse1.All.Frequence + 1;
-					if T_Politique'Pos(Politique) = 2 then -- LRU
+					if Politique = LRU then -- LRU
 						Max := Recherche_Identifiant_Max(Arbre);
 						if Recherche_Adresse1.All.Identifiant /= Max then
 							Recherche_Adresse1.All.Identifiant := Max + 1;
@@ -544,7 +544,7 @@ package body cache_tree is
 					if Adresse = Arbre.All.Adresse then
 						Sortie := Recherche_Adresse1.All.Sortie;
 						Recherche_Adresse1.All.Frequence := Recherche_Adresse1.All.Frequence + 1;
-						if T_Politique'Pos(Politique) = 2 then -- LRU
+						if Politique = LRU then -- LRU
 							Max := Recherche_Identifiant_Max(Arbre);
 							if Recherche_Adresse1.All.Identifiant /= Max then
 								Recherche_Adresse1.All.Identifiant := Max + 1;
@@ -566,7 +566,7 @@ package body cache_tree is
 				if Adresse = Recherche_Adresse2.All.Adresse then
 					Sortie := Recherche_Adresse2.All.Sortie;
 					Recherche_Adresse2.All.Frequence := Recherche_Adresse2.All.Frequence + 1;
-					if T_Politique'Pos(Politique) = 2 then -- LRU
+					if Politique = LRU then -- LRU
 						Max := Recherche_Identifiant_Max(Arbre);
 						if Recherche_Adresse2.All.Identifiant /= Max then
 							Recherche_Adresse2.All.Identifiant := Max + 1;
@@ -589,7 +589,7 @@ package body cache_tree is
 					if Adresse = Arbre.All.Adresse then
 						Sortie := Recherche_Adresse2.All.Sortie;
 						Recherche_Adresse2.All.Frequence := Recherche_Adresse2.All.Frequence + 1;
-						if T_Politique'Pos(Politique) = 2 then -- LRU
+						if Politique = LRU then -- LRU
 							Max := Recherche_Identifiant_Max(Arbre);
 							if Recherche_Adresse2.All.Identifiant /= Max then
 								Recherche_Adresse2.All.Identifiant := Max + 1;
