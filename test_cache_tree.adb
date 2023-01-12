@@ -98,7 +98,7 @@ procedure test_cache_tree is
         Afficher_Arbre(Arbre);
 
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse2) = Sortie2);
-        -- pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
+        pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
         Sortie2 := Chercher_Arbre(Arbre, Cache, Adresse3);
 
         Afficher_Statistiques_Cache(cache);
