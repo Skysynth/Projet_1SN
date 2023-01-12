@@ -508,6 +508,8 @@ package body cache_tree is
 			Max : Integer;
     	begin
 
+			Cache.Demandes := Cache.Demandes + 1;
+
 			-- On fait pointer les pointeurs sur la racine
 			Recherche_Adresse1 := Arbre;
 			Recherche_Adresse2 := Arbre;
@@ -603,13 +605,11 @@ package body cache_tree is
 				end if;
 			end if;
 
-			Cache.Demandes := Cache.Demandes + 1;
-
         	return Sortie;
 
     	exception
-        	when Adresse_Absente_Exception => Put_Line("L'adresse n'a pas été trouvée"); Cache.Demandes := Cache.Demandes + 1; Cache.Defauts := Cache.Defauts + 1; return To_Unbounded_String("null");
-			when others => Put_Line("Une erreur est intervenue."); Cache.Demandes := Cache.Demandes + 1; Cache.Defauts := Cache.Defauts + 1; return To_Unbounded_String("null");
+        	when Adresse_Absente_Exception => Put_Line("L'adresse n'a pas été trouvée"); Cache.Defauts := Cache.Defauts + 1; return To_Unbounded_String("null");
+			when others => Put_Line("Une erreur est intervenue."); Cache.Defauts := Cache.Defauts + 1; return To_Unbounded_String("null");
     	end Chercher_Arbre;
 
 end cache_tree;
