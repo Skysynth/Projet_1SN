@@ -383,17 +383,15 @@ package body cache_tree is
 			Afficher_Arbre(Afficheur1.All.Gauche);
 		else
 			-- Sinon on affiche car la cellule est une feuille
-			if not Est_Vide(Afficheur1.All.Gauche) then
-				Afficheur1 := Afficheur1.All.Gauche;
+			if not Est_Vide(Afficheur1) then
 				Compteur := Compteur + 1;
 
-				Put_Line("Feuille" & Integer'Image(Compteur));
-				Put_Line(T_Adresse_IP'Image(Afficheur1.All.Adresse));
-				Put_Line(T_Adresse_IP'Image(Afficheur1.All.Masque));
+				Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur1.All.Adresse));
+				Put_Line("Masque" & Integer'Image(Compteur)& " :" & T_Adresse_IP'Image(Afficheur1.All.Masque));
 				Put_Line(To_String(Afficheur1.All.Sortie));
 				New_Line;
 			else
-				null;
+				raise Arbre_Vide_Exception;
 			end if;
 		end if;
 
@@ -403,17 +401,15 @@ package body cache_tree is
 			Afficher_Arbre(Afficheur2.All.Droite);
 		else
 			-- Cas où la cellule est une feuille
-			if not Est_Vide(Afficheur2.All.Droite) then
-				Afficheur2 := Afficheur2.All.Droite;
+			if not Est_Vide(Afficheur2) then
 				Compteur := Compteur + 1;
 
-				Put_Line("Feuille" & Integer'Image(Compteur));
-				Put_Line(T_Adresse_IP'Image(Afficheur2.All.Adresse));
-				Put_Line(T_Adresse_IP'Image(Afficheur2.All.Masque));
+				Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur2.All.Adresse));
+				Put_Line("Masque" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur2.All.Masque));
 				Put_Line(To_String(Afficheur2.All.Sortie));
 				New_Line;
 			else
-				null;
+				raise Arbre_Vide_Exception;
 			end if;
 		end if;
 
