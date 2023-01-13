@@ -61,7 +61,6 @@ procedure test_cache_tree is
         Cache : T_Cache;
         Adresse1 : T_Adresse_IP;
         Adresse2 : T_Adresse_IP;
-        Adresse_test : T_Adresse_IP;
         Masque1 : T_Adresse_IP;
         Masque2 : T_Adresse_IP;
         Sortie1 : Unbounded_String;
@@ -95,6 +94,7 @@ procedure test_cache_tree is
 
         Adresse2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.255.0"));
         Put_Line("Voici l'adresse 2 :" & T_Adresse_IP'Image(Adresse2));
+        New_Line;
         Masque2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.255.0"));
         Sortie2 := To_Unbounded_String("eth2");
         Adresse3 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("2.16.1.2"));
@@ -108,10 +108,7 @@ procedure test_cache_tree is
         --pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
         --Put_Line("L'adresse 1 a été trouvée et retourne la sortie 1 : " & To_String(Sortie1));
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse3) /= Sortie2);
-        Put_Line("L'adresse 3 n'a pas été trouvée et ne retourne la sortie 2");
-        Put_Line("L'adresse" & T_Adresse_IP'Image(Adresse3) & " n'a pas été trouvée");
         New_Line;
-		Cache.Defauts := Cache.Defauts + 1;
 
         Afficher_Statistiques_Cache(Cache);
         pragma Assert(Est_Plein(Cache));
