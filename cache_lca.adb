@@ -13,6 +13,8 @@ package body CACHE_LCA is
    procedure Free_Rec is
      new Ada.Unchecked_Deallocation (Object => T_Case, Name => T_RECENT_LCA);
 
+   -- Initialiser le cache LCA
+
    procedure Initialiser(Cache_lca: out T_CACHE_LCA ; Taille : Integer ; pol : T_Politique) is
    begin
       Cache_lca := null;
@@ -20,10 +22,21 @@ package body CACHE_LCA is
       POLITIQUE := pol;
    end Initialiser;
 
+   -- Savoir si le cache est plein ou non
+
    function Est_Plein(Cache_lca : in T_CACHE_LCA) return Boolean is
    begin
       return Taille(Cache_lca) = TAILLE_MAX;
    end Est_Plein;
+
+   -- Savoir si le cache est vide ou non
+
+   function Est_Vide(Cache_lca : in T_CACHE_LCA) return Boolean is
+   begin
+      return Cache_lca = null;
+   end Est_Vide;
+
+   -- Politique FIFO
 
    procedure Supprimer_FIFO(Cache_lca : in out T_CACHE_LCA) is
       Cache_lca0 : T_CACHE_LCA;
@@ -32,6 +45,8 @@ package body CACHE_LCA is
       Cache_lca := Cache_lca.all.Suivant;
       Free(Cache_lca0);
    end Supprimer_FIFO;
+
+   -- Politique LRU
 
    procedure Ajouter_Recent(Rec_lca : in out T_RECENT_LCA ; Adresse : in T_ADRESSE_IP) is
    begin
@@ -67,6 +82,8 @@ package body CACHE_LCA is
       end if;
    end Supprimer_LRU;
 
+   -- Politique LFU
+
    function Adresse_LFU(Cache_lca : in T_CACHE_LCA) return integer is
       Cache_lca0 : T_CACHE_LCA;
       Freq_min : integer;
@@ -101,6 +118,8 @@ package body CACHE_LCA is
 
    end Supprimer_LFU;
 
+   -- Supprimer un element du cache s'il ce dernier est plein
+
    procedure Supprimer(Cache_lca : in out T_CACHE_LCA) is
    begin
       case POLITIQUE is
@@ -110,6 +129,8 @@ package body CACHE_LCA is
          when others => raise Politique_non_valide_exception;
       end case;
    end Supprimer;
+
+   -- Savoir si une adresse est presente ou non dans le cache
 
    function Adresse_Presente(Cache_lca : in T_CACHE_LCA ; Adresse : in T_Adresse_IP) return Boolean is
       Presence : Boolean;
@@ -168,6 +189,7 @@ package body CACHE_LCA is
       raise Adresse_Absente_Exception;
    end Chercher_Dans_Cache;
 
+   -- Enregistrer une route (adresse, masque et interface) dans le cache
 
    procedure Enregistrer(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Eth : in Unbounded_String) is
    begin
@@ -179,6 +201,7 @@ package body CACHE_LCA is
       end if;
    end Enregistrer;
 
+   -- Vider le cache
 
    procedure Vider(Cache_lca : in out T_CACHE_LCA) is
    begin
@@ -190,10 +213,7 @@ package body CACHE_LCA is
       end if;
    end Vider;
 
-   function Est_Vide(Cache_lca : in T_CACHE_LCA) return Boolean is
-   begin
-      return Cache_lca = null;
-   end Est_Vide;
+   -- Connaitre la taille d'une liste chainee
 
    function Taille (Cache_lca : in T_CACHE_LCA) return Integer is
       n : integer;
