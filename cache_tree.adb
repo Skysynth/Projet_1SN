@@ -443,7 +443,9 @@ package body cache_tree is
 		if Politique = LRU then -- LRU
 			Max := Recherche_Identifiant_Max(Arbre);
 			if Recherche_Adresse.All.Identifiant /= Max then
-					Recherche_Adresse.All.Identifiant := Max + 1;
+				Recherche_Adresse.All.Identifiant := Max + 1;
+			elsif Recherche_Adresse.All.Identifiant = 0 then
+				Recherche_Adresse.All.Identifiant := 1;
 			else
 				null;
 			end if;
