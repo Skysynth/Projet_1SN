@@ -366,60 +366,31 @@ package body cache_tree is
 	end Afficher_Statistiques_Cache;
 
 	function Recherche_Identifiant_Max(Arbre : in T_Arbre) return Integer is
-			Recherche_Identifiant1 : T_Arbre;
-			Recherche_Identifiant2 : T_Arbre;
+			Recherche_Identifiant : T_Arbre;
 			Max : Integer;
 		begin
 			-- On fait pointer les pointeurs sur la racine
-			Recherche_Identifiant1 := Arbre;
-			Recherche_Identifiant2 := Arbre;
-			Max := 0; -- par défaut
-			
-			-- On recherche le minimum à droite et à gauche
-			if not Est_Vide(Recherche_Identifiant1) and then not Est_Vide(Recherche_Identifiant1.Gauche) then
-				if Max < Recherche_Identifiant1.All.Identifiant then
-					Max := Recherche_Identifiant1.All.Identifiant;
-				else
-					null; -- il ne ne passe rien
-				end if;
+			Recherche_Identifiant := Arbre;
+			Max := 0;
 
-				Recherche_Identifiant1 := Recherche_Identifiant1.All.Gauche;
-
-				Max := Recherche_Identifiant_Max(Recherche_Identifiant1); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+			-- On met à jour le plus grand identifiant
+			if Max < Recherche_Identifiant.All.Identifiant and Recherche_Identifiant.All.Feuille then
+				Max := Recherche_Identifiant.All.Identifiant;
 			else
-				-- On regarde les cas où on sort des if à cause des premières conditions
-				if not Est_Vide(Recherche_Identifiant1) then
-					if Max < Arbre.All.Identifiant then
-						Max := Recherche_Identifiant1.All.Identifiant;
-					else
-						null; -- il ne ne passe rien
-					end if;
-				else
-					null;
-				end if;
+				null;
 			end if;
-			
-			if not Est_Vide(Recherche_Identifiant2) and then not Est_Vide(Recherche_Identifiant2.Droite) then
-				if Max < Recherche_Identifiant2.All.Identifiant then
-					Max := Recherche_Identifiant2.All.Identifiant;
-				else
-					null; -- il ne se passe rien
-				end if;
 
-				Recherche_Identifiant2 := Recherche_Identifiant2.All.Droite;
-
-				Max := Recherche_Identifiant_Max(Recherche_Identifiant2); -- on procède par récursivité
+			-- On applique la fonction de manière récursive à gauche et à droite
+			if not Est_Vide(Recherche_Identifiant.All.Gauche) then
+				Max := Recherche_Identifiant_Max(Recherche_Identifiant.All.Gauche);
 			else
-				-- On regarde les cas où on sort des if à cause des premières conditions
-				if not Est_Vide(Recherche_Identifiant2) then
-					if Max < Arbre.All.Identifiant then
-						Max := Recherche_Identifiant2.All.Identifiant;
-					else
-						null; -- il ne ne passe rien
-					end if;
-				else
-					null; -- il ne se passe rien
-				end if;
+				null;
+			end if;
+
+			if not Est_Vide(Recherche_Identifiant.All.Droite) then
+				Max := Recherche_Identifiant_Max(Recherche_Identifiant.All.Droite);
+			else
+				null;
 			end if;
 
 			return Max;
