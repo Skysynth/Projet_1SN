@@ -123,8 +123,9 @@ procedure test_cache_tree is
         Afficher_Statistiques_Cache(Cache);
         New_Line;
         pragma Assert(Est_Plein(Cache));
+        Put_Line("Le cache est plein pour une capacité de 2");
 
-        -- Supprimer(Arbre, Cache, Masque1);
+        Supprimer(Arbre, Cache, Masque1);
         New_Line;
 
         Put_Line("Affichage de l'arbre");
