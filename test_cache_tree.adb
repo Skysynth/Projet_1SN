@@ -70,7 +70,7 @@ procedure test_cache_tree is
         Compteur : Integer;
     begin 
         -- initialiser le cache et l'arbre
-        Politique := LRU; -- FIFO
+        Politique := FIFO; -- FIFO
         Initialiser_Cache(Cache, 2, Politique);
         Initialiser_Arbre(Arbre);
         
@@ -110,8 +110,8 @@ procedure test_cache_tree is
 
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse2) = Sortie2);
         Put_Line("L'adresse 2 a été trouvée et retourne la sortie 2 : " & To_String(Sortie2));
-        --pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
-        --Put_Line("L'adresse 1 a été trouvée et retourne la sortie 1 : " & To_String(Sortie1));
+        pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
+        Put_Line("L'adresse 1 a été trouvée et retourne la sortie 1 : " & To_String(Sortie1));
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse3) /= Sortie2);
         New_Line;
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
