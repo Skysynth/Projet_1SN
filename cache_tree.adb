@@ -391,50 +391,30 @@ package body cache_tree is
 		-- Initialisation des pointeurs qui servent à afficher l'arbre
 		Afficheur := Arbre;
 
-		if Est_Vide(Arbre) then
+		-- On propage l'exception si le cache est vide
+		if Est_Vide(Afficheur) then
 			raise Arbre_Vide_Exception;
 		else
 			null;
 		end if;
 
-		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
-		if not Afficheur.All.Feuille and then not Est_Vide(Afficheur.All.Gauche) then
-			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
+		Compteur := Compteur + 1;
+
+		-- On regarde si on est au niveau d'une feuille
+		if Afficheur.All.Feuille then
+			Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
+			Put_Line("Masque" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Masque));
+			Put_Line(To_String(Afficheur.All.Sortie));
+			New_Line;
 			Afficher_Arbre(Afficheur.All.Gauche);
-		else
-			-- Sinon on affiche si la cellule est une feuille
-			if not Est_Vide(Afficheur) and Afficheur.All.Feuille then
-				Compteur := Compteur + 1;
-
-				Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
-				Put_Line("Masque" & Integer'Image(Compteur)& " :" & T_Adresse_IP'Image(Afficheur.All.Masque));
-				Put_Line(To_String(Afficheur.All.Sortie));
-				New_Line;
-			else
-				null;
-			end if;
-		end if;
-
-		-- Le parcours est en profondeur, on explore tout ce qu'il y a à droite
-		if not Afficheur.All.Feuille and then not Est_Vide(Afficheur.All.Droite) then
-			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur.All.Droite);
 		else
-			-- Cas où la cellule est une feuille
-			if not Est_Vide(Afficheur) and Afficheur.All.Feuille then
-				Compteur := Compteur + 1;
-
-				Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
-				Put_Line("Masque" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Masque));
-				Put_Line(To_String(Afficheur.All.Sortie));
-				New_Line;
-			else
-				null;
-			end if;
+			Afficher_Arbre(Afficheur.All.Gauche);
+			Afficher_Arbre(Afficheur.All.Droite);
 		end if;
 
 	exception
-		when Arbre_Vide_Exception => Put_Line("L'arbre est vide.");
+		when Arbre_Vide_Exception => null;
 	end Afficher_Arbre;
 
 	procedure Afficher_Statistiques_Cache(Cache : in T_Cache) is
