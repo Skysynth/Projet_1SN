@@ -66,7 +66,7 @@ package body cache_tree is
 	end Enregistrement_Cache;
 
 	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) is
-		Taille_Masque : Integer := Get_taille_binaire_masque(Masque);
+		Taille_Masque : constant Integer := Get_taille_binaire_masque(Masque);
 		Enregistreur : T_Arbre;
 	begin
 		-- On regarde si l'arbre est vide
@@ -141,7 +141,7 @@ package body cache_tree is
 
 	end Enregistrer;
 
-	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache; Masque : in T_Adresse_IP) is
+	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache) is
 
 		Politique : constant T_Politique := Cache.Politique;
 
@@ -179,48 +179,36 @@ package body cache_tree is
 			return Adresse;
 		end Recherche_Identifiant_Min;
 
-		procedure Supprimer_FIFO(Arbre : in T_Arbre; Masque : in T_Adresse_IP) is
-			Adresse : T_Adresse_IP;
+		procedure Supprimer_FIFO(Arbre : in T_Arbre) is
+			Adresse : constant T_Adresse_IP := Recherche_Identifiant_Min(Arbre, Politique);
 			Suppresseur : T_Arbre;
-			Taille_Masque : Integer;
+			Compteur : Integer;
 		begin
-			-- Il faut faire la recherche du minimum en terme d'identifiant et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
-			Adresse := Recherche_Identifiant_Min(Arbre, Politique);
+			-- On initialise le pointeur temporaire
 			Suppresseur := Arbre;
-			Taille_Masque := Get_taille_binaire_masque(Masque);
 
-			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-			for i in 1..Taille_Masque loop
-				if ((Adresse AND (2 ** (32 - i))) = 0) then
-					--  Cas où le bit vaut 0
-						if not Est_Vide(Suppresseur.All.Gauche) then
-							Suppresseur := Suppresseur.All.Gauche;
-						else
-							raise Suppression_Exception;
-						end if;
-				else
-					-- Cas où le bit vaut 1
-						if not Est_Vide(Suppresseur.All.droite) then
-							Suppresseur := Suppresseur.All.Droite;
-						else
-							raise Suppression_Exception;
-						end if;
-				end if;
-			end loop;
-
-			-- Il ne reste plus qu'à supprimer cette cellule
-			Suppresseur.All.Adresse := 0;
-			Suppresseur.All.Frequence := 0;
-			Suppresseur.All.Identifiant := 0;
-			Suppresseur.All.Masque := 0;
-			Suppresseur.All.Sortie := To_Unbounded_String("");
-			Suppresseur.All.Feuille := False;
+		-- On regarde si on arrive à la taille du masque
+		if Adresse = Suppresseur.All.Adresse then
+			-- On devrait être au niveau de la feuille correspondante à présent
+			Arbre.All.Adresse := 0;
+			Arbre.All.Frequence := 0;
+			Arbre.All.Identifiant := 0;
+			Arbre.All.Masque := 0;
+			Arbre.All.Sortie := To_Unbounded_String("");
+			Arbre.All.Feuille := False;
+		elsif (Adresse AND 2 ** (31 - Suppresseur.All.Hauteur)) = 0 then
+			-- Cas où le bit vaut 0
+            Supprimer_FIFO(Arbre.All.Gauche);
+		else
+			-- Cas où le bit vaut 1
+			Supprimer_FIFO(Arbre.All.Droite);
+		end if;
 
 		exception
 			when Suppression_Exception => Put_Line("L'élément à supprimer n'existe pas.");
 		end Supprimer_FIFO;
 
-		procedure Supprimer_LRU(Arbre : in T_Arbre; Masque : in T_Adresse_IP) is
+		procedure Supprimer_LRU(Arbre : in T_Arbre) is
 			Adresse : T_Adresse_IP;
 			Suppresseur : T_Arbre;
 			Taille_Masque : Integer;
@@ -228,7 +216,6 @@ package body cache_tree is
 			-- Il faut faire la recherche du minimum en terme d'identifiant et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
 			Adresse := Recherche_Identifiant_Min(Arbre, Politique); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
 			Suppresseur := Arbre;
-			Taille_Masque := Get_taille_binaire_masque(Masque);
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			for i in 1..Taille_Masque loop
@@ -250,7 +237,7 @@ package body cache_tree is
 			Suppresseur.All.Feuille := False;
 		end Supprimer_LRU;
 
-		function Recherche_Frequence_Min(Arbre : in T_Arbre; Politique : in T_Politique) return T_Adresse_IP is
+		function Recherche_Frequence_Min(Arbre : in T_Arbre) return T_Adresse_IP is
 			Recherche_Frequence : T_Arbre;
 			Min : Integer;
 			Adresse : T_Adresse_IP;
@@ -269,13 +256,13 @@ package body cache_tree is
 
 			-- On applique la fonction de manière récursive à gauche et à droite
 			if not Est_Vide(Recherche_Frequence.All.Gauche) then
-				Adresse := Recherche_Frequence_Min(Recherche_Frequence.All.Gauche, Politique);
+				Adresse := Recherche_Frequence_Min(Recherche_Frequence.All.Gauche);
 			else
 				null;
 			end if;
 
 			if not Est_Vide(Recherche_Frequence.All.Droite) then
-				Adresse := Recherche_Frequence_Min(Recherche_Frequence.All.Droite, Politique);
+				Adresse := Recherche_Frequence_Min(Recherche_Frequence.All.Droite);
 			else
 				null;
 			end if;
@@ -283,15 +270,14 @@ package body cache_tree is
 			return Adresse;
 		end Recherche_Frequence_Min;
 
-		procedure Supprimer_LFU(Arbre : in T_Arbre; Masque : in T_Adresse_IP; Politique: in T_Politique) is
+		procedure Supprimer_LFU(Arbre : in T_Arbre) is
 			Adresse : T_Adresse_IP;
 			Suppresseur : T_Arbre;
 			Taille_Masque : Integer;
 		begin
 			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
-			Adresse := Recherche_Frequence_Min(Arbre, Politique); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
+			Adresse := Recherche_Frequence_Min(Arbre); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
 			Suppresseur := Arbre;
-			Taille_Masque := Get_taille_binaire_masque(Masque);
 
 			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			for i in 1..Taille_Masque loop
@@ -314,11 +300,11 @@ package body cache_tree is
 		end Supprimer_LFU;
 
 	begin
-		-- On regarde quelle est la procédure
+		-- On regarde quelle est la procédure 
 		case Politique is
-			when FIFO => Supprimer_FIFO(Arbre, Masque); -- FIFO
-			when LRU => Supprimer_LRU(Arbre, Masque); -- LRU
-			when LFU => Supprimer_LFU(Arbre, Masque, Politique); -- LFU
+			when FIFO => Supprimer_FIFO(Arbre); -- FIFO
+			when LRU => Supprimer_LRU(Arbre); -- LRU
+			when LFU => Supprimer_LFU(Arbre); -- LFU
 			-- when others => raise Politique_non_valide_exception;
 		end case;
 
