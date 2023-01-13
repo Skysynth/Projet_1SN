@@ -510,6 +510,8 @@ package body cache_tree is
 				--  Cas où le bit vaut 0
 				if Est_Vide(Recherche_Adresse.Gauche) then
 				-- Cas où le cache à gauche est vide
+					Put_Line("L'adresse" & T_Adresse_IP'Image(Adresse) & " n'a pas été trouvée");
+					Cache.Defauts := Cache.Defauts + 1;
 					raise Adresse_Absente_Exception;
 				else
 					Recherche_Adresse := Recherche_Adresse.All.Gauche;
