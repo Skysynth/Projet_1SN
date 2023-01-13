@@ -66,57 +66,79 @@ package body cache_tree is
 	end Enregistrement_Cache;
 
 	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) is
-		Taille_Masque : Integer;
+		Taille_Masque : Integer := Get_taille_binaire_masque(Masque);
+		Enregistreur : T_Arbre;
 	begin
-		-- Cas où le cache est vide
+		-- On regarde si l'arbre est vide
 		if Est_Vide(Arbre) then
-			Arbre := new T_Arbre_Cellule'(0, 0, To_Unbounded_String(""), null, null, 0, False, 0);
+			Arbre := new T_Arbre_Cellule'(0, 0, To_Unbounded_String(""), null, null, 0, False, 0, 0);
 		else
 			null;
 		end if;
 
-		-- On récupère la taille du masque
-		Taille_Masque := Get_taille_binaire_masque(Masque);
+		-- On regarde si on arrive à la taille du masque
+		if (Arbre.All.Hauteur - Taille_Masque = 0) then
+			-- On devrait être au niveau d'une feuille à présent
+			-- Il reste à stocker toutes les informations nécessaires
+			Arbre.All.Adresse := Adresse;
+			Arbre.All.Masque := Masque;
+			Arbre.All.Sortie := Sortie;
+			Arbre.All.Feuille := True;
 
-		-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-		for i in 1..Taille_Masque loop
-			if ((Adresse AND (2 ** (32 - i))) = 0) then
-				--  Cas où le bit vaut 0
-				if Est_Vide(Arbre.All.Gauche) then
-				-- Cas où le cache à gauche est vide
-					Arbre.Gauche := new T_Arbre_Cellule'(0, 0, To_Unbounded_String(""), null, null, 0, False, 0);
-					Arbre := Arbre.All.Gauche;
-				else
-					Arbre := Arbre.All.Gauche;
-				end if;
-			else
-				-- Cas où le bit vaut 1
-				if Est_Vide(Arbre.All.Droite) then
-				-- Cas où le cache à droite est vide
-					Arbre.Droite := new T_Arbre_Cellule'(0, 0, To_Unbounded_String(""), null, null, 0, False, 0);
-					Arbre := Arbre.All.Droite;
-				else
-					Arbre := Arbre.All.Droite;
-				end if;
-			end if;
-		end loop;
+			case Politique is
+				when FIFO => Arbre.All.Identifiant := Cache.Enregistrement; -- FIFO
+				when LRU => Arbre.All.Identifiant := 0; -- LRU
+				when LFU => Arbre.All.Identifiant := 0; -- LFU
+				-- when others => raise Politique_non_valide_exception;
+			end case;
 
-		-- On devrait être au niveau d'une feuille à présent
-		-- Il reste à stocker toutes les informations nécessaires
-		Arbre.All.Adresse := Adresse;
-		Arbre.All.Masque := Masque;
-		Arbre.All.Sortie := Sortie;
-		Arbre.All.Feuille := True;
+			Cache.Taille := Cache.Taille + 1;
+			Cache.Enregistrement := Cache.Enregistrement + 1;
+		elsif (Adresse AND 2 ** (31 - Arbre.All.Hauteur)) = 0 then
+			-- On regarde si le bit vaut 0 ou 1
+            if Arbre.All.Gauche = Null then
+				-- Cas où le bit vaut 0 et que la cellule à gauche est nulle
+                Initialiser_Arbre(Enregistreur);
+				Enregistreur := new T_Arbre_Cellule'(0, 0, To_Unbounded_String(""), null, null, 0, False, 0, 0);
 
-		case Politique is
-			when FIFO => Arbre.All.Identifiant := Cache.Enregistrement; -- FIFO
-			when LRU => Arbre.All.Identifiant := 0; -- LRU
-			when LFU => Arbre.All.Identifiant := 0; -- LFU
-			-- when others => raise Politique_non_valide_exception;
-		end case;
+				-- On augmente la hauteur dans l'arbre
+                Enregistreur.All.Hauteur := Arbre.All.Hauteur + 1;
 
-		Cache.Taille := Cache.Taille + 1;
-		Cache.Enregistrement := Cache.Enregistrement + 1;
+				-- On raccroche l'arbre de gauche à la cellule créée
+                Arbre.All.Gauche := Enregistreur;
+
+				-- On supprime le cache temporaire
+                Free(Enregistreur);
+
+				-- On procède par récursivité
+                Enregistrer(Arbre.All.Gauche, Cache, Adresse, Masque, Sortie, Politique);
+            else
+				-- Cas où le bit vaut 0 et que la cellule à gauche n'est pas nulle
+                Enregistrer(Arbre.All.Gauche, Cache, Adresse, Masque, Sortie, Politique);     
+            end if;
+		else
+            if Arbre.All.Droite = Null then
+				-- Cas où le bit vaut 1 et que la cellule à droite est nulle
+                Initialiser_Arbre(Enregistreur);
+				Enregistreur := new T_Arbre_Cellule'(0, 0, To_Unbounded_String(""), null, null, 0, False, 0, 0);
+
+				-- On augmente la hauteur dans l'arbre
+                Enregistreur.All.Hauteur := Arbre.All.Hauteur + 1;
+
+				-- On raccroche l'arbre de gauche à la cellule créée
+                Arbre.All.Droite := Enregistreur;
+
+				-- On supprime le cache temporaire
+                Free(Enregistreur);
+
+				-- On procède par récursivité
+                Enregistrer(Arbre.All.Droite, Cache, Adresse, Masque, Sortie, Politique);
+            else
+				-- Cas où le bit vaut 1 et que la cellule à droite n'est pas nulle
+                Enregistrer(Arbre.All.Droite, Cache, Adresse, Masque, Sortie, Politique);     
+            end if;
+		end if;
+
 	end Enregistrer;
 
 	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache; Masque : in T_Adresse_IP) is
@@ -376,7 +398,7 @@ package body cache_tree is
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
-		if not Est_Vide(Afficheur.All.Gauche) and then not Afficheur.All.Feuille then
+		if not Est_Vide(Afficheur.All.Gauche) and then not Afficheur.Gauche.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur.All.Gauche);
 		else

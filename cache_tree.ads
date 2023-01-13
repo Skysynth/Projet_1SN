@@ -180,6 +180,7 @@ private
         Frequence : Integer; -- pour appliquer la politique LFU
         Feuille : Boolean; -- pour savoir si la cellule est active ou non, c'est-à-dire si c'est une feuille
         Identifiant : Integer; -- pour appliquer les politiques LRU et FIFO
+        Hauteur : Integer;
     end record;
 
 end cache_tree;

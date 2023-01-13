@@ -67,6 +67,7 @@ procedure test_cache_tree is
         Sortie2 : Unbounded_String;
         Politique : T_Politique;
         Adresse3 : T_Adresse_IP;
+        Compteur : Integer;
     begin 
         -- initialiser le cache et l'arbre
         Politique := FIFO; -- FIFO
