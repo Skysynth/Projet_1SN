@@ -81,6 +81,8 @@ procedure test_cache_tree is
         Sortie1 := To_Unbounded_String("eth1");
         
         Enregistrer(Arbre, Cache, Adresse1, Masque1, Sortie1, Politique);
+        Put_Line("Affichage de l'arbre");
+        New_Line;
         Afficher_Arbre(Arbre);
 
         -- Test qui verifie si la sortie est correcte
@@ -101,6 +103,8 @@ procedure test_cache_tree is
 
         -- Ajout d'une 2eme donnee
         Enregistrer(Arbre, Cache, Adresse2, Masque2, Sortie2, Politique);
+        Put_Line("Affichage de l'arbre");
+        New_Line;
         Afficher_Arbre(Arbre);
 
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse2) = Sortie2);
@@ -111,10 +115,14 @@ procedure test_cache_tree is
         New_Line;
 
         Afficher_Statistiques_Cache(Cache);
+        New_Line;
         pragma Assert(Est_Plein(Cache));
 
-        Supprimer(Arbre, Cache, Masque1); 
+        Supprimer(Arbre, Cache, Masque1);
+        New_Line;
 
+        Put_Line("Affichage de l'arbre");
+        New_Line;
         Afficher_Arbre(Arbre);
         Vider(Arbre);
 
