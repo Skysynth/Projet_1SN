@@ -398,7 +398,7 @@ package body cache_tree is
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
-		if not Est_Vide(Afficheur.All.Gauche) and then not Afficheur.Gauche.All.Feuille then
+		if not Est_Vide(Afficheur.All.Gauche) and then not Afficheur.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur.All.Gauche);
 		else

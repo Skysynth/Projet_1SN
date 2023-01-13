@@ -129,7 +129,8 @@ procedure test_cache_tree is
 
         Put_Line("Affichage de l'arbre");
         New_Line;
-        Afficher_Arbre(Arbre);
+        --Afficher_Arbre(Arbre);
+
         Vider(Arbre);
 
         pragma Assert(Est_Vide(Arbre));
