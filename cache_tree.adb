@@ -491,82 +491,70 @@ package body cache_tree is
 			return Max;
 		end Recherche_Identifiant_Max;
 
-	function Chercher_Arbre(Arbre : in out T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string is
+	function Chercher_Arbre(Arbre : in T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string is
 		Sortie : Unbounded_String;
-		Recherche_Adresse1 : T_Arbre;
-		Recherche_Adresse2 : T_Arbre;
+		Recherche_Adresse : T_Arbre;
 		Max : Integer;
 		Politique : constant T_Politique := Cache.Politique;
+		Compteur : Integer := 1;
     begin
 
 		Cache.Demandes := Cache.Demandes + 1;
 
-		-- On fait pointer les pointeurs sur la racine
-		Recherche_Adresse1 := Arbre;
-		Recherche_Adresse2 := Arbre;
-			
-		-- On recherche l'adresse correspondante à droite et à gauche
-		if not Est_Vide(Recherche_Adresse1) then
-			if Recherche_Adresse1.All.Feuille and then Adresse = Recherche_Adresse1.All.Adresse then
-				Sortie := Recherche_Adresse1.All.Sortie;
-				Recherche_Adresse1.All.Frequence := Recherche_Adresse1.All.Frequence + 1;
-				if Politique = LRU then -- LRU
-					Max := Recherche_Identifiant_Max(Arbre);
-					if Recherche_Adresse1.All.Identifiant /= Max then
-						Recherche_Adresse1.All.Identifiant := Max + 1;
-					else
-						null;
-					end if;
+		-- On fait pointer le pointeur temporaire sur la racine
+		Recherche_Adresse := Arbre;
+		
+		-- On se déplace jusqu'à l'adresse (si elle existe)
+		while Compteur /= 32 and Adresse /= Recherche_Adresse.All.Adresse loop
+			if ((Adresse AND (2 ** (32 - Compteur))) = 0) then
+				--  Cas où le bit vaut 0
+				if Est_Vide(Recherche_Adresse.Gauche) then
+				-- Cas où le cache à gauche est vide
+					raise Adresse_Absente_Exception;
 				else
-					null;
+					Recherche_Adresse := Recherche_Adresse.All.Gauche;
 				end if;
 			else
-				null; -- il ne ne passe rien
+				-- Cas où le bit vaut 1
+				if Est_Vide(Recherche_Adresse.Droite) then
+				-- Cas où le cache à droite est vide
+					Put_Line("L'adresse n'a pas été trouvée");
+					Cache.Defauts := Cache.Defauts + 1;
+					raise Adresse_Absente_Exception;
+				else
+					Recherche_Adresse := Recherche_Adresse.All.Droite;
+				end if;
 			end if;
+			Compteur := Compteur + 1;
+		end loop;
 
-			if not Est_Vide(Recherche_Adresse1.Gauche) then
-				Sortie := Chercher_Arbre(Recherche_Adresse1.Gauche, Cache, Adresse); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
-			else
-				null;
-			end if;
-		else
+		-- Cas où on ne trouve pas l'adresse à la fin
+		if Compteur = 32 then
 			Put_Line("L'adresse n'a pas été trouvée");
 			Cache.Defauts := Cache.Defauts + 1;
 			raise Adresse_Absente_Exception;
+		else
+			null;
 		end if;
 
-		if not Est_Vide(Recherche_Adresse2) then
-			if Recherche_Adresse2.All.Feuille and then Adresse = Recherche_Adresse2.All.Adresse then
-				Sortie := Recherche_Adresse2.All.Sortie;
-				Recherche_Adresse2.All.Frequence := Recherche_Adresse2.All.Frequence + 1;
-				if Politique = LRU then -- LRU
-					Max := Recherche_Identifiant_Max(Arbre);
-					if Recherche_Adresse2.All.Identifiant /= Max then
-						Recherche_Adresse2.All.Identifiant := Max + 1;
-					else
-						null;
-					end if;
-				else
-					null;
-				end if;		
-			else
-				null; -- il ne se passe rien
-			end if;
-			if not Est_Vide(Recherche_Adresse2.Droite) then
-				Sortie := Chercher_Arbre(Recherche_Adresse2.Droite, Cache, Adresse); -- on procède par récursivité
+		-- On devrait être au niveau de l'adresse en question
+		Sortie := Recherche_Adresse.All.Sortie;
+		Recherche_Adresse.All.Frequence := Recherche_Adresse.All.Frequence + 1;
+		if Politique = LRU then -- LRU
+			Max := Recherche_Identifiant_Max(Arbre);
+			if Recherche_Adresse.All.Identifiant /= Max then
+					Recherche_Adresse.All.Identifiant := Max + 1;
 			else
 				null;
 			end if;
 		else
-			Put_Line("L'adresse n'a pas été trouvée");
-			Cache.Defauts := Cache.Defauts + 1;
-			raise Adresse_Absente_Exception;
+			null;
 		end if;
 
     	return Sortie;
 
     exception
-    	when Adresse_Absente_Exception => return To_Unbounded_String("null");
+    	when Adresse_Absente_Exception => return To_Unbounded_String("L'adresse n'a pas été trouvée dans le cache.");
     end Chercher_Arbre;
 
 end cache_tree;

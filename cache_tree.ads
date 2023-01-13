@@ -150,10 +150,10 @@ package cache_tree is
     -- nom : Chercher_Arbre
     -- sémantique : Permet de renvoyer la sortie correspondante à une adresse dans le cache
     -- paramètres :
-    --      Arbre : Mode In/Out T_Arbre; -- le cache
+    --      Arbre : Mode In T_Arbre; -- le cache
     --      Cache : Mode In/Out T_Cache; -- les paramètres du cache
     --      Adresse : Mode In T_Adresse_IP; -- l'adresse
-    function Chercher_Arbre(Arbre : in out T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string;
+    function Chercher_Arbre(Arbre : in T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string;
 
 private
 
