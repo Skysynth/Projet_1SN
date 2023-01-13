@@ -363,13 +363,11 @@ package body cache_tree is
 	end Est_Plein;
 
 	procedure Afficher_Arbre(Arbre : in T_Arbre) is
-		Afficheur1 : T_Arbre;
-		Afficheur2 : T_Arbre;
+		Afficheur : T_Arbre;
 		Compteur : Integer := 0; -- pour compter les feuilles
 	begin
 		-- Initialisation des pointeurs qui servent à afficher l'arbre
-		Afficheur1 := Arbre;
-		Afficheur2 := Arbre;
+		Afficheur := Arbre;
 
 		if Est_Vide(Arbre) then
 			raise Arbre_Vide_Exception;
@@ -378,17 +376,17 @@ package body cache_tree is
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à gauche
-		if not Est_Vide(Afficheur1.All.Gauche) and then not Afficheur1.All.Feuille then
+		if not Est_Vide(Afficheur.All.Gauche) and then not Afficheur.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
-			Afficher_Arbre(Afficheur1.All.Gauche);
+			Afficher_Arbre(Afficheur.All.Gauche);
 		else
 			-- Sinon on affiche car la cellule est une feuille
-			if not Est_Vide(Afficheur1) then
+			if not Est_Vide(Afficheur) then
 				Compteur := Compteur + 1;
 
-				Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur1.All.Adresse));
-				Put_Line("Masque" & Integer'Image(Compteur)& " :" & T_Adresse_IP'Image(Afficheur1.All.Masque));
-				Put_Line(To_String(Afficheur1.All.Sortie));
+				Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
+				Put_Line("Masque" & Integer'Image(Compteur)& " :" & T_Adresse_IP'Image(Afficheur.All.Masque));
+				Put_Line(To_String(Afficheur.All.Sortie));
 				New_Line;
 			else
 				null;
@@ -396,17 +394,17 @@ package body cache_tree is
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à droite
-		if not Est_Vide(Afficheur2.All.Droite) and then not Afficheur2.All.Feuille then
+		if not Est_Vide(Afficheur.All.Droite) and then not Afficheur.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
-			Afficher_Arbre(Afficheur2.All.Droite);
+			Afficher_Arbre(Afficheur.All.Droite);
 		else
 			-- Cas où la cellule est une feuille
-			if not Est_Vide(Afficheur2) then
+			if not Est_Vide(Afficheur) then
 				Compteur := Compteur + 1;
 
-				Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur2.All.Adresse));
-				Put_Line("Masque" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur2.All.Masque));
-				Put_Line(To_String(Afficheur2.All.Sortie));
+				Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
+				Put_Line("Masque" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Masque));
+				Put_Line(To_String(Afficheur.All.Sortie));
 				New_Line;
 			else
 				null;
