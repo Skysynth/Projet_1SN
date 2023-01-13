@@ -518,7 +518,7 @@ package body cache_tree is
 				-- Cas où le bit vaut 1
 				if Est_Vide(Recherche_Adresse.Droite) then
 				-- Cas où le cache à droite est vide
-					Put_Line("L'adresse n'a pas été trouvée");
+					Put_Line("L'adresse" & T_Adresse_IP'Image(Adresse) & " n'a pas été trouvée");
 					Cache.Defauts := Cache.Defauts + 1;
 					raise Adresse_Absente_Exception;
 				else
@@ -530,7 +530,7 @@ package body cache_tree is
 
 		-- Cas où on ne trouve pas l'adresse à la fin
 		if Compteur = 32 then
-			Put_Line("L'adresse n'a pas été trouvée");
+			Put_Line("L'adresse" & T_Adresse_IP'Image(Adresse) & " n'a pas été trouvée");
 			Cache.Defauts := Cache.Defauts + 1;
 			raise Adresse_Absente_Exception;
 		else
