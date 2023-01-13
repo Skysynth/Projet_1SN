@@ -67,17 +67,7 @@ package body cache_tree is
 
 	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) is
 		Taille_Masque : Integer;
-		Sortie_Temp : Unbounded_String;
 	begin
-		-- On regarde si l'adresse IP est déjà stockée dans le cache
-		Sortie_Temp := Chercher_Arbre(Arbre, Cache, Adresse);
-
-		if Sortie = Sortie_Temp then
-			raise Adresse_Redondante_Exception;
-		else
-			null;
-		end if;
-
 		-- Cas où le cache est vide
 		if Est_Vide(Arbre) then
 			Arbre := new T_Arbre_Cellule'(0, 0, To_Unbounded_String(""), null, null, 0, False, 0);
@@ -127,9 +117,6 @@ package body cache_tree is
 
 		Cache.Taille := Cache.Taille + 1;
 		Cache.Enregistrement := Cache.Enregistrement + 1;
-
-	exception
-		when Adresse_Redondante_Exception => Put("L'adresse existe déjà dans le cache.");
 	end Enregistrer;
 
 	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache; Masque : in T_Adresse_IP) is
