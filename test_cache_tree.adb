@@ -75,6 +75,7 @@ procedure test_cache_tree is
         
         -- Enregistrement de la premiere donnees dans le cache 
         Adresse1 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.0.0"));
+        Put_Line("Voici l'adresse 1 :" & T_Adresse_IP'Image(Adresse1));
         Masque1 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0"));
         Sortie1 := To_Unbounded_String("eth1");
         
@@ -83,11 +84,14 @@ procedure test_cache_tree is
 
         -- Test qui verifie si la sortie est correcte
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
+        Put_Line("L'adresse 1 a été trouvée et retourne la sortie 1 : " & To_String(Sortie1));
 
         -- test qui verifie si le nombre de donnee dans le cache est correcte
         pragma Assert(Enregistrement_Cache(Cache)= 1);
+        Put_Line("Le nombre d'enregistrement dans le cache est de 1");
 
         Adresse2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.255.0"));
+        Put_Line("Voici l'adresse 2 :" & T_Adresse_IP'Image(Adresse2));
         Masque2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.255.0"));
         Sortie2 := To_Unbounded_String("eth2");
         Adresse3 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("2.16.1.2"));
@@ -95,10 +99,13 @@ procedure test_cache_tree is
         -- Ajout d'une 2eme donnee
         Enregistrer(Arbre, Cache, Adresse2, Masque2, Sortie2, Politique);
         pragma Assert(Enregistrement_Cache(Cache) = 2);
+        Put_Line("Le nombre d'enregistrement dans le cache est de 2");
         Afficher_Arbre(Arbre);
 
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse2) = Sortie2);
+        Put_Line("L'adresse 2 a été trouvée et retourne la sortie 2 : " & To_String(Sortie2));
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
+        Put_Line("L'adresse 1 a été trouvée et retourne la sortie 1 : " & To_String(Sortie1));
         Sortie2 := Chercher_Arbre(Arbre, Cache, Adresse3);
 
         Afficher_Statistiques_Cache(cache);
