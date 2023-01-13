@@ -147,38 +147,28 @@ package body cache_tree is
 
 		-- pré-condition : not Est_Vide(Arbre)
 		function Recherche_Identifiant_Min(Arbre : in T_Arbre) return Integer is
-			Recherche_Identifiant : T_Arbre;
 			Min : Integer;
 			Min_Gauche : Integer := 100000;
 			Min_Droite : Integer := 100000;
 		begin
-			-- On fait pointer les pointeurs sur la racine
-			Recherche_Identifiant := Arbre;
-
-			if Est_Vide(Recherche_Identifiant) then
-				return Min;
-			else
-				null;
-			end if;
-
 			-- On met à jour le plus petit identifiant
-			Min := Recherche_Identifiant.All.Identifiant;
+			Min := 100000;
 
 			-- On applique la fonction de manière récursive à gauche et à droite
-			if not Est_Vide(Recherche_Identifiant.All.Gauche) then
-				Min_Gauche := Recherche_Identifiant_Min(Recherche_Identifiant.All.Gauche);
+			if not Est_Vide(Arbre.All.Gauche) then
+				Min_Gauche := Recherche_Identifiant_Min(Arbre.All.Gauche);
 			else
 				null;
 			end if;
 
-			if not Est_Vide(Recherche_Identifiant.All.Droite) then
-				Min_Droite := Recherche_Identifiant_Min(Recherche_Identifiant.All.Droite);
+			if not Est_Vide(Arbre.All.Droite) then
+				Min_Droite := Recherche_Identifiant_Min(Arbre.All.Droite);
 			else
 				null;
 			end if;
 
 			-- On regarde le min à gauche et à droite
-			if Min_Gauche < Min then
+			if Min_Gauche < Min_Droite then
 				Min := Min_Gauche;
 			else
 				Min := Min_Droite;
