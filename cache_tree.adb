@@ -108,7 +108,7 @@ package body cache_tree is
                 Arbre.All.Gauche := Enregistreur;
 
 				-- On supprime le cache temporaire
-                Free(Enregistreur);
+				Enregistreur := null;
 
 				-- On procède par récursivité
                 Enregistrer(Arbre.All.Gauche, Cache, Adresse, Masque, Sortie, Politique);
@@ -129,7 +129,7 @@ package body cache_tree is
                 Arbre.All.Droite := Enregistreur;
 
 				-- On supprime le cache temporaire
-                Free(Enregistreur);
+				Enregistreur := null;
 
 				-- On procède par récursivité
                 Enregistrer(Arbre.All.Droite, Cache, Adresse, Masque, Sortie, Politique);
