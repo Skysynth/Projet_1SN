@@ -511,7 +511,6 @@ package body cache_tree is
 		Politique : constant T_Politique := Cache.Politique;
 		Compteur : Integer := 1;
     begin
-
 		Cache.Demandes := Cache.Demandes + 1;
 
 		-- On fait pointer le pointeur temporaire sur la racine
