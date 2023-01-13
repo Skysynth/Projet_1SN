@@ -70,7 +70,7 @@ package body cache_tree is
 	begin
 		-- Cas où le cache est vide
 		if Est_Vide(Arbre) then
-			Arbre := new T_Arbre_Cellule'(Adresse, Masque, Sortie, Null, Null, 0, False, 0);
+			Arbre := new T_Arbre_Cellule'(0, 0, To_Unbounded_String(""), null, null, 0, False, 0);
 		else
 			null;
 		end if;
