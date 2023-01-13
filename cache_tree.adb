@@ -381,7 +381,7 @@ package body cache_tree is
 			Afficher_Arbre(Afficheur.All.Gauche);
 		else
 			-- Sinon on affiche car la cellule est une feuille
-			if not Est_Vide(Afficheur) then
+			if not Est_Vide(Afficheur) and Afficheur.All.Feuille then
 				Compteur := Compteur + 1;
 
 				Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
@@ -399,7 +399,7 @@ package body cache_tree is
 			Afficher_Arbre(Afficheur.All.Droite);
 		else
 			-- Cas où la cellule est une feuille
-			if not Est_Vide(Afficheur) then
+			if not Est_Vide(Afficheur) and Afficheur.All.Feuille then
 				Compteur := Compteur + 1;
 
 				Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
