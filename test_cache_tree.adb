@@ -124,12 +124,12 @@ procedure test_cache_tree is
         New_Line;
         pragma Assert(Est_Plein(Cache));
 
-        Supprimer(Arbre, Cache, Masque1);
+        -- Supprimer(Arbre, Cache, Masque1);
         New_Line;
 
         Put_Line("Affichage de l'arbre");
         New_Line;
-        --Afficher_Arbre(Arbre);
+        Afficher_Arbre(Arbre);
 
         Vider(Arbre);
 
