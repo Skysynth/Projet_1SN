@@ -391,7 +391,7 @@ package body cache_tree is
 				Put_Line(To_String(Afficheur1.All.Sortie));
 				New_Line;
 			else
-				raise Arbre_Vide_Exception;
+				null;
 			end if;
 		end if;
 
@@ -409,7 +409,7 @@ package body cache_tree is
 				Put_Line(To_String(Afficheur2.All.Sortie));
 				New_Line;
 			else
-				raise Arbre_Vide_Exception;
+				null;
 			end if;
 		end if;
 
