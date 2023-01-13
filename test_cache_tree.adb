@@ -115,6 +115,11 @@ procedure test_cache_tree is
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse3) /= Sortie2);
         New_Line;
 
+        -- test qui verifie si le nombre de donnee dans le cache est correcte
+        pragma Assert(Enregistrement_Cache(Cache)= 2);
+        Put_Line("Le nombre d'enregistrement dans le cache est de 2");
+        New_Line;
+
         Afficher_Statistiques_Cache(Cache);
         New_Line;
         pragma Assert(Est_Plein(Cache));
