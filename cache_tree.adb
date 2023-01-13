@@ -145,61 +145,37 @@ package body cache_tree is
 
 		Politique : constant T_Politique := Cache.Politique;
 
+		-- pré-condition : not Est_Vide(Arbre)
 		function Recherche_Identifiant_Min(Arbre : in T_Arbre; Politique : in T_Politique) return T_Adresse_IP is
-			Recherche_Identifiant1 : T_Arbre;
-			Recherche_Identifiant2 : T_Arbre;
+			Recherche_Identifiant : T_Arbre;
 			Min : Integer;
 			Adresse : T_Adresse_IP;
+			Adresse_Gauche : T_Adresse_IP;
+			Adresse_Droite : T_Adresse_IP;
 		begin
 			-- On fait pointer les pointeurs sur la racine
-			Recherche_Identifiant1 := Arbre;
-			Recherche_Identifiant2 := Arbre;
+			Recherche_Identifiant := Arbre;
 			Min := 100000; -- on n'utilisera en pratique jamais plus de 100,000 fois une adresse, à changer
-			Adresse := 0; -- par défaut
-			
-			-- On recherche le minimum à droite et à gauche
-			if not Est_Vide(Recherche_Identifiant1) and then not Est_Vide(Recherche_Identifiant1.Gauche) then
-				if Min > Recherche_Identifiant1.All.Identifiant then
-					Min := Recherche_Identifiant1.All.Identifiant;
-					Adresse := Recherche_Identifiant1.All.Adresse;
-				else
-					null; -- il ne ne passe rien
-				end if;
 
-				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant1.All.Gauche, Politique); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+			-- On met à jour le plus petit identifiant
+			if Min > Recherche_Identifiant.All.Identifiant and Recherche_Identifiant.All.Feuille then
+				Min := Recherche_Identifiant.All.Identifiant;
+				Adresse := Recherche_Identifiant.All.Adresse;
 			else
-				-- On regarde les cas où on sort des if à cause des deuxièmes conditions
-				if not Est_Vide(Recherche_Identifiant1) then
-					if Min > Arbre.All.Identifiant then
-						Min := Recherche_Identifiant1.All.Identifiant;
-						Adresse := Recherche_Identifiant1.All.Adresse;
-					else
-						null; -- il ne ne passe rien
-					end if;
-				end if;
+				null;
 			end if;
 
-			if not Est_Vide(Recherche_Identifiant2) and then not Est_Vide(Recherche_Identifiant2.Droite) then
-				if Min > Recherche_Identifiant2.All.Identifiant then
-					Min := Recherche_Identifiant2.All.Identifiant;
-					Adresse := Recherche_Identifiant2.All.Adresse;
-				else
-					null; -- il ne se passe rien
-				end if;
-
-				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant2.All.Droite, Politique); -- on procède par récursivité
+			-- On applique la fonction de manière récursive à gauche et à droite
+			if not Est_Vide(Recherche_Identifiant.All.Gauche) then
+				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant.All.Gauche, Politique);
 			else
-				-- On regarde les cas où on sort des if à cause des deuxièmes conditions
-				if not Est_Vide(Recherche_Identifiant2) then
-					if Min > Arbre.All.Identifiant then
-						Min := Recherche_Identifiant2.All.Identifiant;
-						Adresse := Recherche_Identifiant2.All.Adresse;
-					else
-						null; -- il ne ne passe rien
-					end if;
-				else
-					null; -- il ne se passe rien
-				end if;
+				null;
+			end if;
+
+			if not Est_Vide(Recherche_Identifiant.All.Droite) then
+				Adresse := Recherche_Identifiant_Min(Recherche_Identifiant.All.Droite, Politique);
+			else
+				null;
 			end if;
 
 			return Adresse;
@@ -211,7 +187,7 @@ package body cache_tree is
 			Taille_Masque : Integer;
 		begin
 			-- Il faut faire la recherche du minimum en terme d'identifiant et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
-			Adresse := Recherche_Identifiant_Min(Arbre, Politique); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
+			Adresse := Recherche_Identifiant_Min(Arbre, Politique);
 			Suppresseur := Arbre;
 			Taille_Masque := Get_taille_binaire_masque(Masque);
 
@@ -248,10 +224,10 @@ package body cache_tree is
 		begin
 			-- Il faut faire la recherche du minimum en terme d'identifiant et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
 			Adresse := Recherche_Identifiant_Min(Arbre, Politique); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
-
-			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			Suppresseur := Arbre;
 			Taille_Masque := Get_taille_binaire_masque(Masque);
+
+			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
 			for i in 1..Taille_Masque loop
 				if ((Adresse AND (2 ** (32 - i))) = 0) then
 					--  Cas où le bit vaut 0
