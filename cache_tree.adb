@@ -150,8 +150,6 @@ package body cache_tree is
 			Recherche_Identifiant : T_Arbre;
 			Min : Integer;
 			Adresse : T_Adresse_IP;
-			Adresse_Gauche : T_Adresse_IP;
-			Adresse_Droite : T_Adresse_IP;
 		begin
 			-- On fait pointer les pointeurs sur la racine
 			Recherche_Identifiant := Arbre;
@@ -243,66 +241,33 @@ package body cache_tree is
 		end Supprimer_LRU;
 
 		function Recherche_Frequence_Min(Arbre : in T_Arbre; Politique : in T_Politique) return T_Adresse_IP is
-			Recherche_Frequence1 : T_Arbre;
-			Recherche_Frequence2 : T_Arbre;
+			Recherche_Frequence : T_Arbre;
 			Min : Integer;
 			Adresse : T_Adresse_IP;
 		begin
 			-- On fait pointer les pointeurs sur la racine
-			Recherche_Frequence1 := Arbre;
-			Recherche_Frequence2 := Arbre;
-			Min := 100000; -- on n'utilisera en pratique jamais plus de 100,000 fois une adresse
-			Adresse := 0; -- par défaut
-			
-			-- On recherche le minimum à droite et à gauche
-			if not Est_Vide(Recherche_Frequence1) and then not Est_Vide(Recherche_Frequence1.Gauche) then
-				if Min > Recherche_Frequence1.All.Frequence then
-					Min := Recherche_Frequence1.All.Frequence;
-					Adresse := Recherche_Frequence1.All.Adresse;
-				else
-					null; -- il ne ne passe rien
-				end if;
+			Recherche_Frequence := Arbre;
+			Min := 100000; -- on n'utilisera en pratique jamais plus de 100,000 fois une adresse, à changer
 
-				Recherche_Frequence1 := Recherche_Frequence1.All.Gauche;
-
-				Adresse := Recherche_Frequence_Min(Recherche_Frequence1, Politique); -- on procède par récursivité (on se dédouble à chaque fois, un peu comme le calcul de la FFT)
+			-- On met à jour la plus petite fréquence
+			if Min > Recherche_Frequence.All.Frequence and Recherche_Frequence.All.Feuille then
+				Min := Recherche_Frequence.All.Frequence;
+				Adresse := Recherche_Frequence.All.Adresse;
 			else
-				-- On regarde les cas où on sort des if à cause des premières conditions
-				if not Est_Vide(Recherche_Frequence1) then
-					if Min > Arbre.All.Frequence then
-						Min := Recherche_Frequence1.All.Frequence;
-						Adresse := Recherche_Frequence1.All.Adresse;
-					else
-						null; -- il ne ne passe rien
-					end if;
-				else
-					null; -- il ne se passe rien
-				end if;
+				null;
 			end if;
 
-			if not Est_Vide(Recherche_Frequence2) and then not Est_Vide(Recherche_Frequence2.Droite) then
-				if Min > Recherche_Frequence2.All.Frequence then
-					Min := Recherche_Frequence2.All.Frequence;
-					Adresse := Recherche_Frequence1.All.Adresse;
-				else
-					null; -- il ne se passe rien
-				end if;
-
-				Recherche_Frequence2 := Recherche_Frequence2.All.Droite;
-
-				Adresse := Recherche_Frequence_Min(Recherche_Frequence2, Politique); -- on procède par récursivité
+			-- On applique la fonction de manière récursive à gauche et à droite
+			if not Est_Vide(Recherche_Frequence.All.Gauche) then
+				Adresse := Recherche_Frequence_Min(Recherche_Frequence.All.Gauche, Politique);
 			else
-				-- On regarde les cas où on sort des if à cause des premières conditions
-				if not Est_Vide(Recherche_Frequence2) then
-					if Min > Arbre.All.Frequence then
-						Min := Recherche_Frequence2.All.Frequence;
-						Adresse := Recherche_Frequence2.All.Adresse;
-					else
-						null; -- il ne ne passe rien
-					end if;
-				else
-					null; -- il ne se passe rien
-				end if;
+				null;
+			end if;
+
+			if not Est_Vide(Recherche_Frequence.All.Droite) then
+				Adresse := Recherche_Frequence_Min(Recherche_Frequence.All.Droite, Politique);
+			else
+				null;
 			end if;
 
 			return Adresse;
