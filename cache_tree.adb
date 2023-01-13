@@ -393,7 +393,7 @@ package body cache_tree is
 
 		-- On propage l'exception si le cache est vide
 		if Est_Vide(Afficheur) then
-			raise Arbre_Vide_Exception;
+			raise Affichage_Exception;
 		else
 			null;
 		end if;
@@ -406,15 +406,15 @@ package body cache_tree is
 			Put_Line("Masque" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Masque));
 			Put_Line(To_String(Afficheur.All.Sortie));
 			New_Line;
-			Afficher_Arbre(Afficheur.All.Gauche);
-			Afficher_Arbre(Afficheur.All.Droite);
 		else
-			Afficher_Arbre(Afficheur.All.Gauche);
-			Afficher_Arbre(Afficheur.All.Droite);
+			null;
 		end if;
 
+		Afficher_Arbre(Afficheur.All.Gauche);
+		Afficher_Arbre(Afficheur.All.Droite);
+
 	exception
-		when Arbre_Vide_Exception => null;
+		when Affichage_Exception => null;
 	end Afficher_Arbre;
 
 	procedure Afficher_Statistiques_Cache(Cache : in T_Cache) is

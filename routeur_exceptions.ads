@@ -8,7 +8,7 @@ package Routeur_Exceptions is
     Politique_non_valide_exception : Exception; -- La politique demandée est invalide
     Arbre_Vide_Exception : Exception; -- L'arbre est vide
     Suppression_Exception : Exception; -- L'élément à supprimer n'est pas trouvé
-    -- Adresse_Redondante_Exception : Exception; -- L'adresse est déjà présente dans le cache
+    Affichage_Exception : Exception; -- Permet de propager l'exception dans la procédure d'affichage du cache avec arbre
 
     COMMAND_FIN_CALLED : Exception;
 
