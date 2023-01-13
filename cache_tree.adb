@@ -209,7 +209,12 @@ package body cache_tree is
 			end loop;
 
 			-- Il ne reste plus qu'à supprimer cette cellule
-			Free(Suppresseur);
+			Suppresseur.All.Adresse := 0;
+			Suppresseur.All.Frequence := 0;
+			Suppresseur.All.Identifiant := 0;
+			Suppresseur.All.Masque := 0;
+			Suppresseur.All.Sortie := To_Unbounded_String("");
+			Suppresseur.All.Feuille := False;
 
 		exception
 			when Suppression_Exception => Put_Line("L'élément à supprimer n'existe pas.");
@@ -237,7 +242,12 @@ package body cache_tree is
 			end loop;
 
 			-- Il ne reste plus qu'à supprimer cette cellule
-			Free(Suppresseur);
+			Suppresseur.All.Adresse := 0;
+			Suppresseur.All.Frequence := 0;
+			Suppresseur.All.Identifiant := 0;
+			Suppresseur.All.Masque := 0;
+			Suppresseur.All.Sortie := To_Unbounded_String("");
+			Suppresseur.All.Feuille := False;
 		end Supprimer_LRU;
 
 		function Recherche_Frequence_Min(Arbre : in T_Arbre; Politique : in T_Politique) return T_Adresse_IP is
@@ -295,7 +305,12 @@ package body cache_tree is
 			end loop;
 
 			-- Il ne reste plus qu'à supprimer cette cellule
-			Free(Suppresseur);
+			Suppresseur.All.Adresse := 0;
+			Suppresseur.All.Frequence := 0;
+			Suppresseur.All.Identifiant := 0;
+			Suppresseur.All.Masque := 0;
+			Suppresseur.All.Sortie := To_Unbounded_String("");
+			Suppresseur.All.Feuille := False;
 		end Supprimer_LFU;
 
 	begin
