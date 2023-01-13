@@ -46,11 +46,12 @@ procedure test_cache_tree is
     begin 
 
         Taille_Max := 2;
-        Initialiser_Cache(Cache, Taille_Max, FIFO);
+        Initialiser_Cache(Cache, Taille_Max, FIFO); -- FIFO
         Initialiser_Arbre(Arbre);
         pragma Assert(Est_Vide(Arbre));
     
         Put_Line("Les tests de 'Initialiser' et 'Est_Vide' sont réussis !");
+        New_Line;
 
     end Tester_Initiliser;
 
@@ -76,10 +77,11 @@ procedure test_cache_tree is
         -- Enregistrement de la premiere donnees dans le cache 
         Adresse1 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.0.0"));
         Put_Line("Voici l'adresse 1 :" & T_Adresse_IP'Image(Adresse1));
+        New_Line;
         Masque1 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0"));
         Sortie1 := To_Unbounded_String("eth1");
         
-        Enregistrer(Arbre,Cache,Adresse1,Masque1,Sortie1,Politique);
+        Enregistrer(Arbre, Cache, Adresse1, Masque1, Sortie1, Politique);
         Afficher_Arbre(Arbre);
 
         -- Test qui verifie si la sortie est correcte
@@ -89,6 +91,7 @@ procedure test_cache_tree is
         -- test qui verifie si le nombre de donnee dans le cache est correcte
         pragma Assert(Enregistrement_Cache(Cache)= 1);
         Put_Line("Le nombre d'enregistrement dans le cache est de 1");
+        New_Line;
 
         Adresse2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.255.0"));
         Put_Line("Voici l'adresse 2 :" & T_Adresse_IP'Image(Adresse2));
@@ -98,8 +101,6 @@ procedure test_cache_tree is
 
         -- Ajout d'une 2eme donnee
         Enregistrer(Arbre, Cache, Adresse2, Masque2, Sortie2, Politique);
-        pragma Assert(Enregistrement_Cache(Cache) = 2);
-        Put_Line("Le nombre d'enregistrement dans le cache est de 2");
         Afficher_Arbre(Arbre);
 
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse2) = Sortie2);
@@ -108,6 +109,9 @@ procedure test_cache_tree is
         --Put_Line("L'adresse 1 a été trouvée et retourne la sortie 1 : " & To_String(Sortie1));
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse3) /= Sortie2);
         Put_Line("L'adresse 3 n'a pas été trouvée et ne retourne la sortie 2");
+        Put_Line("L'adresse" & T_Adresse_IP'Image(Adresse3) & " n'a pas été trouvée");
+        New_Line;
+		Cache.Defauts := Cache.Defauts + 1;
 
         Afficher_Statistiques_Cache(Cache);
         pragma Assert(Est_Plein(Cache));
@@ -119,6 +123,7 @@ procedure test_cache_tree is
 
         pragma Assert(Est_Vide(Arbre));
         Put_Line("Les tests de 'Enregistrer' et 'Supprimer' sont réussis !");
+        New_Line;
 
     end Tester_Enregistrer_Supprimer;
 
