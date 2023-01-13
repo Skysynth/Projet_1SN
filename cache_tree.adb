@@ -386,7 +386,6 @@ package body cache_tree is
 
 	procedure Afficher_Arbre(Arbre : in T_Arbre) is
 		Afficheur : T_Arbre;
-		Compteur : Integer := 0; -- pour compter les feuilles
 	begin
 		-- Initialisation des pointeurs qui servent à afficher l'arbre
 		Afficheur := Arbre;
@@ -398,12 +397,10 @@ package body cache_tree is
 			null;
 		end if;
 
-		Compteur := Compteur + 1;
-
 		-- On regarde si on est au niveau d'une feuille
 		if Afficheur.All.Feuille then
-			Put_Line("Adresse" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
-			Put_Line("Masque" & Integer'Image(Compteur) & " :" & T_Adresse_IP'Image(Afficheur.All.Masque));
+			Put_Line("Adresse :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
+			Put_Line("Masque :" & T_Adresse_IP'Image(Afficheur.All.Masque));
 			Put_Line(To_String(Afficheur.All.Sortie));
 			New_Line;
 		else
