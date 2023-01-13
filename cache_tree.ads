@@ -105,10 +105,9 @@ package cache_tree is
     -- paramètres :
     --      Arbre : Mode In/Out T_Arbre -- le cache
     --      Cache : Mode In/Out T_Cache; -- les paramètres du cache
-    --      Masque : Mode In T_Adresse_IP; -- le masque
     -- pré-condition : Est_Plein(Arbre)
     -- post-condition : Taille_Cache(Arbre) = Taille_Cache(Arbre)'Old - 1
-    procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache; Masque : in T_Adresse_IP) with
+    procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache) with
         Pre => Est_Plein(Cache),
         Post => Taille_Cache(Cache) = Taille_Cache(Cache)'Old - 1;
 

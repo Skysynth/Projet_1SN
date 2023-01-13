@@ -141,7 +141,7 @@ package body cache_tree is
 
 	end Enregistrer;
 
-	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache; Masque : in T_Adresse_IP) is
+	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache) is
 
 		Politique : constant T_Politique := Cache.Politique;
 
@@ -224,28 +224,28 @@ package body cache_tree is
 			return Adresse;
 		end Adresse_Identifiant_Min;
 
-		procedure Supprimer_FIFO(Arbre : in T_Arbre; Masque : in T_Adresse_IP) is
+		procedure Supprimer_FIFO(Arbre : in T_Arbre) is
 			Min : constant Integer := Recherche_Identifiant_Min(Arbre);
 			Adresse : constant T_Adresse_IP := Adresse_Identifiant_Min(Arbre, Min);
-			Taille_Masque : constant Integer := Get_taille_binaire_masque(Masque);
 		begin
 			-- On regarde si on arrive jusqu'à la feuille
         	if Arbre = Null then 
         	    raise Arbre_Vide_Exception;
-        	elsif (Taille_Masque - Arbre.All.Hauteur) = 0 then
+        	elsif Adresse = Arbre.All.Adresse and Arbre.All.Feuille then
         	    Arbre.All.Feuille := False;
          	    Arbre.All.Adresse := 0;
 				Arbre.All.Frequence := 0;
 				Arbre.All.Masque := 0;
 				Arbre.All.Sortie := To_Unbounded_String("");
-        	elsif (Adresse AND 2**(31 - Arbre.all.Hauteur)) = 0 then 
-        	    Supprimer_FIFO(Arbre.All.Gauche, Masque);
-        	else 
-        	    Supprimer_FIFO(Arbre.All.Droite, Masque);
+			else
+				null;
         	end if;
 
+        	Supprimer_FIFO(Arbre.All.Gauche);
+        	Supprimer_FIFO(Arbre.All.Droite);
+
 		exception
-			when Arbre_Vide_Exception => Put_Line("L'arbre est vide.");
+			when Arbre_Vide_Exception => null;
 		end Supprimer_FIFO;
 
 		procedure Supprimer_LRU(Arbre : in T_Arbre) is
@@ -338,7 +338,7 @@ package body cache_tree is
 	begin
 		-- On regarde quelle est la procédure 
 		case Politique is
-			when FIFO => Supprimer_FIFO(Arbre, Masque); -- FIFO
+			when FIFO => Supprimer_FIFO(Arbre); -- FIFO
 			when LRU => Supprimer_LRU(Arbre); -- LRU
 			when LFU => Supprimer_LFU(Arbre); -- LFU
 			-- when others => raise Politique_non_valide_exception;
