@@ -402,7 +402,7 @@ package body cache_tree is
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur.All.Gauche);
 		else
-			-- Sinon on affiche car la cellule est une feuille
+			-- Sinon on affiche si la cellule est une feuille
 			if not Est_Vide(Afficheur) and Afficheur.All.Feuille then
 				Compteur := Compteur + 1;
 
