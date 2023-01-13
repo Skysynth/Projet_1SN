@@ -381,7 +381,7 @@ package body cache_tree is
 		if not Est_Vide(Afficheur1.All.Gauche) and then not Afficheur1.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur1.All.Gauche);
-		elsif Afficheur1.All.Feuille then
+		else
 			-- Sinon on affiche car la cellule est une feuille
 			if not Est_Vide(Afficheur1) then
 				Compteur := Compteur + 1;
@@ -393,15 +393,13 @@ package body cache_tree is
 			else
 				null;
 			end if;
-		else
-			null;
 		end if;
 
 		-- Le parcours est en profondeur, on explore tout ce qu'il y a à droite
 		if not Est_Vide(Afficheur2.All.Droite) and then not Afficheur2.All.Feuille then
 			-- Tant que le chemin gauche de l'arbre n'est pas nul, on avance
 			Afficher_Arbre(Afficheur2.All.Droite);
-		elsif Afficheur2.All.Feuille then
+		else
 			-- Cas où la cellule est une feuille
 			if not Est_Vide(Afficheur2) then
 				Compteur := Compteur + 1;
@@ -413,8 +411,6 @@ package body cache_tree is
 			else
 				null;
 			end if;
-		else
-			null;
 		end if;
 
 	exception
