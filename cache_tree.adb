@@ -203,38 +203,31 @@ package body cache_tree is
 			-- Cas où le bit vaut 1
 			Supprimer_FIFO(Arbre.All.Droite);
 		end if;
-
-		exception
-			when Suppression_Exception => Put_Line("L'élément à supprimer n'existe pas.");
 		end Supprimer_FIFO;
 
 		procedure Supprimer_LRU(Arbre : in T_Arbre) is
-			Adresse : T_Adresse_IP;
+			Adresse : constant T_Adresse_IP := Recherche_Identifiant_Min(Arbre, Politique);
 			Suppresseur : T_Arbre;
-			Taille_Masque : Integer;
 		begin
-			-- Il faut faire la recherche du minimum en terme d'identifiant et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
-			Adresse := Recherche_Identifiant_Min(Arbre, Politique); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
+			-- On initialise le pointeur temporaire
 			Suppresseur := Arbre;
 
-			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-			for i in 1..Taille_Masque loop
-				if ((Adresse AND (2 ** (32 - i))) = 0) then
-					--  Cas où le bit vaut 0
-						Suppresseur := Suppresseur.All.Gauche;
-				else
-					-- Cas où le bit vaut 1
-						Suppresseur := Suppresseur.All.Droite;
-				end if;
-			end loop;
-
-			-- Il ne reste plus qu'à supprimer cette cellule
-			Suppresseur.All.Adresse := 0;
-			Suppresseur.All.Frequence := 0;
-			Suppresseur.All.Identifiant := 0;
-			Suppresseur.All.Masque := 0;
-			Suppresseur.All.Sortie := To_Unbounded_String("");
-			Suppresseur.All.Feuille := False;
+			-- On regarde si on arrive à la taille du masque
+			if Adresse = Suppresseur.All.Adresse then
+				-- On devrait être au niveau de la feuille correspondante à présent
+				Arbre.All.Adresse := 0;
+				Arbre.All.Frequence := 0;
+				Arbre.All.Identifiant := 0;
+				Arbre.All.Masque := 0;
+				Arbre.All.Sortie := To_Unbounded_String("");
+				Arbre.All.Feuille := False;
+			elsif (Adresse AND 2 ** (31 - Suppresseur.All.Hauteur)) = 0 then
+				-- Cas où le bit vaut 0
+        	    Supprimer_FIFO(Arbre.All.Gauche);
+			else
+				-- Cas où le bit vaut 1
+				Supprimer_FIFO(Arbre.All.Droite);
+			end if;
 		end Supprimer_LRU;
 
 		function Recherche_Frequence_Min(Arbre : in T_Arbre) return T_Adresse_IP is
