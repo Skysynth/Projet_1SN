@@ -12,45 +12,29 @@ package CACHE_LCA is
     type T_CACHE_LCA is limited private;
 
     -- Initialiser le cache.  Le cache est vide.
-    procedure Initialiser(Cache_lca: out T_CACHE_LCA ; Taille : Integer) with
+    procedure Initialiser(Cache_lca: out T_CACHE_LCA ; Taille : Integer ; Pol : T_Politique) with
         Post => Est_Vide(Cache_lca);
 
     -- Le cache est-il plein ?
     function Est_Plein(Cache_lca : T_CACHE_LCA) return Boolean with
-        Post => Taille(Cache_lca) = TAILLE_MAX;
+        Post => (Taille(Cache_lca) = TAILLE_MAX) = Est_Plein'Result;
 
     -- Supprimer un element du cache, suivant la politique demandee au prealable par l'utilisateur.
     procedure Supprimer(Cache_lca : in out T_CACHE_LCA) with
         Post => Taille(Cache_lca) = Taille(Cache_lca)'Old - 1;
-
-    -- Supprime un element suivant la politique FIFO.
-    procedure Supprimer_FIFO(Cache_lca : in out T_CACHE_LCA) with
-        Post => Cache_lca := Cache_lca.all.Suivant'Old;
-
-    -- Ajouter une adresse a la liste chainee Recente.
-    procedure Ajouter_Recent(Rec_lca : in out T_RECENT_LCA ; Adresse : in T_ADRESSE_IP);
-
-    -- Supprimer une adresse a la liste chainee Recente.
-    procedure Supprimer_Recent(Rec_lca : in out T_RECENT_LCA ; Adresse : in T_ADRESSE_IP);
-
-    -- Supprime un element suivant la politique LRU.
-    procedure Supprimer_LRU(Cache_lca : in out T_CACHE_LCA);
-
-    -- Recuperer la frequence minimale d'utilisation des adresses dans le cache.
-    function Adresse_LFU(Cache_lca : in T_CACHE_LCA) return integer;
-
-    -- Supprime un element suivant la politique LFU.
-    procedure Supprimer_LFU(Cache_lca : in out T_CACHE_LCA);
 
     -- Savoir si une adresse est presente dans le cache.
     function Adresse_Presente(Cache_lca : in T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return Boolean;
 
     -- Recuperer le masque et l'interface associes a l'adresse demandee, dans le cache.
     procedure Recuperer(Cache_lca : in out T_CACHE_LCA ; Adresse : T_ADRESSE_IP) with
-        Pre => Adresse_Presente(Cache_lca);
+        Pre => Adresse_Presente(Cache_lca, Adresse);
 
-    -- Ajouter une nouvelle route dans le cache.
-    procedure Ajouter(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Eth : in Unbounded_String);
+    -- Recherche de l'interface d'une adresse dans le cache : renvoie null si rien trouvé
+    function Chercher_Dans_Cache(Cache : in T_CACHE_LCA ; Adresse : T_Adresse_IP) return Unbounded_String;
+
+    -- Enregistrer une nouvelle route dans le cache.
+    procedure Enregistrer(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Eth : in Unbounded_String);
 
     -- Supprimer tous les elements du cache.
     procedure Vider(Cache_lca : in out T_CACHE_LCA) with
@@ -63,6 +47,27 @@ package CACHE_LCA is
     function Taille(Cache_lca : T_CACHE_LCA) return Integer with
         Post => Taille'Result >= 0
         and (Taille'Result = 0) = Est_Vide(Cache_lca);
+
+    -- Supprime un element suivant la politique FIFO.
+    -- procedure Supprimer_FIFO(Cache_lca : in out T_CACHE_LCA) with
+    -- Post => Cache_lca := Cache_lca.all.Suivant'Old;
+
+    -- Ajouter une adresse a la liste chainee Recente.
+    -- procedure Ajouter_Recent(Rec_lca : in out T_RECENT_LCA ; Adresse : in T_ADRESSE_IP);
+
+    -- Supprimer une adresse a la liste chainee Recente.
+    -- procedure Supprimer_Recent(Rec_lca : in out T_RECENT_LCA ; Adresse : in T_ADRESSE_IP);
+
+    -- Supprime un element suivant la politique LRU.
+    -- procedure Supprimer_LRU(Cache_lca : in out T_CACHE_LCA);
+
+    -- Recuperer la frequence minimale d'utilisation des adresses dans le cache.
+    -- function Adresse_LFU(Cache_lca : in T_CACHE_LCA) return integer;
+
+    -- Supprime un element suivant la politique LFU.
+    -- procedure Supprimer_LFU(Cache_lca : in out T_CACHE_LCA);
+
+
 
 private
 

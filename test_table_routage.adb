@@ -80,10 +80,10 @@ procedure Test_Table_Routage is
     begin 
         adresse := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0")); 
 
-        pragma Assert (Get_taille_binaire(adresse) = 16);
-        pragma Assert (Get_taille_binaire(1) = 0);
-        pragma Assert (Get_taille_binaire(255) = 0);
-        pragma Assert (Get_taille_binaire(255 * (2**24)) = 8);
+        pragma Assert (Get_taille_binaire_masque(adresse) = 16);
+        pragma Assert (Get_taille_binaire_masque(1) = 0);
+        pragma Assert (Get_taille_binaire_masque(255) = 0);
+        pragma Assert (Get_taille_binaire_masque(255 * (2**24)) = 8);
         
         Put_Line("Les tests de 'Get_Taille_Binaire' sont réussis !");
     end Tester_Get_Taille_Binaire;

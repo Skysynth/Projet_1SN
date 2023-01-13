@@ -44,6 +44,7 @@ procedure main_cache_liste is
 
     -- PARTIE CACHE
     cache : T_CACHE_LCA;
+    pragma Warnings (Off);
     adresse : T_Adresse_IP;
 
     adresse_Cache, masque_Cache : T_Adresse_IP;
@@ -61,7 +62,7 @@ begin
         Table_Routage.Initialiser(param         => param,
                                   Table_routage => tr);
 
-        CACHE_LCA.Initialiser(cache, param.taille_cache);
+        CACHE_LCA.Initialiser(cache, param.taille_cache, param.politique);
 
         New_Line;
         Table_Routage.Afficher(tr, Standard_Output);
@@ -82,26 +83,33 @@ begin
                 null;
             else
 
+                adresse := Unbounded_String_To_Adresse_IP(ligne);
+
                 begin
                     -- On cherche dans le cache
-                    interf := Chercher_Cache(Cache     => cache,
-                                             Adresse   => adresse);
+                    interf := Chercher_Dans_Cache(Cache     => cache,
+                                                  Adresse   => adresse);
                 exception
                         -- si pas trouvé : on cherche à la mano dans la table de routage
                     when others =>
+
                         Table_Routage.Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr, interf, taille_masque);
 
                         masque_Cache := Recuperer_Masque_Plus_Long(Table   => tr,
                                                                    Adresse => adresse,
                                                                    Masque  => Construct_Mask(taille_masque));
 
-                        adresse_Cache := Apply_Masque(adresse => adresse,
-                                                      masque  => masque_Cache);
+                        Put_Line("Adresse : " & Adresse_IP_To_String(adresse => adresse));
 
-                        CACHE_LCA.Enregistrer(Cache     => cache,
-                                               Adresse   => adresse_Cache,
-                                               Masque    => masque_Cache,
-                                               Sortie    => interf);
+                        adresse_Cache := adresse AND masque_Cache;
+
+                        Put_Line("Enregistrer : " & Adresse_IP_To_String(adresse_Cache) & " - " & Adresse_IP_To_String(masque_Cache) & " - " & To_String(interf));
+
+                        CACHE_LCA.Enregistrer(Cache_lca => cache,
+                                              Adresse   => adresse_Cache,
+                                              Masque    => masque_Cache,
+                                              Eth       => interf);
+
                 end;
 
                 Put_Line(File_resultat, To_String(ligne) & " " & To_String(interf));

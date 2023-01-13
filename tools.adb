@@ -87,7 +87,7 @@ package body tools is
 
     end Afficher_Param;
 
-    function Get_taille_binaire(adresse : T_Adresse_IP) return Integer is
+    function Get_taille_binaire_masque(adresse : T_Adresse_IP) return Integer is
         exposant : Integer := 31;
     begin
         while (adresse and 2 ** exposant) /= 0 loop
@@ -95,7 +95,7 @@ package body tools is
         end loop;
 
         return (31 - exposant);
-    end Get_taille_binaire;
+    end Get_taille_binaire_masque;
 
 
     --R3: Convertir l’adresse IP de la destination et du masque en T_Adesse_IP
