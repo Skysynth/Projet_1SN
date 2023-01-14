@@ -156,7 +156,7 @@ package body cache_tree is
 			Min := 100000;
 
 			-- On applique la fonction de manière récursive à gauche et à droite
-			if not Est_Vide(Arbre.All.Gauche) then
+			if not Est_Vide(Arbre.All.Gauche) then 
 				Min_Gauche := Recherche_Identifiant_Min(Arbre.All.Gauche);
 			else
 				null;
@@ -467,7 +467,7 @@ package body cache_tree is
 		end loop;
 
 		-- Cas où on ne trouve pas l'adresse à la fin
-		if Compteur = 32 then
+		if Compteur = 32 and Adresse /= Recherche_Adresse.All.Adresse then
 			Put_Line("L'adresse" & T_Adresse_IP'Image(Adresse) & " n'a pas été trouvée");
 			Cache.Defauts := Cache.Defauts + 1;
 			raise Adresse_Absente_Exception;
