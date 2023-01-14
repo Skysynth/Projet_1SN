@@ -65,9 +65,10 @@ package body cache_tree is
 		return Cache.Enregistrement;
 	end Enregistrement_Cache;
 
-	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Param_Cache; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) is
+	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Param_Cache; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String) is
 		Taille_Masque : constant Integer := Get_taille_binaire_masque(Masque);
 		Enregistreur : T_Arbre;
+		Politique : constant T_Politique := Cache.Politique;
 	begin
 		-- On regarde si l'arbre est vide
 		if Est_Vide(Arbre) then
@@ -111,10 +112,10 @@ package body cache_tree is
 				Enregistreur := null;
 
 				-- On procède par récursivité
-                Enregistrer(Arbre.All.Gauche, Cache, Adresse, Masque, Sortie, Politique);
+                Enregistrer(Arbre.All.Gauche, Cache, Adresse, Masque, Sortie);
             else
 				-- Cas où le bit vaut 0 et que la cellule à gauche n'est pas nulle
-                Enregistrer(Arbre.All.Gauche, Cache, Adresse, Masque, Sortie, Politique);     
+                Enregistrer(Arbre.All.Gauche, Cache, Adresse, Masque, Sortie);     
             end if;
 		else
 			-- On regarde si le bit vaut 0 et si la cellule de droite est vide ou non
@@ -133,10 +134,10 @@ package body cache_tree is
 				Enregistreur := null;
 
 				-- On procède par récursivité
-                Enregistrer(Arbre.All.Droite, Cache, Adresse, Masque, Sortie, Politique);
+                Enregistrer(Arbre.All.Droite, Cache, Adresse, Masque, Sortie);
             else
 				-- Cas où le bit vaut 1 et que la cellule à droite n'est pas nulle
-                Enregistrer(Arbre.All.Droite, Cache, Adresse, Masque, Sortie, Politique);     
+                Enregistrer(Arbre.All.Droite, Cache, Adresse, Masque, Sortie);     
             end if;
 		end if;
 

@@ -71,7 +71,7 @@ procedure test_cache_tree is
         Masque1 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("255.255.0.0"));
         Sortie1 := To_Unbounded_String("eth1");
         
-        Enregistrer(Arbre, Cache, Adresse1, Masque1, Sortie1, Politique);
+        Enregistrer(Arbre, Cache, Adresse1, Masque1, Sortie1);
         Put_Line(">>> Affichage de l'arbre");
         New_Line;
         Afficher_Arbre(Arbre);
@@ -93,7 +93,7 @@ procedure test_cache_tree is
         Adresse3 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("2.16.1.2"));
 
         -- Ajout d'une 2ème donnée
-        Enregistrer(Arbre, Cache, Adresse2, Masque2, Sortie2, Politique);
+        Enregistrer(Arbre, Cache, Adresse2, Masque2, Sortie2);
         Put_Line(">>> Affichage de l'arbre <<<");
         New_Line;
         Afficher_Arbre(Arbre);
@@ -111,7 +111,7 @@ procedure test_cache_tree is
         New_Line;
 
         -- Ajout d'une 3ème donnée
-        Enregistrer(Arbre, Cache, Adresse3, Masque1, Sortie1, Politique);
+        Enregistrer(Arbre, Cache, Adresse3, Masque1, Sortie1);
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse3) = Sortie1);
         Put_Line(">>> Affichage de l'arbre <<<");
         New_Line;

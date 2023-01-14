@@ -94,9 +94,8 @@ package cache_tree is
     --      Adresse : Mode In T_Adresse_IP; -- l'adresse IP à ajouter
     --      Masque : Mode In T_Adresse_IP; -- le masque à ajouter
     --      Sortie : Mode In Unbounded_String; -- la sortie à ajouter
-    --      Politique : Mode In T_Politique; -- la politique utilisée
     -- post-condition : Taille_Cache(Arbre) = Taille_Cache(Arbre)'Old + 1
-    procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Param_Cache; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) with
+    procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Param_Cache; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String) with
         Post => Taille_Cache(Cache) = Taille_Cache(Cache)'Old + 1;
 
 
