@@ -371,6 +371,8 @@ package body cache_tree is
 			Put_Line("Adresse :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
 			Put_Line("Masque :" & T_Adresse_IP'Image(Afficheur.All.Masque));
 			Put_Line(To_String(Afficheur.All.Sortie));
+			Put_Line("Identifiant :" & Integer'Image(Afficheur.All.Identifiant));
+			Put_Line("Fréquence :" & Integer'Image(Afficheur.All.Frequence));
 			New_Line;
 		else
 			null;
@@ -478,10 +480,10 @@ package body cache_tree is
 		Recherche_Adresse.All.Frequence := Recherche_Adresse.All.Frequence + 1;
 		if Politique = LRU then -- LRU
 			Max := Recherche_Identifiant_Max(Arbre);
-			if Recherche_Adresse.All.Identifiant /= Max then
+			if Max = 0 then
 				Recherche_Adresse.All.Identifiant := Max + 1;
-			elsif Recherche_Adresse.All.Identifiant = 0 then
-				Recherche_Adresse.All.Identifiant := 1;
+			elsif Recherche_Adresse.All.Identifiant /= Max then
+				Recherche_Adresse.All.Identifiant := Max + 1;
 			else
 				null;
 			end if;
