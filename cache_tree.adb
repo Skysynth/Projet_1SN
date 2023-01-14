@@ -226,6 +226,7 @@ package body cache_tree is
         	    Arbre.All.Feuille := False;
          	    Arbre.All.Adresse := 0;
 				Arbre.All.Frequence := 0;
+				Arbre.All.Identifiant := 0;
 				Arbre.All.Masque := 0;
 				Arbre.All.Sortie := To_Unbounded_String("");
 			else
