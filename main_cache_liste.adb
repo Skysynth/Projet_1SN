@@ -87,7 +87,7 @@ begin
 
                 begin
                     -- On cherche dans le cache
-                    interf := Chercher_Dans_Cache(Cache     => cache,
+                    interf := Recuperer_Eth_Cache(Cache     => cache,
                                                   Adresse   => adresse);
                 exception
                         -- si pas trouvé : on cherche à la mano dans la table de routage

@@ -36,6 +36,34 @@ package body CACHE_LCA is
       return Cache_lca = null;
    end Est_Vide;
 
+
+   -- Vider le cache
+
+   procedure Vider(Cache_lca : in out T_CACHE_LCA) is
+   begin
+      if Cache_lca = null then
+         null;
+      else
+         Free(Cache_lca);
+         Vider(Cache_lca.all.Suivant);
+      end if;
+   end Vider;
+
+   -- Connaitre la taille d'une liste chainee
+
+   function Taille (Cache_lca : in T_CACHE_LCA) return Integer is
+      n : integer;
+      Cache_lca0 : T_CACHE_LCA;
+   begin
+      n := 0;
+      Cache_lca0 := Cache_lca;
+      while Cache_lca0 /= null loop
+         Cache_lca0 := Cache_lca0.all.Suivant;
+         n := n + 1;
+      end loop;
+      return n;
+   end Taille;
+
    -- Politique FIFO
 
    procedure Supprimer_FIFO(Cache_lca : in out T_CACHE_LCA) is
@@ -151,32 +179,28 @@ package body CACHE_LCA is
       return Presence;
    end Adresse_Presente;
 
-   -- Recuperer le masque et l'interface associes a l'adresse demandee, dans le cache.
+   -- Recuperer dans le cache le masque associe a l'adresse demandee.
 
-   procedure Recuperer_Route_Cache(Cache_lca : in out T_CACHE_LCA ; Adresse : T_ADRESSE_IP) is
-      Adresse_Masquee : T_ADRESSE_IP;
-      Masque_Max : T_ADRESSE_IP;
-      Eth_Cache : Unbounded_String;
+   function Recuperer_Masque_Cache(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return T_Adresse_IP is
+      Masque : T_ADRESSE_IP;
    begin
-      Masque_Max := 0;
-      Adresse_Masquee := Adresse AND Cache_lca.all.Masque;
-
+      Cache_lca := Cache_lca;
       if Cache_lca = null then
          raise Adresse_Absente_Exception;
-      elsif Cache_lca.all.Adresse = Adresse_Masquee and then Cache_lca.all.Masque > Masque_Max then
-         Masque_Max := Cache_lca.all.Masque;
-         Eth_Cache := Cache_lca.all.Eth;
+      elsif Cache_lca.all.Adresse = Adresse then
+         Masque := Cache_lca.all.Masque;
          Supprimer_Recent(RECENT_LCA, Adresse);
          Ajouter_Recent(RECENT_LCA, Adresse);
          Cache_lca.all.Frequence := Cache_lca.all.Frequence + 1;
       else
-         Recuperer_Route_Cache(Cache_lca.all.Suivant, Adresse);
+         Masque := Recuperer_Masque_Cache(Cache_lca.all.Suivant, Adresse);
       end if;
-   end Recuperer_Route_Cache;
+      return Masque;
+   end Recuperer_Masque_Cache;
 
-   -- Recherche de l'interface d'une adresse dans le cache : renvoie null si rien trouve.
+   -- Recuperer dans le cache l'interface associee a l'adresse demandee. Null est renvoyé dans le cas contraire.
 
-   function Chercher_Dans_Cache(Cache_lca : in T_CACHE_LCA ; Adresse : T_Adresse_IP) return Unbounded_String is
+   function Recuperer_Eth_Cache(Cache_lca : in T_CACHE_LCA ; Adresse : T_Adresse_IP) return Unbounded_String is
       Cache_Temp : T_CACHE_LCA;
    begin
       Cache_Temp := Cache_lca;
@@ -188,7 +212,7 @@ package body CACHE_LCA is
          end if;
       end loop;
       raise Adresse_Absente_Exception;
-   end Chercher_Dans_Cache;
+   end Recuperer_Eth_Cache;
 
    -- Enregistrer une route (adresse, masque et interface) dans le cache
 
@@ -201,32 +225,5 @@ package body CACHE_LCA is
          Enregistrer(Cache_lca.all.Suivant, Adresse, Masque, Eth);
       end if;
    end Enregistrer;
-
-   -- Vider le cache
-
-   procedure Vider(Cache_lca : in out T_CACHE_LCA) is
-   begin
-      if Cache_lca = null then
-         null;
-      else
-         Free(Cache_lca);
-         Vider(Cache_lca.all.Suivant);
-      end if;
-   end Vider;
-
-   -- Connaitre la taille d'une liste chainee
-
-   function Taille (Cache_lca : in T_CACHE_LCA) return Integer is
-      n : integer;
-      Cache_lca0 : T_CACHE_LCA;
-   begin
-      n := 0;
-      Cache_lca0 := Cache_lca;
-      while Cache_lca0 /= null loop
-         Cache_lca0 := Cache_lca0.all.Suivant;
-         n := n + 1;
-      end loop;
-      return n;
-   end Taille;
 
 end CACHE_LCA;
