@@ -12,7 +12,7 @@ package body cache_tree is
 		Arbre := Null;
 	end Initialiser_Arbre;
 
-	procedure Initialiser_Cache(Cache: out T_Cache; Taille_Max : in Integer; Politique : in T_Politique) is
+	procedure Initialiser_Cache(Cache: out T_Param_Cache; Taille_Max : in Integer; Politique : in T_Politique) is
 	begin
 		Cache.Taille_Max := Taille_Max;
 		Cache.Taille := 0; 
@@ -40,7 +40,7 @@ package body cache_tree is
         end if;
 	end Vider;
 
-	function Taille_Cache(Cache : in T_Cache) return Integer is
+	function Taille_Cache(Cache : in T_Param_Cache) return Integer is
 	begin
 		return Cache.Taille;
 	end Taille_Cache;
@@ -50,22 +50,22 @@ package body cache_tree is
 		return Arbre.All.Frequence;
 	end Frequence_Arbre;
 
-	function Demandes_Cache(Cache : in T_Cache) return Integer is
+	function Demandes_Cache(Cache : in T_Param_Cache) return Integer is
 	begin
 		return Cache.Demandes;
 	end Demandes_Cache;
 
-	function Defauts_Cache(Cache : in T_Cache) return Integer is
+	function Defauts_Cache(Cache : in T_Param_Cache) return Integer is
 	begin
 		return Cache.Defauts;
 	end Defauts_Cache;
 
-	function Enregistrement_Cache(Cache : in T_Cache) return Integer is
+	function Enregistrement_Cache(Cache : in T_Param_Cache) return Integer is
 	begin
 		return Cache.Enregistrement;
 	end Enregistrement_Cache;
 
-	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) is
+	procedure Enregistrer(Arbre : in out T_Arbre; Cache : in out T_Param_Cache; Adresse : in T_Adresse_IP; Masque : in T_Adresse_IP; Sortie : in Unbounded_String; Politique : in T_Politique) is
 		Taille_Masque : constant Integer := Get_taille_binaire_masque(Masque);
 		Enregistreur : T_Arbre;
 	begin
@@ -142,7 +142,7 @@ package body cache_tree is
 
 	end Enregistrer;
 
-	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache; Min_Identifiant_Frequence : in Integer) is
+	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Param_Cache; Min_Identifiant_Frequence : in Integer) is
 
 		Politique : constant T_Politique := Cache.Politique;
 		Min_Init : Integer := 1000000;
@@ -259,7 +259,7 @@ package body cache_tree is
 		when Politique_non_valide_exception => Put("La politique demandée n'est pas valide.");
 	end Supprimer;
 
-	function Est_Plein(Cache : in T_Cache) return Boolean is
+	function Est_Plein(Cache : in T_Param_Cache) return Boolean is
 		Est_Plein : Boolean;
 	begin
 		if Cache.Taille >= Cache.Taille_Max then
@@ -305,7 +305,7 @@ package body cache_tree is
 		when Affichage_Exception => null;
 	end Afficher_Arbre;
 
-	procedure Afficher_Statistiques_Cache(Cache : in T_Cache) is
+	procedure Afficher_Statistiques_Cache(Cache : in T_Param_Cache) is
 		Taux_Defauts : Float;
 	begin
 		Put_Line("Le nombre de défauts de cache est de :" & Integer'Image(Cache.Defauts));
@@ -475,7 +475,7 @@ package body cache_tree is
 		when Arbre_Vide_Exception => return Min;
 	end Recherche_Identifiant_Frequence_Min;
 
-	function Chercher_Arbre(Arbre : in T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string is
+	function Chercher_Arbre(Arbre : in T_Arbre; Cache : in out T_Param_Cache; Adresse : in T_Adresse_IP) return Unbounded_string is
 		Sortie : Unbounded_String;
 		Recherche_Adresse : T_Arbre;
 		Max : Integer := 0;

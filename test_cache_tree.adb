@@ -27,7 +27,7 @@ procedure test_cache_tree is
 
 -- Test des procédures 'Initialiser' et 'Est_vide'
     procedure Test_Initialiser_Est_Vide is 
-        Cache : T_Cache;
+        Cache : T_Param_Cache;
         Taille_Max : Integer;
         Arbre : T_Arbre;
     begin 
@@ -43,7 +43,7 @@ procedure test_cache_tree is
 -- Test de toutes les procédures
     procedure Test is 
         Arbre : T_Arbre;
-        Cache : T_Cache;
+        Cache : T_Param_Cache;
         Adresse1 : T_Adresse_IP;
         Adresse2 : T_Adresse_IP;
         Masque1 : T_Adresse_IP;

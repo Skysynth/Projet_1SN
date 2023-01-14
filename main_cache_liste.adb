@@ -113,6 +113,7 @@ begin
                 end;
 
                 Put_Line(File_resultat, To_String(ligne) & " " & To_String(interf));
+                Put_LIne(To_String(ligne) & " " & To_String(interf));
 
             end if;
 

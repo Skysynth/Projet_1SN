@@ -146,7 +146,7 @@ package body CACHE_LCA is
 
    end Supprimer_LFU;
 
-   -- Supprimer un element du cache si ce dernier est plein, en suivant une politique particulière
+   -- Supprimer un element du cache si ce dernier est plein, en suivant une politique particuliÃ¨re
 
    procedure Supprimer(Cache_lca : in out T_CACHE_LCA) is
    begin
@@ -198,12 +198,12 @@ package body CACHE_LCA is
       return Masque;
    end Recuperer_Masque_Cache;
 
-   -- Recuperer dans le cache l'interface associee a l'adresse demandee. Null est renvoyé dans le cas contraire.
+   -- Recuperer dans le cache l'interface associee a l'adresse demandee. Null est renvoyÃ© dans le cas contraire.
 
-   function Recuperer_Eth_Cache(Cache_lca : in T_CACHE_LCA ; Adresse : T_Adresse_IP) return Unbounded_String is
+   function Recuperer_Eth_Cache(Cache : in T_CACHE_LCA ; Adresse : T_Adresse_IP) return Unbounded_String is
       Cache_Temp : T_CACHE_LCA;
    begin
-      Cache_Temp := Cache_lca;
+      Cache_Temp := Cache;
       while Cache_Temp /= null loop
          if Is_Equal_With_Mask(Adresse, Cache_Temp.all.Adresse, Cache_Temp.all.Masque) then
             return Cache_Temp.all.Eth;

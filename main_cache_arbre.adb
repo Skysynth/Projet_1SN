@@ -43,7 +43,8 @@ procedure main_cache_arbre is
     taille_masque : Integer;
 
     -- PARTIE CACHE
-    cache : T_Arbre;
+    cache : T_Param_Cache;
+    arbre : T_Arbre;
     adresse : T_Adresse_IP;
 
     adresse_Cache, masque_Cache : T_Adresse_IP;
@@ -61,7 +62,8 @@ begin
         Table_Routage.Initialiser(param         => param,
                                   Table_routage => tr);
 
-        cache_tree.Initialiser_Arbre(cache, param.taille_cache, politique);
+        cache_tree.Initialiser_Cache(cache, param.taille_cache, param.politique);
+        cache_tree.Initialiser_Arbre(arbre);
 
         New_Line;
         Table_Routage.Afficher(tr, Standard_Output);
@@ -77,6 +79,7 @@ begin
 
             ligne := To_Unbounded_String(Get_Line(File_paquet));
             Trim(ligne, Both);
+            adresse := Unbounded_String_To_Adresse_IP(ligne);
 
             if Is_Command_And_Then_Execute(To_String(ligne), tr, File_resultat, num_ligne) then
                 null;
@@ -84,7 +87,9 @@ begin
 
                 begin
                     -- On cherche dans le cache
-                    interf := Chercher_Arbre(Arbre => cache.Arbre, Adresse => adresse, Politique => param.politique, Cache => cache);
+                    interf := Chercher_Arbre(Arbre   => arbre,
+                                             Cache   => cache,
+                                             Adresse => adresse);
                 exception
                         -- si pas trouvé : on cherche à la mano dans la table de routage
                     when others =>
