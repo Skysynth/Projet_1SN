@@ -15,7 +15,7 @@ package body cache_tree is
 	procedure Initialiser_Cache(Cache: out T_Cache; Taille_Max : in Integer; Politique : in T_Politique) is
 	begin
 		Cache.Taille_Max := Taille_Max;
-		Cache.Taille := 0;
+		Cache.Taille := 0; 
 		Cache.Defauts := 0;
 		Cache.Demandes := 0;
 		Cache.Enregistrement := 0;
@@ -110,7 +110,7 @@ package body cache_tree is
 				-- On supprime le cache temporaire
 				Enregistreur := null;
 
-				--n procède par récursivité
+				-- On procède par récursivité
                 Enregistrer(Arbre.All.Gauche, Cache, Adresse, Masque, Sortie, Politique);
             else
 				-- Cas où le bit vaut 0 et que la cellule à gauche n'est pas nulle
