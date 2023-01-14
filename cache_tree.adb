@@ -272,7 +272,7 @@ package body cache_tree is
 		return Est_Plein;
 	end Est_Plein;
 
-	procedure Afficher_Arbre(Arbre : in T_Arbre) is
+	procedure Afficher_Arbre(file : file_Type; Arbre : in T_Arbre) is
 		Afficheur : T_Arbre;
 	begin
 		-- Initialisation des pointeurs qui servent à afficher l'arbre
@@ -287,11 +287,11 @@ package body cache_tree is
 
 		-- On regarde si on est au niveau d'une feuille
 		if Afficheur.All.Feuille then
-			Put_Line("Adresse :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
-			Put_Line("Masque :" & T_Adresse_IP'Image(Afficheur.All.Masque));
+			Put_Line(file, "Adresse :" & T_Adresse_IP'Image(Afficheur.All.Adresse));
+			Put_Line(file, "Masque :" & T_Adresse_IP'Image(Afficheur.All.Masque));
 			Put_Line(To_String(Afficheur.All.Sortie));
-			Put_Line("Identifiant :" & Integer'Image(Afficheur.All.Identifiant));
-			Put_Line("Fréquence :" & Integer'Image(Afficheur.All.Frequence));
+			Put_Line(file, "Identifiant :" & Integer'Image(Afficheur.All.Identifiant));
+			Put_Line(file, "Fréquence :" & Integer'Image(Afficheur.All.Frequence));
 			New_Line;
 		else
 			null;
@@ -299,21 +299,21 @@ package body cache_tree is
 
 		-- Récursivité à gauche et à droite
 
-		Afficher_Arbre(Afficheur.All.Gauche);
-		Afficher_Arbre(Afficheur.All.Droite);
+		Afficher_Arbre(file, Afficheur.All.Gauche);
+		Afficher_Arbre(file, Afficheur.All.Droite);
 
 	exception
 		when Affichage_Exception => null;
 	end Afficher_Arbre;
 
-	procedure Afficher_Statistiques_Cache(Cache : in T_Param_Cache) is
+	procedure Afficher_Statistiques_Cache(file : file_Type; Cache : in T_Param_Cache) is
 		Taux_Defauts : Float;
 	begin
-		Put_Line("Le nombre de défauts de cache est de :" & Integer'Image(Cache.Defauts));
-		Put_Line("Le nombre de demandes de route au cache est de :" & Integer'Image(Cache.Demandes));
+		Put_Line(file, "Le nombre de défauts de cache est de :" & Integer'Image(Cache.Defauts));
+		Put_Line(file,"Le nombre de demandes de route au cache est de :" & Integer'Image(Cache.Demandes));
 
 		Taux_Defauts := Float(Cache.Defauts) / Float(Cache.Demandes);
-		Put_Line("Le taux de défauts de cache est de :" & Float'Image(Taux_Defauts));
+		Put_Line(file, "Le taux de défauts de cache est de :" & Float'Image(Taux_Defauts));
 	end Afficher_Statistiques_Cache;
 
 	function Recherche_Identifiant_Max(Arbre : in T_Arbre; Max : in out Integer) return Integer is

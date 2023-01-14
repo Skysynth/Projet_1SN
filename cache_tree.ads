@@ -1,5 +1,6 @@
 with tools; use tools;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Text_IO; use Ada.Text_IO;
 package cache_tree is
 
     type T_Param_Cache is private;
@@ -125,14 +126,14 @@ package cache_tree is
     -- sémantique : Permet d'afficher le cache
     -- paramètres :
     --      Arbre : Mode In T_Arbre; -- le cache à afficher
-    procedure Afficher_Arbre(Arbre : in T_Arbre);
+    procedure Afficher_Arbre(file : File_Type; Arbre : in T_Arbre);
 
 
     -- nom : Afficher_Statistiques_Cache
     -- sémantique : Permet d'afficher les statistiques relatives au cache et à sa politique
     -- paramètres :
     --      Cache : Mode In T_Param_Cache; -- le cache dont les statistiques doivent être affichées
-    procedure Afficher_Statistiques_Cache(Cache : in T_Param_Cache);
+    procedure Afficher_Statistiques_Cache(file : File_Type; Cache : in T_Param_Cache);
 
 
     -- nom : Recherche_Identifiant_Max

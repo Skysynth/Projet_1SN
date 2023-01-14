@@ -1,6 +1,8 @@
 with tools; use tools;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO; use Ada.Text_IO;
+with cache_tree; use cache_tree;
+with CACHE_LCA; use cache_LCA;
 
 -- Definition de structures de donnees associatives sous forme d'une liste
 -- chaine associative
@@ -92,9 +94,9 @@ package Table_Routage is
     
     function Is_Command_And_Then_Execute(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean;
     
-    function Is_Command_And_Then_Execute_LCA(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean;
+    function Is_Command_And_Then_Execute_LCA(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer ; cache_lca : T_CACHE_LCA) return Boolean;
     
-    function Is_Command_And_Then_Execute_TREE(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean;
+    function Is_Command_And_Then_Execute_TREE(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer; Arbre : T_Arbre; param_Cache : T_Param_Cache) return Boolean;
     
    
     function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean;

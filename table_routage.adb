@@ -217,7 +217,7 @@ package body Table_Routage is
     end Get_Suivant;
 
     
-    function Is_Command_And_Then_Execute_LCA(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean is
+    function Is_Command_And_Then_Execute_LCA(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer ; cache_lca : T_CACHE_LCA) return Boolean is
         type Commandes is (Table, Cache, Stat, Fin); 
     begin
         
@@ -235,7 +235,7 @@ package body Table_Routage is
         when Stat =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Stat (" & Integer'Image(num_ligne) & " )");
-            Put_Line(file_output, "prochainement...");
+            null;
             
         when Fin =>
             New_Line(File    => file_output);
@@ -249,9 +249,9 @@ package body Table_Routage is
         
     exception
         when Constraint_Error => return False;
-    end Is_Command_And_Then_Execute;
+    end Is_Command_And_Then_Execute_LCA;
    
-    function Is_Command_And_Then_Execute_TREE(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer, Arbre : T_Arbre) return Boolean is
+    function Is_Command_And_Then_Execute_TREE(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer; Arbre : T_Arbre; param_Cache : T_Param_Cache) return Boolean is
         type Commandes is (Table, Cache, Stat, Fin); 
     begin
         
@@ -264,11 +264,13 @@ package body Table_Routage is
         when Cache =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Cache (" & Integer'Image(num_ligne) & " )");
-            Put_Line(file_output, "prochainement...");
+            cache_tree.Afficher_Arbre(file  => file_output,
+                                      Arbre => Arbre);
         when Stat =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Stat (" & Integer'Image(num_ligne) & " )");
-            Put_Line(file_output, "prochainement...");
+            cache_tree.Afficher_Statistiques_Cache(file  => file_output,
+                                      Cache => param_Cache);
         when Fin =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Fin (" & Integer'Image(num_ligne) & " )");
@@ -281,9 +283,9 @@ package body Table_Routage is
         
     exception
         when Constraint_Error => return False;
-    end Is_Command_And_Then_Execute;
+    end Is_Command_And_Then_Execute_TREE;
    
-    function Is_Command_And_Then_Execute(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer, Arbre : T_Arbre) return Boolean is
+    function Is_Command_And_Then_Execute(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean is
         type Commandes is (Table, Cache, Stat, Fin); 
     begin
         
@@ -296,11 +298,11 @@ package body Table_Routage is
         when Cache =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Cache (" & Integer'Image(num_ligne) & " )");
-            Put_Line(file_output, "prochainement...");
+            Put_Line(file_output, "Inutile...");
         when Stat =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Stat (" & Integer'Image(num_ligne) & " )");
-            Put_Line(file_output, "prochainement...");
+            Put_Line(file_output, "Inutile...");
         when Fin =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Fin (" & Integer'Image(num_ligne) & " )");
