@@ -88,7 +88,7 @@ package body cache_tree is
 			case Politique is
 				when FIFO => Arbre.All.Identifiant := Cache.Enregistrement; -- FIFO
 				when LRU => Arbre.All.Identifiant := 0; -- LRU
-				when LFU => Arbre.All.Identifiant := 0; -- LFU
+				when LFU => Arbre.All.Identifiant := Cache.Enregistrement; -- LFU
 				-- when others => raise Politique_non_valide_exception;
 			end case;
 
@@ -146,46 +146,9 @@ package body cache_tree is
 
 		Politique : constant T_Politique := Cache.Politique;
 
-		function Adresse_Identifiant_Min(Arbre : in T_Arbre; Min : Integer) return T_Adresse_IP is
-			Recherche_Adresse : T_Arbre;
-			Adresse : T_Adresse_IP;
-		begin
-			-- On fait pointer les pointeurs sur la racine
-			Recherche_Adresse := Arbre;
-
-			-- Cas de base
-			if Est_Vide(Recherche_Adresse) then
-				return 0;
-			else
-				null;
-			end if;
-
-			-- On met à jour l'adresse correspondante au min
-			if Min = Recherche_Adresse.All.Identifiant and Recherche_Adresse.All.Feuille then
-				Adresse := Recherche_Adresse.All.Adresse;
-			else
-				null;
-			end if;
-
-			-- On applique la fonction de manière récursive à gauche et à droite
-			if not Est_Vide(Recherche_Adresse.All.Gauche) then
-				Adresse := Adresse_Identifiant_Min(Recherche_Adresse.All.Gauche, Min);
-			else
-				null;
-			end if;
-
-			if not Est_Vide(Recherche_Adresse.All.Droite) then
-				Adresse := Adresse_Identifiant_Min(Recherche_Adresse.All.Droite, Min);
-			else
-				null;
-			end if;
-
-			return Adresse;
-		end Adresse_Identifiant_Min;
-
 		procedure Supprimer_FIFO(Arbre : in T_Arbre) is
 			Min : Integer := 10000000;
-			Adresse : constant T_Adresse_IP := Adresse_Identifiant_Min(Arbre, Min);
+			Adresse : constant T_Adresse_IP := 0;
 		begin
 			-- On initialise le minimum
 			Min := Recherche_Identifiant_Min(Arbre, Min);
@@ -214,7 +177,7 @@ package body cache_tree is
 		procedure Supprimer_LRU(Arbre : in T_Arbre) is
 			Min : Integer := 10000000;
 			Suppresseur : T_Arbre;
-			Adresse : constant T_Adresse_IP := Adresse_Identifiant_Min(Arbre, Min);
+			Adresse : constant T_Adresse_IP := 0;
 		begin
 			-- On initialise le minimum
 			Min := Recherche_Identifiant_Min(Arbre, Min);
@@ -241,31 +204,35 @@ package body cache_tree is
 		end Supprimer_LRU;
 
 		procedure Supprimer_LFU(Arbre : in T_Arbre) is
-			Adresse : T_Adresse_IP;
 			Suppresseur : T_Arbre;
+			Min_Init : Integer := 1000000;
+			Min_Frequence : constant Integer := Recherche_Frequence_Min(Arbre, Min_Init);
+			Min_Identifiant : constant Integer := Recherche_Identifiant_Min(Arbre, Min_Init);
 		begin
-			-- Il faut faire la recherche du minimum en terme de fréquence et noter son adresse (= le parcours) ainsi que créer un pointeur temporaire
-			Adresse := Recherche_Frequence_Min(Arbre); -- pas d'erreur retournée étant donné que le cache est plein (il existe au moins une adresse)
+			-- On initialise le pointeur temporaire
 			Suppresseur := Arbre;
 
-			-- On regarde pour chaque bit de l'adresse si il vaut 0 ou 1 pour savoir quelle direction prendre
-			for i in 1..32 loop
-				if ((Adresse AND (2 ** (32 - i))) = 0) then
-					--  Cas où le bit vaut 0
-						Suppresseur := Suppresseur.All.Gauche;
+			if not Est_Vide(Suppresseur) then
+				if Suppresseur.All.Feuille and then (Min_Frequence = Suppresseur.All.Frequence and Min_Identifiant = Suppresseur.All.Identifiant) then
+					-- Il ne reste plus qu'à supprimer cette cellule
+					Suppresseur.All.Adresse := 0;
+					Suppresseur.All.Frequence := 0;
+					Suppresseur.All.Identifiant := 0;
+					Suppresseur.All.Masque := 0;
+					Suppresseur.All.Sortie := To_Unbounded_String("");
+					Suppresseur.All.Feuille := False;
 				else
-					-- Cas où le bit vaut 1
-						Suppresseur := Suppresseur.All.Droite;
+					null;
 				end if;
-			end loop;
+			else
+				raise Suppression_Exception;
+			end if;
 
-			-- Il ne reste plus qu'à supprimer cette cellule
-			Suppresseur.All.Adresse := 0;
-			Suppresseur.All.Frequence := 0;
-			Suppresseur.All.Identifiant := 0;
-			Suppresseur.All.Masque := 0;
-			Suppresseur.All.Sortie := To_Unbounded_String("");
-			Suppresseur.All.Feuille := False;
+			Supprimer_LFU(Suppresseur.All.Gauche);
+			Supprimer_LFU(Suppresseur.All.Droite);
+
+		exception
+			when Suppression_Exception => null;
 		end Supprimer_LFU;
 
 	begin
@@ -341,125 +308,124 @@ package body cache_tree is
 
 	-- pré-condition : not Est_Vide(Arbre)
 	function Recherche_Identifiant_Max(Arbre : in T_Arbre; Max : in out Integer) return Integer is
-			Recherche_Max : T_Arbre;
-			Max_Gauche : Integer;
-			Max_Droite : Integer;
-		begin
-			-- On initialise le pointeur temporaire
-			Recherche_Max := Arbre;
+		Recherche_Max : T_Arbre;
+		Max_Gauche : Integer;
+		Max_Droite : Integer;
+	begin
+		-- On initialise le pointeur temporaire
+		Recherche_Max := Arbre;
 
 			-- On regarde si le cache est vide ou non
-			if not Est_Vide(Recherche_Max) then
-				-- On traite la racine
-				if Recherche_Max.All.Feuille and then Recherche_Max.All.Identifiant > Max then
-					Max := Recherche_Max.All.Identifiant;
-				else
-					null;
-				end if;
-
-				-- On traite la partie gauche de l'arbre
-				Max_Gauche := Recherche_Identifiant_Max(Recherche_Max.All.Gauche, Max);
-
-				-- On traite la partie droite de l'arbre
-				Max_Droite := Recherche_Identifiant_Max(Recherche_Max.All.Droite, Max);
-
-				-- On compare le minimum de gauche et de droite
-				if Max_Gauche > Max_Droite then
-					Max := Max_Gauche;
-				else
-					Max := Max_Droite;
-				end if;
-
+		if not Est_Vide(Recherche_Max) then
+			-- On traite la racine
+			if Recherche_Max.All.Feuille and then Recherche_Max.All.Identifiant > Max then
+				Max := Recherche_Max.All.Identifiant;
 			else
-				raise Arbre_Vide_Exception;
+				null;
 			end if;
 
-			return Max;
+			-- On traite la partie gauche de l'arbre
+			Max_Gauche := Recherche_Identifiant_Max(Recherche_Max.All.Gauche, Max);
 
-		exception
-			when Arbre_Vide_Exception => return Max;
-		end Recherche_Identifiant_Max;
+			-- On traite la partie droite de l'arbre
+			Max_Droite := Recherche_Identifiant_Max(Recherche_Max.All.Droite, Max);
 
-		function Recherche_Identifiant_Min(Arbre : in T_Arbre; Min : in out Integer) return Integer is
-			Recherche_Min : T_Arbre;
-			Min_Gauche : Integer;
-			Min_Droite : Integer;
-		begin
-			-- On initialise le pointeur temporaire
-			Recherche_Min := Arbre;
-
-			-- On regarde si le cache est vide ou non
-			if not Est_Vide(Recherche_Min) then
-				-- On traite la racine
-				if Recherche_Min.All.Feuille and then Recherche_Min.All.Identifiant < Min then
-					Min := Recherche_Min.All.Identifiant;
-				else
-					null;
-				end if;
-
-				-- On traite la partie gauche de l'arbre
-				Min_Gauche := Recherche_Identifiant_Min(Recherche_Min.All.Gauche, Min);
-
-				-- On traite la partie droite de l'arbre
-				Min_Droite := Recherche_Identifiant_Min(Recherche_Min.All.Droite, Min);
-
-				-- On compare le minimum de gauche et de droite
-				if Min_Gauche < Min_Droite then
-					Min := Min_Gauche;
-				else
-					Min := Min_Droite;
-				end if;
-
+			-- On compare le minimum de gauche et de droite
+			if Max_Gauche > Max_Droite then
+				Max := Max_Gauche;
 			else
-				raise Arbre_Vide_Exception;
+				Max := Max_Droite;
 			end if;
 
-			return Min;
+		else
+			raise Arbre_Vide_Exception;
+		end if;
+
+		return Max;
+
+	exception
+		when Arbre_Vide_Exception => return Max;
+	end Recherche_Identifiant_Max;
+
+	function Recherche_Identifiant_Min(Arbre : in T_Arbre; Min : in out Integer) return Integer is
+		Recherche_Min : T_Arbre;
+		Min_Gauche : Integer;
+		Min_Droite : Integer;
+	begin
+		-- On initialise le pointeur temporaire
+		Recherche_Min := Arbre;
+
+		-- On regarde si le cache est vide ou non
+		if not Est_Vide(Recherche_Min) then
+			-- On traite la racine
+			if Recherche_Min.All.Feuille and then Recherche_Min.All.Identifiant < Min then
+				Min := Recherche_Min.All.Identifiant;
+			else
+				null;
+			end if;
+
+			-- On traite la partie gauche de l'arbre
+			Min_Gauche := Recherche_Identifiant_Min(Recherche_Min.All.Gauche, Min);
+
+			-- On traite la partie droite de l'arbre
+			Min_Droite := Recherche_Identifiant_Min(Recherche_Min.All.Droite, Min);
+
+			-- On compare le minimum de gauche et de droite
+			if Min_Gauche < Min_Droite then
+				Min := Min_Gauche;
+			else
+				Min := Min_Droite;
+			end if;
+
+		else
+			raise Arbre_Vide_Exception;
+		end if;
+
+		return Min;
 		
-		exception
-			when Arbre_Vide_Exception => return Min;
-		end Recherche_Identifiant_Min;
+	exception
+		when Arbre_Vide_Exception => return Min;
+	end Recherche_Identifiant_Min;
 
-		function Recherche_Frequence_Min(Arbre : in T_Arbre; Min : in out Integer) return T_Adresse_IP is
-			Recherche_Min : T_Arbre;
-			Adresse : T_Adresse_IP;
-			Min_Gauche : Integer;
-			Min_Droite : Integer;
-		begin
-			-- On initialise le pointeur temporaire
-			Recherche_Min := Arbre;
+	function Recherche_Frequence_Min(Arbre : in T_Arbre; Min : in out Integer) return Integer is
+		Recherche_Min : T_Arbre;
+		Min_Gauche : Integer;
+		Min_Droite : Integer;
+	begin
+		-- On initialise le pointeur temporaire
+		Recherche_Min := Arbre;
 
-			-- On regarde si le cache est vide ou non
-			if not Est_Vide(Recherche_Min) then
-				-- On traite la racine
-				if Recherche_Min.All.Feuille and then Recherche_Min.All.Frequence < Min then
-					Min := Recherche_Min.All.Frequence;
-				else
-					null;
-				end if;
-
-				-- On traite la partie gauche de l'arbre
-				Min_Gauche := Recherche_Frequence_Min(Recherche_Min.All.Gauche, Min);
-
-				-- On traite la partie droite de l'arbre
-				Min_Droite := Recherche_Frequence_Min(Recherche_Min.All.Droite, Min);
-
-				-- On compare le minimum de gauche et de droite
-				if Min_Gauche < Min_Droite then
-					Min := Min_Gauche;
-				else
-					Min := Min_Droite;
-				end if;
-
+		-- On regarde si le cache est vide ou non
+		if not Est_Vide(Recherche_Min) then
+			-- On traite la racine
+			if Recherche_Min.All.Feuille and then Recherche_Min.All.Frequence < Min then
+				Min := Recherche_Min.All.Frequence;
 			else
-				raise Arbre_Vide_Exception;
+				null;
 			end if;
 
-			return Min;
+			-- On traite la partie gauche de l'arbre
+			Min_Gauche := Recherche_Frequence_Min(Recherche_Min.All.Gauche, Min);
+
+			-- On traite la partie droite de l'arbre
+			Min_Droite := Recherche_Frequence_Min(Recherche_Min.All.Droite, Min);
+
+			-- On compare le minimum de gauche et de droite
+			if Min_Gauche < Min_Droite then
+				Min := Min_Gauche;
+			else
+				Min := Min_Droite;
+			end if;
+
+		else
+			raise Arbre_Vide_Exception;
+		end if;
+
+		return Min;
 		
-		exception
-			when Arbre_Vide_Exception => return Min;
-		end Recherche_Frequence_Min;
+	exception
+		when Arbre_Vide_Exception => return Min;
+	end Recherche_Frequence_Min;
 
 	function Chercher_Arbre(Arbre : in T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string is
 		Sortie : Unbounded_String;

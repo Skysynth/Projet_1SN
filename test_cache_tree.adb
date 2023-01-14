@@ -71,7 +71,7 @@ procedure test_cache_tree is
         Max : Integer := 0;
     begin 
         -- initialiser le cache et l'arbre
-        Politique := FIFO; -- FIFO
+        Politique := LFU; -- FIFO
         Initialiser_Cache(Cache, 3, Politique);
         Initialiser_Arbre(Arbre);
         
