@@ -76,7 +76,7 @@ package body cache_tree is
 			null;
 		end if;
 
-		-- On regarde si on arrive à la taille du masque
+		-- On regarde si on arrive au niveau d'une feuille
 		if (Arbre.All.Hauteur - Taille_Masque = 0) then
 			-- On devrait être au niveau d'une feuille à présent
 			-- Il reste à stocker toutes les informations nécessaires
@@ -95,8 +95,8 @@ package body cache_tree is
 			Cache.Taille := Cache.Taille + 1;
 			Cache.Enregistrement := Cache.Enregistrement + 1;
 		elsif (Adresse AND 2 ** (31 - Arbre.All.Hauteur)) = 0 then
-			-- On regarde si le bit vaut 0 ou 1
-            if Arbre.All.Gauche = Null then
+			-- On regarde si le bit vaut 0 et si la cellule de gauche est vide ou non
+            if Est_Vide(Arbre.All.Gauche) then
 				-- Cas où le bit vaut 0 et que la cellule à gauche est nulle
                 Initialiser_Arbre(Enregistreur);
 				Enregistreur := new T_Arbre_Cellule'(0, 0, To_Unbounded_String(""), null, null, 0, False, 0, 0);
@@ -117,6 +117,7 @@ package body cache_tree is
                 Enregistrer(Arbre.All.Gauche, Cache, Adresse, Masque, Sortie, Politique);     
             end if;
 		else
+			-- On regarde si le bit vaut 0 et si la cellule de droite est vide ou non
             if Arbre.All.Droite = Null then
 				-- Cas où le bit vaut 1 et que la cellule à droite est nulle
                 Initialiser_Arbre(Enregistreur);
@@ -217,7 +218,7 @@ package body cache_tree is
 		procedure Supprimer_FIFO(Arbre : in T_Arbre) is
 			Min : constant Integer := Recherche_Identifiant_Min(Arbre);
 			Adresse : constant T_Adresse_IP := Adresse_Identifiant_Min(Arbre, Min);
-		begin
+		beg
 			-- On regarde si on arrive jusqu'à la feuille
         	if Arbre = Null then 
         	    raise Arbre_Vide_Exception;
