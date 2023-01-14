@@ -144,7 +144,6 @@ package cache_tree is
     -- pré-condition : not Est_Vide(Arbre)
     -- post-condition : Recherche_Identifiant_Max'Result >= 0
     function Recherche_Identifiant_Max(Arbre : in T_Arbre) return Integer with
-        Pre => not Est_Vide(Arbre),
         Post => Recherche_Identifiant_Max'Result >= 0;
 
 
@@ -155,7 +154,6 @@ package cache_tree is
     -- pré-condition : not Est_Vide(Arbre)
     -- post-condition : Recherche_Identifiant_Max'Result >= 0
     function Recherche_Identifiant_Min(Arbre : in T_Arbre) return Integer with
-        Pre => not Est_Vide(Arbre),
         Post => Recherche_Identifiant_Min'Result >= 0;
 
     

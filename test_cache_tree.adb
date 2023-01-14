@@ -130,7 +130,7 @@ procedure test_cache_tree is
         New_Line;
 
         Min := Recherche_Identifiant_Min(Arbre);
-        Put_Line("L'identifiant minimum est :" & Integer'Image(Max));
+        Put_Line("L'identifiant minimum est :" & Integer'Image(Min));
 
         Max := Recherche_Identifiant_Max(Arbre);
         Put_Line("L'identifiant maximum est :" & Integer'Image(Max));

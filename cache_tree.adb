@@ -398,45 +398,44 @@ package body cache_tree is
 			return Max;
 		end Recherche_Identifiant_Max;
 
-		-- pré-condition : not Est_Vide(Arbre)
 		function Recherche_Identifiant_Min(Arbre : in T_Arbre) return Integer is
 			Min : Integer;
 			Recherche_Min : T_Arbre;
-			Min_Gauche : Integer;
-			Min_Droite : Integer;
 		begin
-			-- On met à jour le plus petit identifiant
-			Min := 100000;
+			-- On initialise le pointeur temporaire
 			Recherche_Min := Arbre;
 
-			-- On applique la fonction de manière récursive à gauche et à droite
-			if not Est_Vide(Recherche_Min.All.Gauche) then 
-				Min_Gauche := Recherche_Identifiant_Min(Recherche_Min.All.Gauche);
-			else
-				Min_Gauche := Min;
-			end if;
-
-			if not Est_Vide(Recherche_Min.All.Droite) then
-				Min_Droite := Recherche_Identifiant_Min(Recherche_Min.All.Droite);
-			else
-				Min_Droite := Min;
-			end if;
-
-			-- On regarde le minimum à gauche et à droite
-			if Recherche_Min.All.Identifiant < Min and Recherche_Min.All.Feuille then
-				Min := Recherche_Min.All.Identifiant;
+			-- On regarde si le cache est vide
+			if Est_Vide(Recherche_Min) then
+				raise Arbre_Vide_Exception;
 			else
 				null;
 			end if;
 
-			-- Je cherche le minimum entre le minimum trouvé à gauche et à droite
-			if Min_Gauche < Min_Droite then
-				Min := Min_Gauche;
+			-- On est au niveau d'une feuille
+			if Recherche_Min.All.Feuille then
+				Min := Recherche_Min.All.Identifiant;
 			else
-				Min := Min_Droite;
+				-- On cherche le minimum à gauche
+				Min := Recherche_Min.All.Identifiant;
+				if not Est_Vide(Recherche_Min.All.Gauche) then
+					Min := Recherche_Identifiant_Min(Recherche_Min.All.Gauche);
+				else
+					null;
+				end if;
+
+				-- On cherche le minimum à droite
+				if not Est_Vide(Recherche_Min.All.Droite) then
+					Min := Recherche_Identifiant_Min(Recherche_Min.All.Droite);
+				else
+					null;
+				end if;
 			end if;
 
 			return Min;
+		
+		exception
+			when Arbre_Vide_Exception => return Min;
 		end Recherche_Identifiant_Min;
 
 	function Chercher_Arbre(Arbre : in T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string is
