@@ -8,7 +8,7 @@ with tools; use tools;
 with Table_Routage; use Table_Routage;
 with Ada.Exceptions; use Ada.Exceptions;
 
-procedure Main is
+procedure Routeur is
 
     param : T_Param;
 
@@ -66,13 +66,11 @@ begin
             ligne := To_Unbounded_String(Get_Line(File_paquet));
             Trim(ligne, Both);
 
-            if Is_Command_And_Then_Execute(To_String(ligne), tr, File_resultat, num_ligne) then
-               null;
-            else
-                Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr, interf, taille_masque);
+            -- Pas de commandes car il n'y a pas de cache et la fonction en demande une
 
-                Put_Line(File_resultat, To_String(ligne) & " " & To_String(interf));
-            end if;
+            Get_Interface(Unbounded_String_To_Adresse_IP(ligne), tr, interf, taille_masque);
+
+            Put_Line(File_resultat, To_String(ligne) & " " & To_String(interf));
 
             num_ligne := num_ligne + 1;
 
@@ -90,4 +88,4 @@ begin
         when E : others => Put_Line (Exception_Message (E));
     end;
 
-end Main;
+end Routeur;
