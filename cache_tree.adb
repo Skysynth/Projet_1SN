@@ -110,7 +110,7 @@ package body cache_tree is
 				-- On supprime le cache temporaire
 				Enregistreur := null;
 
-				-- On procède par récursivité
+				--n procède par récursivité
                 Enregistrer(Arbre.All.Gauche, Cache, Adresse, Masque, Sortie, Politique);
             else
 				-- Cas où le bit vaut 0 et que la cellule à gauche n'est pas nulle
@@ -218,7 +218,7 @@ package body cache_tree is
 		procedure Supprimer_FIFO(Arbre : in T_Arbre) is
 			Min : constant Integer := Recherche_Identifiant_Min(Arbre);
 			Adresse : constant T_Adresse_IP := Adresse_Identifiant_Min(Arbre, Min);
-		beg
+		begin
 			-- On regarde si on arrive jusqu'à la feuille
         	if Arbre = Null then 
         	    raise Arbre_Vide_Exception;
@@ -375,6 +375,8 @@ package body cache_tree is
 		else
 			null;
 		end if;
+
+		-- Récursivité à gauche et à droite
 
 		Afficher_Arbre(Afficheur.All.Gauche);
 		Afficher_Arbre(Afficheur.All.Droite);
