@@ -141,9 +141,10 @@ package cache_tree is
     -- l'identifiant minimum.
     -- paramètres :
     --      Arbre : Mode In T_Arbre; -- le cache
+    --      Max : Mode In/Out Integer; -- le maximum
     -- pré-condition : not Est_Vide(Arbre)
     -- post-condition : Recherche_Identifiant_Max'Result >= 0
-    function Recherche_Identifiant_Max(Arbre : in T_Arbre) return Integer with
+    function Recherche_Identifiant_Max(Arbre : in T_Arbre; Max : in out Integer) return Integer with
         Post => Recherche_Identifiant_Max'Result >= 0;
 
 
@@ -151,9 +152,10 @@ package cache_tree is
     -- sémantique : Permet de trouver l'identifiant minimum, cela est nécessaire pour les politiques FIFO et LRU.
     -- paramètres :
     --      Arbre : Mode In T_Arbre; -- le cache
+    --      Min : Mode In/Out Integer; -- le minimum
     -- pré-condition : not Est_Vide(Arbre)
     -- post-condition : Recherche_Identifiant_Max'Result >= 0
-    function Recherche_Identifiant_Min(Arbre : in T_Arbre; Politique : in T_Politique) return Integer with
+    function Recherche_Identifiant_Min(Arbre : in T_Arbre; Min : in out Integer) return Integer with
         Post => Recherche_Identifiant_Min'Result >= 0;
 
     

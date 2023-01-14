@@ -67,8 +67,8 @@ procedure test_cache_tree is
         Sortie2 : Unbounded_String;
         Politique : T_Politique;
         Adresse3 : T_Adresse_IP;
-        Min : Integer;
-        Max : Integer;
+        Min : Integer := 1000000;
+        Max : Integer := 0;
     begin 
         -- initialiser le cache et l'arbre
         Politique := FIFO; -- FIFO
@@ -131,10 +131,10 @@ procedure test_cache_tree is
         pragma Assert(Enregistrement_Cache(Cache)= 3);
         Put_Line("Le nombre d'enregistrement dans le cache est de" & Integer'Image(Enregistrement_Cache(Cache)));
 
-        Min := Recherche_Identifiant_Min(Arbre, Politique);
+        Min := Recherche_Identifiant_Min(Arbre, Min);
         Put_Line("L'identifiant minimum est :" & Integer'Image(Min));
 
-        Max := Recherche_Identifiant_Max(Arbre);
+        Max := Recherche_Identifiant_Max(Arbre, Max);
         Put_Line("L'identifiant maximum est :" & Integer'Image(Max));
 
         Afficher_Statistiques_Cache(Cache);

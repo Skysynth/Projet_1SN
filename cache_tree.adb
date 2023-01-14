@@ -184,9 +184,12 @@ package body cache_tree is
 		end Adresse_Identifiant_Min;
 
 		procedure Supprimer_FIFO(Arbre : in T_Arbre) is
-			Min : constant Integer := Recherche_Identifiant_Min(Arbre, Politique);
+			Min : Integer := 10000000;
 			Adresse : constant T_Adresse_IP := Adresse_Identifiant_Min(Arbre, Min);
 		begin
+			-- On initialise le minimum
+			Min := Recherche_Identifiant_Min(Arbre, Min);
+
 			-- On regarde si on arrive jusqu'à la feuille
         	if Arbre = Null then 
         	    raise Arbre_Vide_Exception;
@@ -209,10 +212,13 @@ package body cache_tree is
 		end Supprimer_FIFO;
 
 		procedure Supprimer_LRU(Arbre : in T_Arbre) is
-			Min : constant Integer := Recherche_Identifiant_Min(Arbre, Politique);
+			Min : Integer := 10000000;
 			Suppresseur : T_Arbre;
 			Adresse : constant T_Adresse_IP := Adresse_Identifiant_Min(Arbre, Min);
 		begin
+			-- On initialise le minimum
+			Min := Recherche_Identifiant_Min(Arbre, Min);
+
 			-- On initialise le pointeur temporaire
 			Suppresseur := Arbre;
 
@@ -367,39 +373,47 @@ package body cache_tree is
 	end Afficher_Statistiques_Cache;
 
 	-- pré-condition : not Est_Vide(Arbre)
-	function Recherche_Identifiant_Max(Arbre : in T_Arbre) return Integer is
-			Recherche_Identifiant : T_Arbre;
-			Max : Integer;
+	function Recherche_Identifiant_Max(Arbre : in T_Arbre; Max : in out Integer) return Integer is
+			Recherche_Max : T_Arbre;
+			Max_Gauche : Integer;
+			Max_Droite : Integer;
 		begin
-			-- On fait pointer les pointeurs sur la racine
-			Recherche_Identifiant := Arbre;
-			Max := 0;
+			-- On initialise le pointeur temporaire
+			Recherche_Max := Arbre;
 
-			-- On met à jour le plus grand identifiant
-			if Max < Recherche_Identifiant.All.Identifiant and Recherche_Identifiant.All.Feuille then
-				Max := Recherche_Identifiant.All.Identifiant;
-			else
-				null;
-			end if;
+			-- On regarde si le cache est vide ou non
+			if not Est_Vide(Recherche_Max) then
+				-- On traite la racine
+				if Recherche_Max.All.Feuille and then Recherche_Max.All.Identifiant > Max then
+					Max := Recherche_Max.All.Identifiant;
+				else
+					null;
+				end if;
 
-			-- On applique la fonction de manière récursive à gauche et à droite
-			if not Est_Vide(Recherche_Identifiant.All.Gauche) then
-				Max := Recherche_Identifiant_Max(Recherche_Identifiant.All.Gauche);
-			else
-				null;
-			end if;
+				-- On traite la partie gauche de l'arbre
+				Max_Gauche := Recherche_Identifiant_Max(Recherche_Max.All.Gauche, Max);
 
-			if not Est_Vide(Recherche_Identifiant.All.Droite) then
-				Max := Recherche_Identifiant_Max(Recherche_Identifiant.All.Droite);
+				-- On traite la partie droite de l'arbre
+				Max_Droite := Recherche_Identifiant_Max(Recherche_Max.All.Droite, Max);
+
+				-- On compare le minimum de gauche et de droite
+				if Max_Gauche > Max_Droite then
+					Max := Max_Gauche;
+				else
+					Max := Max_Droite;
+				end if;
+
 			else
-				null;
+				raise Arbre_Vide_Exception;
 			end if;
 
 			return Max;
+
+		exception
+			when Arbre_Vide_Exception => return Max;
 		end Recherche_Identifiant_Max;
 
-		function Recherche_Identifiant_Min(Arbre : in T_Arbre; Politique: in T_Politique) return Integer is
-			Min : Integer;
+		function Recherche_Identifiant_Min(Arbre : in T_Arbre; Min : in out Integer) return Integer is
 			Recherche_Min : T_Arbre;
 			Min_Gauche : Integer;
 			Min_Droite : Integer;
@@ -407,66 +421,42 @@ package body cache_tree is
 			-- On initialise le pointeur temporaire
 			Recherche_Min := Arbre;
 
-			-- On regarde si le cache est vide
-			if Est_Vide(Recherche_Min) then
-				raise Arbre_Vide_Exception;
-			else
-				null;
-			end if;
-
-			-- On est au niveau d'une feuille
-			if Recherche_Min.All.Feuille then
-				Min := Recherche_Min.All.Identifiant;
-			else
-				null;
-			end if;
-
-			if Politique = FIFO then
-				-- On recherche le minimum à gauche
-				if not Est_Vide(Recherche_Min.All.Gauche) then
-					Min := Recherche_Identifiant_Min(Recherche_Min.All.Gauche, Politique);
+			-- On regarde si le cache est vide ou non
+			if not Est_Vide(Recherche_Min) then
+				-- On traite la racine
+				if Recherche_Min.All.Feuille and then Recherche_Min.All.Identifiant < Min then
+					Min := Recherche_Min.All.Identifiant;
 				else
 					null;
 				end if;
 
-				-- On cherche le minimum à droite
-				if not Est_Vide(Recherche_Min.All.Droite) then
-					Min := Recherche_Identifiant_Min(Recherche_Min.All.Droite, Politique);
-				else
-					null;
-				end if;
-			else
-				-- On recherche le minimum à gauche
-				if not Est_Vide(Recherche_Min.All.Gauche) then
-					Min_Gauche := Recherche_Identifiant_Min(Recherche_Min.All.Gauche, Politique);
-				else
-					null;
-				end if;
+				-- On traite la partie gauche de l'arbre
+				Min_Gauche := Recherche_Identifiant_Min(Recherche_Min.All.Gauche, Min);
 
-				-- On cherche le minimum à droite
-				if not Est_Vide(Recherche_Min.All.Droite) then
-					Min_Droite := Recherche_Identifiant_Min(Recherche_Min.All.Droite, Politique);
-				else
-					null;
-				end if;
+				-- On traite la partie droite de l'arbre
+				Min_Droite := Recherche_Identifiant_Min(Recherche_Min.All.Droite, Min);
 
+				-- On compare le minimum de gauche et de droite
 				if Min_Gauche < Min_Droite then
 					Min := Min_Gauche;
 				else
 					Min := Min_Droite;
 				end if;
+
+			else
+				raise Arbre_Vide_Exception;
 			end if;
 
 			return Min;
 		
 		exception
-			when Arbre_Vide_Exception => return 10000;
+			when Arbre_Vide_Exception => return Min;
 		end Recherche_Identifiant_Min;
 
 	function Chercher_Arbre(Arbre : in T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string is
 		Sortie : Unbounded_String;
 		Recherche_Adresse : T_Arbre;
-		Max : Integer;
+		Max : Integer := 0;
 		Politique : constant T_Politique := Cache.Politique;
 		Compteur : Integer := 1;
     begin
@@ -514,7 +504,7 @@ package body cache_tree is
 		Sortie := Recherche_Adresse.All.Sortie;
 		Recherche_Adresse.All.Frequence := Recherche_Adresse.All.Frequence + 1;
 		if Politique = LRU then -- LRU
-			Max := Recherche_Identifiant_Max(Arbre);
+			Max := Recherche_Identifiant_Max(Arbre, Max);
 			if Max = 0 then
 				Recherche_Adresse.All.Identifiant := Max + 1;
 			elsif Recherche_Adresse.All.Identifiant /= Max then
