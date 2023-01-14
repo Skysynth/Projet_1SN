@@ -103,8 +103,6 @@ begin
                         adresse_Cache := Apply_Masque(adresse => adresse,
                                                       masque  => masque_Cache);
 
-                        -- arbre := Arbre_Cache(Cache => cache);
-
                         cache_tree.Enregistrer(Arbre     => arbre,
                                                Cache     => cache,
                                                Adresse   => adresse_Cache,
