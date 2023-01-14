@@ -445,7 +445,7 @@ package body cache_tree is
 			if ((Adresse AND (2 ** (32 - Compteur))) = 0) then
 				--  Cas où le bit vaut 0
 				if Est_Vide(Recherche_Adresse.Gauche) then
-				-- Cas où le cache à gauche est vide
+					-- Cas où le cache à gauche est vide
 					Put_Line("L'adresse" & T_Adresse_IP'Image(Adresse) & " n'a pas été trouvée");
 					Cache.Defauts := Cache.Defauts + 1;
 					raise Adresse_Absente_Exception;
@@ -455,7 +455,7 @@ package body cache_tree is
 			else
 				-- Cas où le bit vaut 1
 				if Est_Vide(Recherche_Adresse.Droite) then
-				-- Cas où le cache à droite est vide
+					-- Cas où le cache à droite est vide
 					Put_Line("L'adresse" & T_Adresse_IP'Image(Adresse) & " n'a pas été trouvée");
 					Cache.Defauts := Cache.Defauts + 1;
 					raise Adresse_Absente_Exception;
@@ -494,7 +494,7 @@ package body cache_tree is
     	return Sortie;
 
     exception
-    	when Adresse_Absente_Exception => return To_Unbounded_String("L'adresse n'a pas été trouvée dans le cache.");
+    	when Adresse_Absente_Exception => return To_Unbounded_String("L'adresse" & T_Adresse_IP'Image(Adresse) & " n'a pas été trouvée");
     end Chercher_Arbre;
 
 end cache_tree;
