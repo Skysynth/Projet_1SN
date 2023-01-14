@@ -72,7 +72,7 @@ procedure test_cache_tree is
     begin 
         -- initialiser le cache et l'arbre
         Politique := FIFO; -- FIFO
-        Initialiser_Cache(Cache, 2, Politique);
+        Initialiser_Cache(Cache, 3, Politique);
         Initialiser_Arbre(Arbre);
         
         -- Enregistrement de la premiere donnees dans le cache 
@@ -83,7 +83,7 @@ procedure test_cache_tree is
         Sortie1 := To_Unbounded_String("eth1");
         
         Enregistrer(Arbre, Cache, Adresse1, Masque1, Sortie1, Politique);
-        Put_Line("Affichage de l'arbre");
+        Put_Line(">>> Affichage de l'arbre");
         New_Line;
         Afficher_Arbre(Arbre);
 
@@ -93,7 +93,7 @@ procedure test_cache_tree is
 
         -- test qui verifie si le nombre de donnee dans le cache est correcte
         pragma Assert(Enregistrement_Cache(Cache)= 1);
-        Put_Line("Le nombre d'enregistrement dans le cache est de 1");
+        Put_Line("Le nombre d'enregistrement dans le cache est de" & Integer'Image(Enregistrement_Cache(Cache)));
         New_Line;
 
         Adresse2 := Convert_Unbounded_String_To_T_Adresse_IP(To_Unbounded_String("192.168.255.0"));
@@ -105,7 +105,7 @@ procedure test_cache_tree is
 
         -- Ajout d'une 2eme donnee
         Enregistrer(Arbre, Cache, Adresse2, Masque2, Sortie2, Politique);
-        Put_Line("Affichage de l'arbre");
+        Put_Line(">>> Affichage de l'arbre <<<");
         New_Line;
         Afficher_Arbre(Arbre);
 
@@ -114,22 +114,24 @@ procedure test_cache_tree is
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
         Put_Line("L'adresse 1 a été trouvée et retourne la sortie 1 : " & To_String(Sortie1));
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse3) /= Sortie2);
-        New_Line;
         pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse1) = Sortie1);
 
         -- test qui verifie si le nombre de donnee dans le cache est correcte
         pragma Assert(Enregistrement_Cache(Cache)= 2);
-        Put_Line("Le nombre d'enregistrement dans le cache est de 2");
+        Put_Line("Le nombre d'enregistrement dans le cache est de" & Integer'Image(Enregistrement_Cache(Cache)));
         New_Line;
 
         -- Ajout d'une 3eme donnee
         Enregistrer(Arbre, Cache, Adresse3, Masque1, Sortie1, Politique);
-        Put_Line("Affichage de l'arbre");
+        Put_Line(">>> Affichage de l'arbre <<<");
         New_Line;
         Afficher_Arbre(Arbre);
-        New_Line;
 
-        Min := Recherche_Identifiant_Min(Arbre);
+        -- test qui verifie si le nombre de donnee dans le cache est correcte
+        pragma Assert(Enregistrement_Cache(Cache)= 3);
+        Put_Line("Le nombre d'enregistrement dans le cache est de" & Integer'Image(Enregistrement_Cache(Cache)));
+
+        Min := Recherche_Identifiant_Min(Arbre, Politique);
         Put_Line("L'identifiant minimum est :" & Integer'Image(Min));
 
         Max := Recherche_Identifiant_Max(Arbre);
@@ -138,12 +140,12 @@ procedure test_cache_tree is
         Afficher_Statistiques_Cache(Cache);
         New_Line;
         pragma Assert(Est_Plein(Cache));
-        Put_Line("Le cache est plein pour une capacité de 2");
+        Put_Line("Le cache est plein pour une capacité de" & Integer'Image(Taille_Cache(Cache)));
 
         Supprimer(Arbre, Cache);
         New_Line;
 
-        Put_Line("Affichage de l'arbre");
+        Put_Line(">>> Affichage de l'arbre <<<");
         New_Line;
         Afficher_Arbre(Arbre);
 

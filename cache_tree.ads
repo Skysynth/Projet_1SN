@@ -153,7 +153,7 @@ package cache_tree is
     --      Arbre : Mode In T_Arbre; -- le cache
     -- pré-condition : not Est_Vide(Arbre)
     -- post-condition : Recherche_Identifiant_Max'Result >= 0
-    function Recherche_Identifiant_Min(Arbre : in T_Arbre) return Integer with
+    function Recherche_Identifiant_Min(Arbre : in T_Arbre; Politique : in T_Politique) return Integer with
         Post => Recherche_Identifiant_Min'Result >= 0;
 
     

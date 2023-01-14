@@ -184,7 +184,7 @@ package body cache_tree is
 		end Adresse_Identifiant_Min;
 
 		procedure Supprimer_FIFO(Arbre : in T_Arbre) is
-			Min : constant Integer := Recherche_Identifiant_Min(Arbre);
+			Min : constant Integer := Recherche_Identifiant_Min(Arbre, Politique);
 			Adresse : constant T_Adresse_IP := Adresse_Identifiant_Min(Arbre, Min);
 		begin
 			-- On regarde si on arrive jusqu'à la feuille
@@ -209,7 +209,7 @@ package body cache_tree is
 		end Supprimer_FIFO;
 
 		procedure Supprimer_LRU(Arbre : in T_Arbre) is
-			Min : constant Integer := Recherche_Identifiant_Min(Arbre);
+			Min : constant Integer := Recherche_Identifiant_Min(Arbre, Politique);
 			Suppresseur : T_Arbre;
 			Adresse : constant T_Adresse_IP := Adresse_Identifiant_Min(Arbre, Min);
 		begin
@@ -398,9 +398,11 @@ package body cache_tree is
 			return Max;
 		end Recherche_Identifiant_Max;
 
-		function Recherche_Identifiant_Min(Arbre : in T_Arbre) return Integer is
+		function Recherche_Identifiant_Min(Arbre : in T_Arbre; Politique: in T_Politique) return Integer is
 			Min : Integer;
 			Recherche_Min : T_Arbre;
+			Min_Gauche : Integer;
+			Min_Droite : Integer;
 		begin
 			-- On initialise le pointeur temporaire
 			Recherche_Min := Arbre;
@@ -416,26 +418,49 @@ package body cache_tree is
 			if Recherche_Min.All.Feuille then
 				Min := Recherche_Min.All.Identifiant;
 			else
-				-- On cherche le minimum à gauche
-				Min := Recherche_Min.All.Identifiant;
+				null;
+			end if;
+
+			if Politique = FIFO then
+				-- On recherche le minimum à gauche
 				if not Est_Vide(Recherche_Min.All.Gauche) then
-					Min := Recherche_Identifiant_Min(Recherche_Min.All.Gauche);
+					Min := Recherche_Identifiant_Min(Recherche_Min.All.Gauche, Politique);
 				else
 					null;
 				end if;
 
 				-- On cherche le minimum à droite
 				if not Est_Vide(Recherche_Min.All.Droite) then
-					Min := Recherche_Identifiant_Min(Recherche_Min.All.Droite);
+					Min := Recherche_Identifiant_Min(Recherche_Min.All.Droite, Politique);
 				else
 					null;
+				end if;
+			else
+				-- On recherche le minimum à gauche
+				if not Est_Vide(Recherche_Min.All.Gauche) then
+					Min_Gauche := Recherche_Identifiant_Min(Recherche_Min.All.Gauche, Politique);
+				else
+					null;
+				end if;
+
+				-- On cherche le minimum à droite
+				if not Est_Vide(Recherche_Min.All.Droite) then
+					Min_Droite := Recherche_Identifiant_Min(Recherche_Min.All.Droite, Politique);
+				else
+					null;
+				end if;
+
+				if Min_Gauche < Min_Droite then
+					Min := Min_Gauche;
+				else
+					Min := Min_Droite;
 				end if;
 			end if;
 
 			return Min;
 		
 		exception
-			when Arbre_Vide_Exception => return Min;
+			when Arbre_Vide_Exception => return 10000;
 		end Recherche_Identifiant_Min;
 
 	function Chercher_Arbre(Arbre : in T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string is
