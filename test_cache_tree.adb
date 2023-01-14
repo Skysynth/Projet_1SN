@@ -67,8 +67,12 @@ procedure test_cache_tree is
         Sortie2 : Unbounded_String;
         Politique : T_Politique;
         Adresse3 : T_Adresse_IP;
-        Min : Integer := 1000000;
-        Max : Integer := 0;
+        Min_Init : Integer := 1000000;
+        Max_Init : Integer := 0;
+        Min_Identifiant : Integer;
+        Max_Identifiant : Integer;
+        Min_Frequence : Integer; 
+        Min_Identifiant_Frequence : Integer;
     begin 
         -- initialiser le cache et l'arbre
         Politique := LFU; -- FIFO
@@ -123,6 +127,7 @@ procedure test_cache_tree is
 
         -- Ajout d'une 3eme donnee
         Enregistrer(Arbre, Cache, Adresse3, Masque1, Sortie1, Politique);
+        pragma Assert(Chercher_Arbre(Arbre, Cache, Adresse3) = Sortie1);
         Put_Line(">>> Affichage de l'arbre <<<");
         New_Line;
         Afficher_Arbre(Arbre);
@@ -131,18 +136,23 @@ procedure test_cache_tree is
         pragma Assert(Enregistrement_Cache(Cache)= 3);
         Put_Line("Le nombre d'enregistrement dans le cache est de" & Integer'Image(Enregistrement_Cache(Cache)));
 
-        Min := Recherche_Identifiant_Min(Arbre, Min);
-        Put_Line("L'identifiant minimum est :" & Integer'Image(Min));
+        Min_Identifiant := Recherche_Identifiant_Min(Arbre, Min_Init);
+        Put_Line("L'identifiant minimum est :" & Integer'Image(Min_Identifiant));
 
-        Max := Recherche_Identifiant_Max(Arbre, Max);
-        Put_Line("L'identifiant maximum est :" & Integer'Image(Max));
+        Max_Identifiant := Recherche_Identifiant_Max(Arbre, Max_Init);
+        Put_Line("L'identifiant maximum est :" & Integer'Image(Max_Identifiant));
 
         Afficher_Statistiques_Cache(Cache);
-        New_Line;
         pragma Assert(Est_Plein(Cache));
         Put_Line("Le cache est plein pour une capacité de" & Integer'Image(Taille_Cache(Cache)));
 
-        Supprimer(Arbre, Cache);
+        Min_Init := 10000000;
+        Min_Frequence := Recherche_Frequence_Min(Arbre, Min_Init);
+        Put_Line("La fréquence minimale est :" & Integer'Image(Min_Frequence));
+        New_Line;
+
+        Min_Identifiant_Frequence := Recherche_Identifiant_Frequence_Min(Arbre, Min_Frequence, Min_Init);
+        Supprimer(Arbre, Cache, Min_Identifiant_Frequence);
         New_Line;
 
         Put_Line(">>> Affichage de l'arbre <<<");

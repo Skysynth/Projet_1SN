@@ -142,78 +142,21 @@ package body cache_tree is
 
 	end Enregistrer;
 
-	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache) is
+	procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache; Min_Identifiant_Frequence : in Integer) is
 
 		Politique : constant T_Politique := Cache.Politique;
+		Min_Init : Integer := 1000000;
+		Min_Identifiant : constant Integer := Recherche_Identifiant_Min(Arbre, Min_Init);
+		Min_Frequence : constant Integer := Recherche_Frequence_Min(Arbre, Min_Init);
 
-		procedure Supprimer_FIFO(Arbre : in T_Arbre) is
-			Min : Integer := 10000000;
-			Adresse : constant T_Adresse_IP := 0;
-		begin
-			-- On initialise le minimum
-			Min := Recherche_Identifiant_Min(Arbre, Min);
-
-			-- On regarde si on arrive jusqu'à la feuille
-        	if Arbre = Null then 
-        	    raise Arbre_Vide_Exception;
-        	elsif Adresse = Arbre.All.Adresse and Arbre.All.Feuille then
-        	    Arbre.All.Feuille := False;
-         	    Arbre.All.Adresse := 0;
-				Arbre.All.Frequence := 0;
-				Arbre.All.Identifiant := 0;
-				Arbre.All.Masque := 0;
-				Arbre.All.Sortie := To_Unbounded_String("");
-			else
-				null;
-        	end if;
-
-        	Supprimer_FIFO(Arbre.All.Gauche);
-        	Supprimer_FIFO(Arbre.All.Droite);
-
-		exception
-			when Arbre_Vide_Exception => null;
-		end Supprimer_FIFO;
-
-		procedure Supprimer_LRU(Arbre : in T_Arbre) is
-			Min : Integer := 10000000;
+		procedure Supprimer_FIFO(Arbre : in T_Arbre; Min_Identifiant : in Integer) is
 			Suppresseur : T_Arbre;
-			Adresse : constant T_Adresse_IP := 0;
-		begin
-			-- On initialise le minimum
-			Min := Recherche_Identifiant_Min(Arbre, Min);
-
-			-- On initialise le pointeur temporaire
-			Suppresseur := Arbre;
-
-			-- On regarde si on arrive à la taille du masque
-			if Min = Suppresseur.All.Identifiant then
-				-- On devrait être au niveau de la feuille correspondante à présent
-				Arbre.All.Adresse := 0;
-				Arbre.All.Frequence := 0;
-				Arbre.All.Identifiant := 0;
-				Arbre.All.Masque := 0;
-				Arbre.All.Sortie := To_Unbounded_String("");
-				Arbre.All.Feuille := False;
-			elsif (Adresse AND 2 ** (31 - Suppresseur.All.Hauteur)) = 0 then
-				-- Cas où le bit vaut 0
-        	    Supprimer_LRU(Arbre.All.Gauche);
-			else
-				-- Cas où le bit vaut 1
-				Supprimer_LRU(Arbre.All.Droite);
-			end if;
-		end Supprimer_LRU;
-
-		procedure Supprimer_LFU(Arbre : in T_Arbre) is
-			Suppresseur : T_Arbre;
-			Min_Init : Integer := 1000000;
-			Min_Frequence : constant Integer := Recherche_Frequence_Min(Arbre, Min_Init);
-			Min_Identifiant : constant Integer := Recherche_Identifiant_Min(Arbre, Min_Init);
 		begin
 			-- On initialise le pointeur temporaire
 			Suppresseur := Arbre;
 
 			if not Est_Vide(Suppresseur) then
-				if Suppresseur.All.Feuille and then (Min_Frequence = Suppresseur.All.Frequence and Min_Identifiant = Suppresseur.All.Identifiant) then
+				if Suppresseur.All.Feuille and Min_Identifiant = Suppresseur.All.Identifiant then
 					-- Il ne reste plus qu'à supprimer cette cellule
 					Suppresseur.All.Adresse := 0;
 					Suppresseur.All.Frequence := 0;
@@ -228,19 +171,78 @@ package body cache_tree is
 				raise Suppression_Exception;
 			end if;
 
-			Supprimer_LFU(Suppresseur.All.Gauche);
-			Supprimer_LFU(Suppresseur.All.Droite);
+			Supprimer_FIFO(Suppresseur.All.Gauche, Min_Identifiant);
+			Supprimer_FIFO(Suppresseur.All.Droite, Min_Identifiant);
+
+		exception
+			when Suppression_Exception => null;
+		end Supprimer_FIFO;
+
+		procedure Supprimer_LRU(Arbre : in T_Arbre; Min_Identifiant : in Integer) is
+			Suppresseur : T_Arbre;
+		begin
+			-- On initialise le pointeur temporaire
+			Suppresseur := Arbre;
+
+			if not Est_Vide(Suppresseur) then
+				if Suppresseur.All.Feuille and then Min_Identifiant = Suppresseur.All.Identifiant then
+					-- Il ne reste plus qu'à supprimer cette cellule
+					Suppresseur.All.Adresse := 0;
+					Suppresseur.All.Frequence := 0;
+					Suppresseur.All.Identifiant := 0;
+					Suppresseur.All.Masque := 0;
+					Suppresseur.All.Sortie := To_Unbounded_String("");
+					Suppresseur.All.Feuille := False;
+				else
+					null;
+				end if;
+			else
+				raise Suppression_Exception;
+			end if;
+
+			Supprimer_LRU(Suppresseur.All.Gauche, Min_Identifiant);
+			Supprimer_LRU(Suppresseur.All.Droite, Min_Identifiant);
+
+		exception
+			when Suppression_Exception => null;
+		end Supprimer_LRU;
+
+		procedure Supprimer_LFU(Arbre : in T_Arbre; Min_Frequence : in Integer; Min_Identifiant_Frequence: in Integer) is
+			Suppresseur : T_Arbre;
+		begin
+			-- On initialise le pointeur temporaire
+			Suppresseur := Arbre;
+
+			if not Est_Vide(Suppresseur) then
+				if Suppresseur.All.Feuille and then (Min_Frequence = Suppresseur.All.Frequence and Min_Identifiant_Frequence = Suppresseur.All.Identifiant) then
+					-- Il ne reste plus qu'à supprimer cette cellule
+					Suppresseur.All.Adresse := 0;
+					Suppresseur.All.Frequence := 0;
+					Suppresseur.All.Identifiant := 0;
+					Suppresseur.All.Masque := 0;
+					Suppresseur.All.Sortie := To_Unbounded_String("");
+					Suppresseur.All.Feuille := False;
+				else
+					null;
+				end if;
+			else
+				raise Suppression_Exception;
+			end if;
+
+			Supprimer_LFU(Suppresseur.All.Gauche, Min_Frequence, Min_Identifiant_Frequence);
+			Supprimer_LFU(Suppresseur.All.Droite, Min_Frequence, Min_Identifiant_Frequence);
 
 		exception
 			when Suppression_Exception => null;
 		end Supprimer_LFU;
 
 	begin
+		Put_Line("La fréquence minimale est :" & Integer'Image(Min_Frequence));
 		-- On regarde quelle est la procédure 
 		case Politique is
-			when FIFO => Supprimer_FIFO(Arbre); -- FIFO
-			when LRU => Supprimer_LRU(Arbre); -- LRU
-			when LFU => Supprimer_LFU(Arbre); -- LFU
+			when FIFO => Supprimer_FIFO(Arbre, Min_Identifiant); -- FIFO
+			when LRU => Supprimer_LRU(Arbre, Min_Identifiant); -- LRU
+			when LFU => Supprimer_LFU(Arbre, Min_Frequence, Min_Identifiant_Frequence); -- LFU
 			-- when others => raise Politique_non_valide_exception;
 		end case;
 
@@ -306,7 +308,6 @@ package body cache_tree is
 		Put_Line("Le taux de défauts de cache est de :" & Float'Image(Taux_Defauts));
 	end Afficher_Statistiques_Cache;
 
-	-- pré-condition : not Est_Vide(Arbre)
 	function Recherche_Identifiant_Max(Arbre : in T_Arbre; Max : in out Integer) return Integer is
 		Recherche_Max : T_Arbre;
 		Max_Gauche : Integer;
@@ -426,6 +427,46 @@ package body cache_tree is
 	exception
 		when Arbre_Vide_Exception => return Min;
 	end Recherche_Frequence_Min;
+
+	function Recherche_Identifiant_Frequence_Min(Arbre : in T_Arbre; Frequence : in Integer; Min : in out Integer) return Integer is
+		Recherche_Min : T_Arbre;
+		Min_Gauche : Integer;
+		Min_Droite : Integer;
+	begin
+		-- On initialise le pointeur temporaire
+		Recherche_Min := Arbre;
+
+		-- On regarde si le cache est vide ou non
+		if not Est_Vide(Recherche_Min) then
+			-- On traite la racine
+			if Recherche_Min.All.Feuille and then (Recherche_Min.All.Identifiant < Min and Recherche_Min.All.Frequence = Frequence) then
+				Min := Recherche_Min.All.Identifiant;
+			else
+				null;
+			end if;
+
+			-- On traite la partie gauche de l'arbre
+			Min_Gauche := Recherche_Identifiant_Frequence_Min(Recherche_Min.All.Gauche, Frequence, Min);
+
+			-- On traite la partie droite de l'arbre
+			Min_Droite := Recherche_Identifiant_Frequence_Min(Recherche_Min.All.Droite, Frequence, Min);
+
+			-- On compare le minimum de gauche et de droite
+			if Min_Gauche < Min_Droite then
+				Min := Min_Gauche;
+			else
+				Min := Min_Droite;
+			end if;
+
+		else
+			raise Arbre_Vide_Exception;
+		end if;
+
+		return Min;
+		
+	exception
+		when Arbre_Vide_Exception => return Min;
+	end Recherche_Identifiant_Frequence_Min;
 
 	function Chercher_Arbre(Arbre : in T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string is
 		Sortie : Unbounded_String;

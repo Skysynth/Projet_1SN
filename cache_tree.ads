@@ -105,9 +105,10 @@ package cache_tree is
     -- paramètres :
     --      Arbre : Mode In/Out T_Arbre -- le cache
     --      Cache : Mode In/Out T_Cache; -- les paramètres du cache
+    --      Min_Identifiant_Frequence : Mode In Integer; -- l'identifiant minimum pour des cellules ayant une même fréquence donnée
     -- pré-condition : Est_Plein(Arbre)
     -- post-condition : Taille_Cache(Arbre) = Taille_Cache(Arbre)'Old - 1
-    procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache) with
+    procedure Supprimer(Arbre : in out T_Arbre; Cache : in out T_Cache; Min_Identifiant_Frequence : in Integer) with
         Pre => Est_Plein(Cache),
         Post => Taille_Cache(Cache) = Taille_Cache(Cache)'Old - 1;
 
@@ -156,6 +157,7 @@ package cache_tree is
     function Recherche_Identifiant_Min(Arbre : in T_Arbre; Min : in out Integer) return Integer with
         Post => Recherche_Identifiant_Min'Result >= 0;
 
+
     -- nom : Recherche_Frequence_Min
     -- sémantique : Permet de trouver la fréquence minimale, cela est nécessaire pour la politique LFU.
     -- paramètres :
@@ -165,7 +167,18 @@ package cache_tree is
     function Recherche_Frequence_Min(Arbre : in T_Arbre; Min : in out Integer) return Integer with
         Post => Recherche_Frequence_Min'Result >= 0;
 
+
+    -- nom : Recherche_Identifiant_Frequence_Min
+    -- sémantique : Permet de trouver l'identifiant minimum pour des cellules ayant uniquement la même fréquence, cela est nécessaire pour la politique LFU.
+    -- paramètres :
+    --      Arbre : Mode In T_Arbre; -- le cache
+    --      Frequence : Mode In Integer; -- la fréquence
+    --      Min : Mode In/Out Integer; -- le minimum
+    -- post-condition : Recherche_Identifiant_Frequence_Min'Result >= 0
+    function Recherche_Identifiant_Frequence_Min(Arbre : in T_Arbre; Frequence : in Integer; Min : in out Integer) return Integer with
+        Post => Recherche_Identifiant_Frequence_Min'Result >= 0;
     
+
     -- nom : Chercher_Arbre
     -- sémantique : Permet de renvoyer la sortie correspondante à une adresse dans le cache
     -- paramètres :
