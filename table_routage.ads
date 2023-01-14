@@ -94,14 +94,37 @@ package Table_Routage is
     
     function Is_Command_And_Then_Execute(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean;
     
+    -- nom : Is_Command_And_Then_Execute_LCA
+    -- semantique : ligne de commande pour un cache de type LCA
+    -- parametres :
+    --      tr : Mode In T_Table_Routage; -- la table de routage
+    --      ligne : Mode In String;
+    --      file_output : Mode In File_Type;
+    --      num_ligne : Mode In Integer;
     function Is_Command_And_Then_Execute_LCA(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer ; cache_lca : T_CACHE_LCA) return Boolean;
     
+    -- nom : Is_Command_And_Then_Execute_TREE
+    -- semantique : ligne de commande pour un cache de type TREE
+    -- parametres :
+    --      tr : Mode In T_Table_Routage; -- la table de routage
+    --      ligne : Mode In String;
+    --      file_output : Mode In File_Type;
+    --      num_ligne : Mode In Integer;
     function Is_Command_And_Then_Execute_TREE(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer; Arbre : T_Arbre; param_Cache : T_Param_Cache) return Boolean;
     
-   
+    -- nom :  Adresse_Presente
+    -- semantique : Vérifie si une adresse est présente dans la table de routage  
+    -- parametres :
+    --      Table_Routage : Mode In T_Table_Routage; -- la table de routage
+    --      adresse  : Mode In T_Adresse_IP;
     function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean;
 
-    
+     -- nom :  Recuperer_Masque_Plus_Long
+    -- semantique : Récupere le masque le plus long pour le mettre dans le cache   
+    -- parametres :
+    --      Table : Mode In T_Table_Routage; -- la table de routage
+    --      Adresse  : Mode In T_Adresse_IP;
+    --      Masque : Mode in T_ADRESSE_IP;
     function Recuperer_Masque_Plus_Long(Table : in T_Table_Routage ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP) return T_Adresse_IP;
     
     

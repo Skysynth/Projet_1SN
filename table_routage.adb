@@ -1,6 +1,6 @@
 with Ada.Unchecked_Deallocation;
 with Routeur_Exceptions; use Routeur_Exceptions;
-
+with cache_lca; use cache_lca;
 
 -- R1 : Concevoir et initialiser un routeur
 package body Table_Routage is
@@ -230,12 +230,12 @@ package body Table_Routage is
         when Cache =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Cache (" & Integer'Image(num_ligne) & " )");
-           
+            Afficher_LCA(cache_lca, file_output);
             
         when Stat =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Stat (" & Integer'Image(num_ligne) & " )");
-            null;
+            Put_Line(file_output, "Non implémenté");
             
         when Fin =>
             New_Line(File    => file_output);

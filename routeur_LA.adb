@@ -10,7 +10,7 @@ with tools; use tools;
 with Table_Routage; use Table_Routage;
 with cache_tree; use cache_tree;
 
-procedure routeur_LA is
+procedure routeur_la is
 
     param : T_Param;
 
@@ -81,7 +81,8 @@ begin
             Trim(ligne, Both);
             adresse := Unbounded_String_To_Adresse_IP(ligne);
 
-            if Is_Command_And_Then_Execute(To_String(ligne), tr, File_resultat, num_ligne) then
+            if Is_Command_And_Then_Execute_TREE(To_String(ligne), tr, File_resultat, num_ligne, arbre, param) then
+
                 null;
             else
 
@@ -107,8 +108,7 @@ begin
                                                Cache     => cache,
                                                Adresse   => adresse_Cache,
                                                Masque    => masque_Cache,
-                                               Sortie    => interf,
-                                               Politique => param.politique);
+                                               Sortie    => interf);
                 end;
 
                 Put_Line(File_resultat, To_String(ligne) & " " & To_String(interf));
@@ -131,4 +131,4 @@ begin
         when E : others => Put_Line (Exception_Message (E));
     end;
 
-end routeur_LA;
+end routeur_la;

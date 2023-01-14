@@ -7,223 +7,253 @@ with Ada.Unchecked_Deallocation;
 
 package body CACHE_LCA is
 
-   procedure Free is
-     new Ada.Unchecked_Deallocation (Object => T_Cellule, Name => T_CACHE_LCA);
+    procedure Free is
+        new Ada.Unchecked_Deallocation (T_Cellule, T_CACHE_LCA);
 
-   procedure Free_Rec is
-     new Ada.Unchecked_Deallocation (Object => T_Case, Name => T_RECENT_LCA);
+    -- Initialiser le cache LCA et le tableau RECENT_LCA utilisé dans la politique LRU
 
-   -- Initialiser le cache LCA
+    procedure Initialiser(Cache: out T_CACHE_LCA ; Taille : Integer ; pol : T_Politique) is
+    begin
+        Cache := null;
+        TAILLE_MAX := Taille;
+        POLITIQUE := pol;
+        for i in 1 .. 1000 loop
+            RECENT_LCA(i) := 0;
+        end loop;
+    end Initialiser;
 
-   procedure Initialiser(Cache_lca: out T_CACHE_LCA ; Taille : Integer ; pol : T_Politique) is
-   begin
-      Cache_lca := null;
-      TAILLE_MAX := Taille;
-      POLITIQUE := pol;
-   end Initialiser;
+    -- Savoir si le cache est plein ou non
 
-   -- Savoir si le cache est plein ou non
+    function Est_Plein(Cache : in T_CACHE_LCA) return Boolean is
+    begin
+        return Taille(Cache) = TAILLE_MAX;
+    end Est_Plein;
 
-   function Est_Plein(Cache_lca : in T_CACHE_LCA) return Boolean is
-   begin
-      return Taille(Cache_lca) = TAILLE_MAX;
-   end Est_Plein;
+    -- Savoir si le cache est vide ou non
 
-   -- Savoir si le cache est vide ou non
-
-   function Est_Vide(Cache_lca : in T_CACHE_LCA) return Boolean is
-   begin
-      return Cache_lca = null;
-   end Est_Vide;
+    function Est_Vide(Cache : in T_CACHE_LCA) return Boolean is
+    begin
+        return Cache = null;
+    end Est_Vide;
 
 
-   -- Vider le cache
+    -- Vider le cache
 
-   procedure Vider(Cache_lca : in out T_CACHE_LCA) is
-   begin
-      if Cache_lca = null then
-         null;
-      else
-         Free(Cache_lca);
-         Vider(Cache_lca.all.Suivant);
-      end if;
-   end Vider;
+    procedure Vider(Cache : in out T_CACHE_LCA) is
+        Cache0 : T_CACHE_LCA;
+    begin
+        while Cache.all.Suivant /= null loop
+            Cache0 := Cache;
+            Cache := Cache.all.Suivant;
+            Free(Cache0);
+        end loop;
+        Free(Cache);
+    end Vider;
 
-   -- Connaitre la taille d'une liste chainee
+    -- Connaitre la taille d'une liste chainee
 
-   function Taille (Cache_lca : in T_CACHE_LCA) return Integer is
-      n : integer;
-      Cache_lca0 : T_CACHE_LCA;
-   begin
-      n := 0;
-      Cache_lca0 := Cache_lca;
-      while Cache_lca0 /= null loop
-         Cache_lca0 := Cache_lca0.all.Suivant;
-         n := n + 1;
-      end loop;
-      return n;
-   end Taille;
+    function Taille (Cache : in T_CACHE_LCA) return Integer is
+        n : integer;
+        Cache0 : T_CACHE_LCA;
+    begin
+        n := 0;
+        Cache0 := Cache;
+        while Cache0 /= null loop
+            Cache0 := Cache0.all.Suivant;
+            n := n + 1;
+        end loop;
+        return n;
+    end Taille;
 
-   -- Politique FIFO
+    -- Politique FIFO
 
-   procedure Supprimer_FIFO(Cache_lca : in out T_CACHE_LCA) is
-      Cache_lca0 : T_CACHE_LCA;
-   begin
-      Cache_lca0 := Cache_lca;
-      Cache_lca := Cache_lca.all.Suivant;
-      Free(Cache_lca0);
-   end Supprimer_FIFO;
+    procedure Supprimer_FIFO(Cache : in out T_CACHE_LCA) is
+        Cache0 : T_CACHE_LCA;
+    begin
+        Cache0 := Cache;
+        Cache := Cache.all.Suivant;
+        Free(Cache0);
+    end Supprimer_FIFO;
 
-   -- Politique LRU
+    -- Politique LRU
 
-   procedure Ajouter_Recent(Rec_lca : in out T_RECENT_LCA ; Adresse : in T_ADRESSE_IP) is
-   begin
-      if Rec_lca = null then
-         Rec_lca := new T_Case'(Adresse, null);
-      else
-         Ajouter_Recent(Rec_lca.all.Suivant, Adresse);
-      end if;
-   end Ajouter_Recent;
+    procedure Ajouter_Recent(Adresse : in T_ADRESSE_IP) is
+        i : integer;
+    begin
+        i := 1;
+        while RECENT_LCA(i) /= 0 loop
+            i := i + 1;
+        end loop;
+        RECENT_LCA(i) := Adresse;
+    end Ajouter_Recent;
 
-   procedure Supprimer_Recent(Rec_lca : in out T_RECENT_LCA ; Adresse : in T_ADRESSE_IP) is
-      Recent_lca0 : T_RECENT_LCA;
-   begin
-      if Rec_lca.all.Adresse = Adresse then
-         Recent_lca0 := Rec_lca;
-         Rec_lca := Rec_lca.all.Suivant;
-         Free_Rec(Recent_lca0);
-      else
-         Supprimer_Recent(Rec_lca.all.Suivant, Adresse);
-      end if;
-   end Supprimer_Recent;
+    procedure Supprimer_Recent(Adresse : in T_ADRESSE_IP) is
+        i : integer;
+    begin
+        i := 1;
+        while RECENT_LCA(i) /= Adresse loop
+            i := i + 1;
+        end loop;
+        while RECENT_LCA(i) /= 0 loop
+            RECENT_LCA(i) := RECENT_LCA(i+1);
+            i := i + 1;
+        end loop;
+    end Supprimer_Recent;
 
-   procedure Supprimer_LRU(Cache_lca : in out T_CACHE_LCA ; Rec_lca : in out T_RECENT_LCA ; Adresse_Suppr : in T_Adresse_IP) is
-      Cache_lca0 : T_CACHE_LCA;
-   begin
-      if Cache_lca.all.Adresse = Adresse_Suppr then
-         Cache_lca0 := Cache_lca;
-         Cache_lca := Cache_lca.all.Suivant;
-         Free(Cache_lca0);
-         Supprimer_Recent(Rec_lca, Adresse_Suppr);
-      else
-         Supprimer_LRU(Cache_lca.all.Suivant, Rec_lca, Adresse_Suppr);
-      end if;
-   end Supprimer_LRU;
+    procedure Supprimer_LRU(Cache : in out T_CACHE_LCA) is
+        Cache0 : T_CACHE_LCA;
+    begin
+        if Cache.all.Adresse = RECENT_LCA(1) then
+            Cache0 := Cache;
+            Cache := Cache.all.Suivant;
+            Free(Cache0);
+        else
+            Supprimer_LRU(Cache.all.Suivant);
+        end if;
+    end Supprimer_LRU;
 
-   -- Politique LFU
+    -- Politique LFU
 
-   function Adresse_LFU(Cache_lca : in T_CACHE_LCA) return integer is
-      Cache_lca0 : T_CACHE_LCA;
-      Freq_min : integer;
-   begin
-      Cache_lca0 := Cache_lca;
-      Freq_min := 1;
-      while not(Est_Vide(Cache_lca0)) loop
-         if Cache_lca0.all.Frequence < Freq_min then
-            Freq_min := Cache_lca0.all.Frequence;
-         else
-            null;
-         end if;
-         Cache_lca0 := Cache_lca0.all.Suivant;
-      end loop;
-      return Freq_min;
-   end Adresse_LFU;
+    function Adresse_LFU(Cache : in T_CACHE_LCA) return integer is
+        Cache0 : T_CACHE_LCA;
+        Freq_min : integer;
+    begin
+        Cache0 := Cache;
+        Freq_min := 1;
+        while not(Est_Vide(Cache0)) loop
+            if Cache0.all.Frequence < Freq_min then
+                Freq_min := Cache0.all.Frequence;
+            else
+                null;
+            end if;
+            Cache0 := Cache0.all.Suivant;
+        end loop;
+        return Freq_min;
+    end Adresse_LFU;
 
-   procedure Supprimer_LFU(Cache_lca : in out T_CACHE_LCA) is
-      Freq_min : integer;
-      Cache_lca0 : T_CACHE_LCA;
-   begin
+    procedure Supprimer_LFU(Cache : in out T_CACHE_LCA) is
+        Freq_min : integer;
+        Cache0 : T_CACHE_LCA;
+    begin
 
-      Freq_min := Adresse_LFU(Cache_lca);
+        Freq_min := Adresse_LFU(Cache);
 
-      if Cache_lca.all.Frequence = Freq_min then
-         Cache_lca0 := Cache_lca;
-         Cache_lca := Cache_lca.all.Suivant;
-         Free(Cache_lca0);
-      else
-         Supprimer_LFU(Cache_lca.all.Suivant);
-      end if;
+        if Cache.all.Frequence = Freq_min then
+            Cache0 := Cache;
+            Cache := Cache.all.Suivant;
+            Free(Cache0);
+        else
+            Supprimer_LFU(Cache.all.Suivant);
+        end if;
 
-   end Supprimer_LFU;
+    end Supprimer_LFU;
 
-   -- Supprimer un element du cache si ce dernier est plein, en suivant une politique particulière
+    -- Supprimer un element du cache si ce dernier est plein, en suivant une politique particuliÃ¨re
 
-   procedure Supprimer(Cache_lca : in out T_CACHE_LCA) is
-   begin
-      case POLITIQUE is
-         when FIFO => Supprimer_FIFO(Cache_lca);
-         when LRU => Supprimer_LRU(Cache_lca, RECENT_LCA, RECENT_LCA.all.Adresse);
-         when LFU => Supprimer_LFU(Cache_lca);
-         when others => raise Politique_non_valide_exception;
-      end case;
-   end Supprimer;
+    procedure Supprimer(Cache : in out T_CACHE_LCA) is
+    begin
+        case POLITIQUE is
+            when FIFO => Supprimer_FIFO(Cache);
+            when LRU => Supprimer_LRU(Cache);
+            when LFU => Supprimer_LFU(Cache);
+            when others => raise Politique_non_valide_exception;
+        end case;
+    end Supprimer;
 
-   -- Savoir si une adresse est presente ou non dans le cache
+    -- Savoir si une adresse est presente ou non dans le cache
 
-   function Adresse_Presente(Cache_lca : in T_CACHE_LCA ; Adresse : in T_Adresse_IP) return Boolean is
-      Presence : Boolean;
-      Adresse_Masquee : T_ADRESSE_IP;
-      Cache_lca0 : T_CACHE_LCA;
-   begin
-      Cache_lca0 := Cache_lca;
-      if Cache_lca0 = null then
-         Presence := False;
-      else
-         Adresse_Masquee := Adresse AND Cache_lca0.all.Masque;
-         if Cache_lca0.all.Adresse = Adresse_Masquee then
-            Presence := True;
-         else
-            return Adresse_Presente(Cache_lca0.all.Suivant, Adresse);
-         end if;
-      end if;
-      return Presence;
-   end Adresse_Presente;
+    function Adresse_Presente(Cache : in T_CACHE_LCA ; Adresse : in T_Adresse_IP) return Boolean is
+        Presence : Boolean;
+        Adresse_Masquee : T_ADRESSE_IP;
+        Cache0 : T_CACHE_LCA;
+    begin
+        Cache0 := Cache;
+        if Cache0 = null then
+            Presence := False;
+        else
+            Adresse_Masquee := Adresse AND Cache0.all.Masque;
+            if Cache0.all.Adresse = Adresse_Masquee then
+                Presence := True;
+            else
+                return Adresse_Presente(Cache0.all.Suivant, Adresse);
+            end if;
+        end if;
+        return Presence;
+    end Adresse_Presente;
 
-   -- Recuperer dans le cache le masque associe a l'adresse demandee.
+    -- Recuperer dans le cache le masque associe a l'adresse demandee.
 
-   function Recuperer_Masque_Cache(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return T_Adresse_IP is
-      Masque : T_ADRESSE_IP;
-   begin
-      Cache_lca := Cache_lca;
-      if Cache_lca = null then
-         raise Adresse_Absente_Exception;
-      elsif Cache_lca.all.Adresse = Adresse then
-         Masque := Cache_lca.all.Masque;
-         Supprimer_Recent(RECENT_LCA, Adresse);
-         Ajouter_Recent(RECENT_LCA, Adresse);
-         Cache_lca.all.Frequence := Cache_lca.all.Frequence + 1;
-      else
-         Masque := Recuperer_Masque_Cache(Cache_lca.all.Suivant, Adresse);
-      end if;
-      return Masque;
-   end Recuperer_Masque_Cache;
+    function Recuperer_Masque_Cache(Cache : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return T_Adresse_IP is
+        Masque : T_ADRESSE_IP;
+    begin
+        if Cache = null then
+            raise Adresse_Absente_Exception;
+        elsif Cache.all.Adresse = Adresse then
+            Masque := Cache.all.Masque;
+            Supprimer_Recent(Adresse);
+            Ajouter_Recent(Adresse);
+            Cache.all.Frequence := Cache.all.Frequence + 1;
+        else
+            Masque := Recuperer_Masque_Cache(Cache.all.Suivant, Adresse);
+        end if;
+        return Masque;
+    end Recuperer_Masque_Cache;
 
-   -- Recuperer dans le cache l'interface associee a l'adresse demandee. Null est renvoyé dans le cas contraire.
+    function Recuperer_Eth_Cache0(Cache : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP) return Unbounded_String is
+        Eth : Unbounded_String;
+    begin
+        if Cache = null then
+            raise Adresse_Absente_Exception;
+        elsif Cache.all.Adresse = Adresse then
+            Eth := Cache.all.Eth;
+        else
+            Eth := Recuperer_Eth_Cache0(Cache.all.Suivant, Adresse);
+        end if;
+        return Eth;
+    end Recuperer_Eth_Cache0;
 
-   function Recuperer_Eth_Cache(Cache : in T_CACHE_LCA ; Adresse : T_Adresse_IP) return Unbounded_String is
-      Cache_Temp : T_CACHE_LCA;
-   begin
-      Cache_Temp := Cache;
-      while Cache_Temp /= null loop
-         if Is_Equal_With_Mask(Adresse, Cache_Temp.all.Adresse, Cache_Temp.all.Masque) then
-            return Cache_Temp.all.Eth;
-         else
-            Cache_Temp := Cache_Temp.all.Suivant;
-         end if;
-      end loop;
-      raise Adresse_Absente_Exception;
-   end Recuperer_Eth_Cache;
+    -- Recuperer dans le cache l'interface associee a l'adresse demandee. Null est renvoyÃ© dans le cas contraire.
+    function Recuperer_Eth_Cache(Cache : in T_CACHE_LCA ; Adresse : T_Adresse_IP) return Unbounded_String is
+        Cache_Temp : T_CACHE_LCA;
+    begin
+        Cache_Temp := Cache;
+        while Cache_Temp /= null loop
+            if Is_Equal_With_Mask(Adresse, Cache_Temp.all.Adresse, Cache_Temp.all.Masque) then
+                return Cache_Temp.all.Eth;
+            else
+                Cache_Temp := Cache_Temp.all.Suivant;
+            end if;
+        end loop;
+        raise Adresse_Absente_Exception;
+    end Recuperer_Eth_Cache;
 
-   -- Enregistrer une route (adresse, masque et interface) dans le cache
+    -- Enregistrer une route (adresse, masque et interface) dans le cache
 
-   procedure Enregistrer(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Eth : in Unbounded_String) is
-   begin
-      if Est_Vide(Cache_lca) then
-         Cache_lca := new T_Cellule'(Adresse, Masque, Eth, 1, Null);
-         Ajouter_Recent(RECENT_LCA, Adresse);
-      else
-         Enregistrer(Cache_lca.all.Suivant, Adresse, Masque, Eth);
-      end if;
-   end Enregistrer;
+    procedure Enregistrer(Cache : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Eth : in Unbounded_String) is
+    begin
+        if Est_Vide(Cache) then
+            Cache := new T_Cellule'(Adresse, Masque, Eth, 1, Null);
+            Ajouter_Recent(Adresse);
+        else
+            Enregistrer(Cache.all.Suivant, Adresse, Masque, Eth);
+        end if;
+    end Enregistrer;
+
+    procedure Afficher_LCA(cache_lca : in T_CACHE_LCA; file : File_Type) is
+
+        cache_temp : T_CACHE_LCA := cache_lca;
+
+    begin
+
+        while cache_temp /= null loop
+
+            Put_Line(file, Adresse_IP_To_String(cache_temp.all.Adresse) &
+                         " " & Adresse_IP_To_String(cache_temp.all.Masque) &
+                         " " & To_String(cache_temp.all.Eth) & " " & "frequence = " & Integer'Image(cache_temp.all.Frequence));
+
+            cache_temp := cache_temp.all.Suivant;
+        end loop;
+
+    end;
 
 end CACHE_LCA;
