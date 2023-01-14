@@ -436,7 +436,7 @@ package body cache_tree is
 		Cache.Demandes := Cache.Demandes + 1;
 
 		-- On fait pointer le pointeur temporaire sur la racine
-		Recherche_Adresse := Arbre;
+		Recherche_Adresse := Arbre; 
 		
 		-- On se déplace jusqu'à l'adresse (si elle existe)
 		while Compteur /= 32 and Adresse /= Recherche_Adresse.All.Adresse loop
