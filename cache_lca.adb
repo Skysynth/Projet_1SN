@@ -118,7 +118,7 @@ package body CACHE_LCA is
 
    end Supprimer_LFU;
 
-   -- Supprimer un element du cache s'il ce dernier est plein
+   -- Supprimer un element du cache si ce dernier est plein, en suivant une politique particulière
 
    procedure Supprimer(Cache_lca : in out T_CACHE_LCA) is
    begin
@@ -151,7 +151,9 @@ package body CACHE_LCA is
       return Presence;
    end Adresse_Presente;
 
-   procedure Recuperer(Cache_lca : in out T_CACHE_LCA ; Adresse : T_ADRESSE_IP) is
+   -- Recuperer le masque et l'interface associes a l'adresse demandee, dans le cache.
+
+   procedure Recuperer_Route_Cache(Cache_lca : in out T_CACHE_LCA ; Adresse : T_ADRESSE_IP) is
       Adresse_Masquee : T_ADRESSE_IP;
       Masque_Max : T_ADRESSE_IP;
       Eth_Cache : Unbounded_String;
@@ -168,24 +170,23 @@ package body CACHE_LCA is
          Ajouter_Recent(RECENT_LCA, Adresse);
          Cache_lca.all.Frequence := Cache_lca.all.Frequence + 1;
       else
-         Recuperer(Cache_lca.all.Suivant, Adresse);
+         Recuperer_Route_Cache(Cache_lca.all.Suivant, Adresse);
       end if;
-   end Recuperer;
+   end Recuperer_Route_Cache;
 
-   function Chercher_Dans_Cache(Cache : in T_CACHE_LCA ; Adresse : T_Adresse_IP) return Unbounded_String is
+   -- Recherche de l'interface d'une adresse dans le cache : renvoie null si rien trouve.
+
+   function Chercher_Dans_Cache(Cache_lca : in T_CACHE_LCA ; Adresse : T_Adresse_IP) return Unbounded_String is
       Cache_Temp : T_CACHE_LCA;
    begin
-      Cache_Temp := Cache;
-
+      Cache_Temp := Cache_lca;
       while Cache_Temp /= null loop
-
          if Is_Equal_With_Mask(Adresse, Cache_Temp.all.Adresse, Cache_Temp.all.Masque) then
             return Cache_Temp.all.Eth;
          else
             Cache_Temp := Cache_Temp.all.Suivant;
          end if;
       end loop;
-
       raise Adresse_Absente_Exception;
    end Chercher_Dans_Cache;
 
