@@ -136,14 +136,27 @@ package cache_tree is
 
 
     -- nom : Recherche_Identifiant_Max
-    -- sémantique : Permet de trouver l'identifiant max, cela est nécessaire pour la politique LRU. En effet, lorsque j'utilise le max, je regarde si l'identifiant de la route utilisée
+    -- sémantique : Permet de trouver l'identifiant maximal, cela est nécessaire pour la politique LRU. En effet, lorsque j'utilise le max, je regarde si l'identifiant de la route utilisée
     -- correspond au max des identifiants. Dans ce cas, c'est la route la plus récemment identifiée. Sinon, on affecte son identifiant à max + 1. Pour la suppression, il ne reste qu'à regarder
     -- l'identifiant minimum.
     -- paramètres :
-    --      Cache : Mode In T_Arbre; -- le cache
+    --      Arbre : Mode In T_Arbre; -- le cache
+    -- pré-condition : not Est_Vide(Arbre)
     -- post-condition : Recherche_Identifiant_Max'Result >= 0
     function Recherche_Identifiant_Max(Arbre : in T_Arbre) return Integer with
+        Pre => not Est_Vide(Arbre),
         Post => Recherche_Identifiant_Max'Result >= 0;
+
+
+    -- nom : Recherche_Identifiant_Min
+    -- sémantique : Permet de trouver l'identifiant minimum, cela est nécessaire pour les politiques FIFO et LRU.
+    -- paramètres :
+    --      Arbre : Mode In T_Arbre; -- le cache
+    -- pré-condition : not Est_Vide(Arbre)
+    -- post-condition : Recherche_Identifiant_Max'Result >= 0
+    function Recherche_Identifiant_Min(Arbre : in T_Arbre) return Integer with
+        Pre => not Est_Vide(Arbre),
+        Post => Recherche_Identifiant_Min'Result >= 0;
 
     
     -- nom : Chercher_Arbre

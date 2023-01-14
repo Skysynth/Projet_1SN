@@ -67,6 +67,7 @@ procedure test_cache_tree is
         Sortie2 : Unbounded_String;
         Politique : T_Politique;
         Adresse3 : T_Adresse_IP;
+        Min : Integer;
         Max : Integer;
     begin 
         -- initialiser le cache et l'arbre
@@ -127,6 +128,9 @@ procedure test_cache_tree is
         New_Line;
         Afficher_Arbre(Arbre);
         New_Line;
+
+        Min := Recherche_Identifiant_Min(Arbre);
+        Put_Line("L'identifiant minimum est :" & Integer'Image(Max));
 
         Max := Recherche_Identifiant_Max(Arbre);
         Put_Line("L'identifiant maximum est :" & Integer'Image(Max));
