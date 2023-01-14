@@ -21,9 +21,7 @@ package Table_Routage is
     -- tests :
     --      entrees : . sortie : Table_routage = null.
     procedure Initialiser(param : in T_Param; Table_routage: out T_Table_Routage);
-    
-    
-    
+   
     -- Est-ce qu une Table_Routage est vide ?
 
     -- nom : Est_Vide
@@ -92,6 +90,7 @@ package Table_Routage is
     function Get_Sortie(Table_Routage: in T_Table_Routage) return Unbounded_String;
     function Get_Suivant(Table_Routage: in T_Table_Routage) return T_Table_Routage;
     
+    function Is_Command_And_Then_Execute(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean;
     
     function Is_Command_And_Then_Execute_LCA(ligne : String; tr : T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean;
     

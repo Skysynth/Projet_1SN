@@ -1,6 +1,7 @@
 with Ada.Unchecked_Deallocation;
 with Routeur_Exceptions; use Routeur_Exceptions;
 
+
 -- R1 : Concevoir et initialiser un routeur
 package body Table_Routage is
     
@@ -229,11 +230,13 @@ package body Table_Routage is
         when Cache =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Cache (" & Integer'Image(num_ligne) & " )");
-            Put_Line(file_output, "prochainement...");
+           
+            
         when Stat =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Stat (" & Integer'Image(num_ligne) & " )");
             Put_Line(file_output, "prochainement...");
+            
         when Fin =>
             New_Line(File    => file_output);
             Put_Line(file_output, "Fin (" & Integer'Image(num_ligne) & " )");
@@ -248,7 +251,7 @@ package body Table_Routage is
         when Constraint_Error => return False;
     end Is_Command_And_Then_Execute;
    
-    function Is_Command_And_Then_Execute_TREE(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer) return Boolean is
+    function Is_Command_And_Then_Execute_TREE(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer, Arbre : T_Arbre) return Boolean is
         type Commandes is (Table, Cache, Stat, Fin); 
     begin
         
@@ -280,6 +283,37 @@ package body Table_Routage is
         when Constraint_Error => return False;
     end Is_Command_And_Then_Execute;
    
+    function Is_Command_And_Then_Execute(ligne : in String; tr : in T_Table_Routage; file_output : File_Type; num_ligne : Integer, Arbre : T_Arbre) return Boolean is
+        type Commandes is (Table, Cache, Stat, Fin); 
+    begin
+        
+        case Commandes'Value(ligne) is
+        when Table =>
+            New_Line(File    => file_output);
+            Put_Line(file_output, "Table (" & Integer'Image(num_ligne) & " )");
+            Afficher(Table_Routage => tr,
+                     file          => file_output);
+        when Cache =>
+            New_Line(File    => file_output);
+            Put_Line(file_output, "Cache (" & Integer'Image(num_ligne) & " )");
+            Put_Line(file_output, "prochainement...");
+        when Stat =>
+            New_Line(File    => file_output);
+            Put_Line(file_output, "Stat (" & Integer'Image(num_ligne) & " )");
+            Put_Line(file_output, "prochainement...");
+        when Fin =>
+            New_Line(File    => file_output);
+            Put_Line(file_output, "Fin (" & Integer'Image(num_ligne) & " )");
+            raise COMMAND_FIN_CALLED;
+        end case;
+        
+        Put_Line(file_output, "--------------------------------");
+        
+        return True;
+        
+    exception
+        when Constraint_Error => return False;
+    end Is_Command_And_Then_Execute;
     
     function Adresse_Presente (Table_Routage : in T_Table_Routage ; adresse : in T_Adresse_IP) return Boolean is
     begin	

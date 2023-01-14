@@ -56,8 +56,6 @@ procedure TEST_CACHE_LCA is
       
    end Test_Enregistrer;
    
-   
-   
    procedure Test_Recuperer_Masque_Eth_Cache is
       Cache : T_CACHE_LCA;
       Adresse : T_Adresse_IP;
