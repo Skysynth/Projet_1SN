@@ -146,8 +146,8 @@ package body cache_tree is
 
 		Politique : constant T_Politique := Cache.Politique;
 		Min_Init : Integer := 1000000;
-		Min_Identifiant : constant Integer := Recherche_Identifiant_Min(Arbre, Min_Init);
-		Min_Frequence : constant Integer := Recherche_Frequence_Min(Arbre, Min_Init);
+		Min_Frequence : Integer;
+		Min_Identifiant : Integer;
 
 		procedure Supprimer_FIFO(Arbre : in T_Arbre; Min_Identifiant : in Integer) is
 			Suppresseur : T_Arbre;
@@ -237,8 +237,14 @@ package body cache_tree is
 		end Supprimer_LFU;
 
 	begin
-		Put_Line("La fréquence minimale est :" & Integer'Image(Min_Frequence));
-		-- On regarde quelle est la procédure 
+
+		if Politique = LFU then
+			Min_Frequence := Recherche_Frequence_Min(Arbre, Min_Init);
+		else
+			Min_Identifiant := Recherche_Identifiant_Min(Arbre, Min_Init);
+		end if;
+
+		-- On regarde quelle est la procédure à utiliser
 		case Politique is
 			when FIFO => Supprimer_FIFO(Arbre, Min_Identifiant); -- FIFO
 			when LRU => Supprimer_LRU(Arbre, Min_Identifiant); -- LRU

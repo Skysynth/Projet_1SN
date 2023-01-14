@@ -75,7 +75,7 @@ procedure test_cache_tree is
         Min_Identifiant_Frequence : Integer;
     begin 
         -- initialiser le cache et l'arbre
-        Politique := LFU; -- FIFO
+        Politique := FIFO; -- FIFO
         Initialiser_Cache(Cache, 3, Politique);
         Initialiser_Arbre(Arbre);
         
