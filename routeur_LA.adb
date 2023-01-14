@@ -8,9 +8,9 @@ with Ada.Exceptions; use Ada.Exceptions;
 with routeur_exceptions; use routeur_exceptions;
 with tools; use tools;
 with Table_Routage; use Table_Routage;
-with cache_LCA; use cache_LCA;
+with cache_tree; use cache_tree;
 
-procedure main_cache_liste is
+procedure routeur_LA is
 
     param : T_Param;
 
@@ -43,8 +43,8 @@ procedure main_cache_liste is
     taille_masque : Integer;
 
     -- PARTIE CACHE
-    cache : T_CACHE_LCA;
-    pragma Warnings (Off);
+    cache : T_Param_Cache;
+    arbre : T_Arbre;
     adresse : T_Adresse_IP;
 
     adresse_Cache, masque_Cache : T_Adresse_IP;
@@ -62,7 +62,8 @@ begin
         Table_Routage.Initialiser(param         => param,
                                   Table_routage => tr);
 
-        CACHE_LCA.Initialiser(cache, param.taille_cache, param.politique);
+        cache_tree.Initialiser_Cache(cache, param.taille_cache, param.politique);
+        cache_tree.Initialiser_Arbre(arbre);
 
         New_Line;
         Table_Routage.Afficher(tr, Standard_Output);
@@ -78,17 +79,17 @@ begin
 
             ligne := To_Unbounded_String(Get_Line(File_paquet));
             Trim(ligne, Both);
+            adresse := Unbounded_String_To_Adresse_IP(ligne);
 
             if Is_Command_And_Then_Execute(To_String(ligne), tr, File_resultat, num_ligne) then
                 null;
             else
 
-                adresse := Unbounded_String_To_Adresse_IP(ligne);
-
                 begin
                     -- On cherche dans le cache
-                    interf := Recuperer_Eth_Cache(Cache     => cache,
-                                                  Adresse   => adresse);
+                    interf := Chercher_Arbre(Arbre   => arbre,
+                                             Cache   => cache,
+                                             Adresse => adresse);
                 exception
                         -- si pas trouvé : on cherche à la mano dans la table de routage
                     when others =>
@@ -99,21 +100,18 @@ begin
                                                                    Adresse => adresse,
                                                                    Masque  => Construct_Mask(taille_masque));
 
-                        Put_Line("Adresse : " & Adresse_IP_To_String(adresse => adresse));
+                        adresse_Cache := Apply_Masque(adresse => adresse,
+                                                      masque  => masque_Cache);
 
-                        adresse_Cache := adresse AND masque_Cache;
-
-                        Put_Line("Enregistrer : " & Adresse_IP_To_String(adresse_Cache) & " - " & Adresse_IP_To_String(masque_Cache) & " - " & To_String(interf));
-
-                        CACHE_LCA.Enregistrer(Cache_lca => cache,
-                                              Adresse   => adresse_Cache,
-                                              Masque    => masque_Cache,
-                                              Eth       => interf);
-
+                        cache_tree.Enregistrer(Arbre     => arbre,
+                                               Cache     => cache,
+                                               Adresse   => adresse_Cache,
+                                               Masque    => masque_Cache,
+                                               Sortie    => interf,
+                                               Politique => param.politique);
                 end;
 
                 Put_Line(File_resultat, To_String(ligne) & " " & To_String(interf));
-                Put_LIne(To_String(ligne) & " " & To_String(interf));
 
             end if;
 
@@ -133,4 +131,4 @@ begin
         when E : others => Put_Line (Exception_Message (E));
     end;
 
-end main_cache_liste;
+end routeur_LA;
