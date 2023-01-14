@@ -142,7 +142,6 @@ package cache_tree is
     -- paramètres :
     --      Arbre : Mode In T_Arbre; -- le cache
     --      Max : Mode In/Out Integer; -- le maximum
-    -- pré-condition : not Est_Vide(Arbre)
     -- post-condition : Recherche_Identifiant_Max'Result >= 0
     function Recherche_Identifiant_Max(Arbre : in T_Arbre; Max : in out Integer) return Integer with
         Post => Recherche_Identifiant_Max'Result >= 0;
@@ -153,10 +152,18 @@ package cache_tree is
     -- paramètres :
     --      Arbre : Mode In T_Arbre; -- le cache
     --      Min : Mode In/Out Integer; -- le minimum
-    -- pré-condition : not Est_Vide(Arbre)
-    -- post-condition : Recherche_Identifiant_Max'Result >= 0
+    -- post-condition : Recherche_Identifiant_Min'Result >= 0
     function Recherche_Identifiant_Min(Arbre : in T_Arbre; Min : in out Integer) return Integer with
         Post => Recherche_Identifiant_Min'Result >= 0;
+
+    -- nom : Recherche_Frequence_Min
+    -- sémantique : Permet de trouver la fréquence minimale, cela est nécessaire pour la politique LFU.
+    -- paramètres :
+    --      Arbre : Mode In T_Arbre; -- le cache
+    --      Min : Mode In/Out Integer; -- le minimum
+    -- post-condition : Recherche_Frequence_Min'Result >= 0
+    function Recherche_Frequence_Min(Arbre : in T_Arbre; Min : in out Integer) return Integer with
+        Post => Recherche_Frequence_Min'Result >= 0;
 
     
     -- nom : Chercher_Arbre

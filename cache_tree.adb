@@ -240,39 +240,6 @@ package body cache_tree is
 			end if;
 		end Supprimer_LRU;
 
-		function Recherche_Frequence_Min(Arbre : in T_Arbre) return T_Adresse_IP is
-			Recherche_Frequence : T_Arbre;
-			Min : Integer;
-			Adresse : T_Adresse_IP;
-		begin
-			-- On fait pointer les pointeurs sur la racine
-			Recherche_Frequence := Arbre;
-			Min := 100000; -- on n'utilisera en pratique jamais plus de 100,000 fois une adresse, à changer
-
-			-- On met à jour la plus petite fréquence
-			if Min > Recherche_Frequence.All.Frequence and Recherche_Frequence.All.Feuille then
-				Min := Recherche_Frequence.All.Frequence;
-				Adresse := Recherche_Frequence.All.Adresse;
-			else
-				null;
-			end if;
-
-			-- On applique la fonction de manière récursive à gauche et à droite
-			if not Est_Vide(Recherche_Frequence.All.Gauche) then
-				Adresse := Recherche_Frequence_Min(Recherche_Frequence.All.Gauche);
-			else
-				null;
-			end if;
-
-			if not Est_Vide(Recherche_Frequence.All.Droite) then
-				Adresse := Recherche_Frequence_Min(Recherche_Frequence.All.Droite);
-			else
-				null;
-			end if;
-
-			return Adresse;
-		end Recherche_Frequence_Min;
-
 		procedure Supprimer_LFU(Arbre : in T_Arbre) is
 			Adresse : T_Adresse_IP;
 			Suppresseur : T_Arbre;
@@ -452,6 +419,47 @@ package body cache_tree is
 		exception
 			when Arbre_Vide_Exception => return Min;
 		end Recherche_Identifiant_Min;
+
+		function Recherche_Frequence_Min(Arbre : in T_Arbre; Min : in out Integer) return T_Adresse_IP is
+			Recherche_Min : T_Arbre;
+			Adresse : T_Adresse_IP;
+			Min_Gauche : Integer;
+			Min_Droite : Integer;
+		begin
+			-- On initialise le pointeur temporaire
+			Recherche_Min := Arbre;
+
+			-- On regarde si le cache est vide ou non
+			if not Est_Vide(Recherche_Min) then
+				-- On traite la racine
+				if Recherche_Min.All.Feuille and then Recherche_Min.All.Frequence < Min then
+					Min := Recherche_Min.All.Frequence;
+				else
+					null;
+				end if;
+
+				-- On traite la partie gauche de l'arbre
+				Min_Gauche := Recherche_Frequence_Min(Recherche_Min.All.Gauche, Min);
+
+				-- On traite la partie droite de l'arbre
+				Min_Droite := Recherche_Frequence_Min(Recherche_Min.All.Droite, Min);
+
+				-- On compare le minimum de gauche et de droite
+				if Min_Gauche < Min_Droite then
+					Min := Min_Gauche;
+				else
+					Min := Min_Droite;
+				end if;
+
+			else
+				raise Arbre_Vide_Exception;
+			end if;
+
+			return Min;
+		
+		exception
+			when Arbre_Vide_Exception => return Min;
+		end Recherche_Frequence_Min;
 
 	function Chercher_Arbre(Arbre : in T_Arbre; Cache : in out T_Cache; Adresse : in T_Adresse_IP) return Unbounded_string is
 		Sortie : Unbounded_String;
