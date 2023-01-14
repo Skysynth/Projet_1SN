@@ -43,8 +43,8 @@ package CACHE_LCA is
      Pre => Adresse_Presente(Cache_lca, Adresse);
 
    -- Recuperer dans le cache l'interface associee a l'adresse demandee. Null est renvoyé dans le cas contraire.
-   function Recuperer_Eth_Cache(Cache_lca : in T_CACHE_LCA ; Adresse : T_Adresse_IP) return Unbounded_String with
-     Pre => Adresse_Presente(Cache_lca, Adresse);
+   function Recuperer_Eth_Cache(Cache : in T_CACHE_LCA ; Adresse : T_Adresse_IP) return Unbounded_String with
+     Pre => Adresse_Presente(Cache, Adresse);
 
    -- Enregistrer une nouvelle route dans le cache.
    procedure Enregistrer(Cache_lca : in out T_CACHE_LCA ; Adresse : in T_ADRESSE_IP ; Masque : in T_ADRESSE_IP ; Eth : in Unbounded_String) with
