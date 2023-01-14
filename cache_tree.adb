@@ -323,7 +323,7 @@ package body cache_tree is
 		-- On initialise le pointeur temporaire
 		Recherche_Max := Arbre;
 
-		-- On regarde si le cache est vide ou non
+		  -- On regarde si le cache est vide ou non
 		if not Est_Vide(Recherche_Max) then
 			-- On traite la racine
 			if Recherche_Max.All.Feuille and then Recherche_Max.All.Identifiant > Max then
